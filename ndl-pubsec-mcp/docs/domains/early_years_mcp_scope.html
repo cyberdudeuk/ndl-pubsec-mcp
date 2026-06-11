@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Early Years MCP — Scope & Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff;max-width:900px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#C04700;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #FAECE7}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.25rem 0 .5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#FAECE7;padding:1px 5px;border-radius:4px;color:#712B13}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#FAECE7;color:#712B13}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#FDF3F0;border-left:4px solid #C04700;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 1.5rem}
+.stat{background:#FDF3F0;border-radius:12px;padding:1.25rem;text-align:center}
+.stat-n{font-size:32px;font-weight:700;color:#C04700;display:block}
+.stat-l{font-size:12px;color:#712B13;line-height:1.4}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.pc{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #C04700}
+.pn{font-weight:700;font-size:15px;margin-bottom:2px}.ps{font-size:12px;color:#888;margin-bottom:8px}
+.pb{font-size:13px;color:#444;line-height:1.5;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tc{font-family:'SF Mono','Cascadia Code',monospace;font-size:14px;font-weight:600;color:#712B13;background:#FAECE7;padding:4px 12px;border-radius:6px;display:inline-block}
+.th{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tool{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.tool.hl{border-left:4px solid #C04700}
+.td{font-size:14px;color:#444;margin-bottom:1rem;line-height:1.5}
+.cb{background:#FDF3F0;border:1px solid #f0c4b3;border-radius:8px;padding:1rem 1.25rem;font-family:'SF Mono','Cascadia Code',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.kw{color:#9a3412}.ty{color:#1d4ed8}.st{color:#047857}.cm{color:#9ca3af;font-style:italic}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.dc{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.dc.main{border-left:4px solid #C04700}.dc.fut{border-left:4px dashed #C04700}
+.dc h3{font-size:14px;margin-bottom:6px}.dc p{margin:0;color:#555;line-height:1.5}
+.deia{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0 1.5rem}
+.di{display:flex;align-items:flex-start;gap:8px;background:#f9fafb;border-radius:6px;padding:8px 12px;font-size:13px}
+.di::before{content:"✓";color:#C04700;font-weight:700;flex-shrink:0;margin-top:1px}
+.bl{list-style:none;margin:1rem 0 1.5rem}
+.bl li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.bl li:last-child{border-bottom:none}
+.sn{background:#C04700;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.sb h3{margin:0 0 2px;font-size:14px}.sb p{margin:0;font-size:13px;color:#666}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:600px){body{padding:1.25rem 1rem}.deia{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<h1>Early Years Interventions MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 6 · Announced 4 June 2026</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><span class="stat-n">32%</span><span class="stat-l">of children start school without basic skills</span></div>
+  <div class="stat"><span class="stat-n">48%</span><span class="stat-l">of FSM-eligible children start school not ready</span></div>
+  <div class="stat"><span class="stat-n">75%</span><span class="stat-l">good level of development target by 2028 (from 67.7%)</span></div>
+</div>
+
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP server enabling AI assistants to help parents, carers, and early years professionals navigate support for young children's development — from understanding developmental milestones and accessing speech therapy, to navigating SEND assessments and finding family hubs. It aligns with the NDL Early Years Kickstarter (announced 4 June 2026) and the government's goal of ensuring every child gets the best start in life. Pilots running in Leeds, London Borough of Hammersmith & Fulham, and Liverpool City Region.</p>
+</div>
+
+<h2>Problem statement</h2>
+<p>Health visiting, early education, and childcare operate in silos with paper-based processes. A health visitor might notice a developmental concern. An early years practitioner might observe the same child struggling. But if those observations sit on separate pieces of paper in separate systems, no one joins the dots — and the child falls through the gap.</p>
+<p>The burden of navigating this fragmentation falls on parents — often at their most vulnerable, sleep-deprived, and anxious. The parents least equipped to navigate complexity are disproportionately those whose children face the greatest developmental risk: low-income families, single parents, families where English is not the first language, and families in areas with depleted early help infrastructure.</p>
+<p>The NDL Early Years Kickstarter explores how to connect health visiting, education and childcare provider data. This MCP addresses the citizen-facing layer: helping parents understand what support exists, how to access it, and what their and their child's rights are.</p>
+
+<h2>Target users</h2>
+<div class="pg">
+  <div class="pc">
+    <div class="pn">Kezia, 27</div><div class="ps">Single mum · Leeds (NDL pilot area)</div>
+    <div class="pb">Her 3-year-old has possible speech delay. Her health visitor flagged a concern at the 2-year check but Kezia doesn't know how to request a SALT referral, what an EHCP is, what SEND Support means, or what she's entitled to. She's overwhelmed and worried she'll do something wrong.</div>
+    <div class="tags"><span class="tag tg">Single parent</span><span class="tag tg">Speech delay</span><span class="tag ta">SEND system unknown</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Ameer, 35</div><div class="ps">Father of twins · Liverpool (NDL pilot area)</div>
+    <div class="pb">One of his twins, now 2, is showing signs that may indicate autism. He's been referred to the community paediatrics waiting list (currently 18 months in his area). Doesn't know about Early Support pathways, what the SEND local offer is, or what he can ask for while waiting.</div>
+    <div class="tags"><span class="tag tg">Possible autism</span><span class="tag ta">18-month CAMHS wait</span><span class="tag tg">Early Support unaware</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Gloria, 47</div><div class="ps">Registered childminder · Hammersmith (NDL pilot area)</div>
+    <div class="pb">Cares for 5 children including one whose development concerns her. She suspects a speech and communication need but doesn't know her professional reporting obligations, how to raise concerns with parents sensitively, or how to support them in accessing assessment without overstepping her role.</div>
+    <div class="tags"><span class="tag tg">Early years professional</span><span class="tag tg">Safeguarding adjacent</span><span class="tag ta">Professional guidance needed</span></div>
+  </div>
+</div>
+
+<h2>MCP tool specifications</h2>
+<p>This MCP serves two distinct user types — parents/carers and early years professionals — and the tools must be calibrated accordingly. Tools serving parents should never make parents feel their child is being assessed or judged. Tools serving professionals must maintain clear boundaries around what constitutes a safeguarding concern vs. a developmental referral.</p>
+
+<div class="tool hl">
+  <div class="th"><span class="tc">eyfs_check_development</span><span class="tag tg">Build first</span></div>
+  <div class="td">Returns age-appropriate developmental milestones with clear, compassionate guidance on when to seek support. Uses NHS and DfE EYFS guidance. Not a diagnostic tool — helps parents understand the difference between "typical range" and "worth talking to a professional about." Foundational to all other tools.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsCheckDevelopmentInput</span> {
+  child_age_months:   <span class="ty">number</span>;         <span class="cm">// age in months — developmental stage more useful than years</span>
+  concern_area?:      <span class="ty">string</span>[];        <span class="cm">// "speech"|"motor"|"social"|"play"|"attention"|"sleep"</span>
+  reading_level?:     <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:          <span class="ty">string</span>;
+  user_type?:         <span class="st">'parent'</span> | <span class="st">'professional'</span>;   <span class="cm">// affects tone and depth</span>
+}
+<span class="kw">interface</span> <span class="ty">EyfsCheckDevelopmentOutput</span> {
+  milestones:         <span class="ty">Milestone</span>[];      <span class="cm">// typical range for this age in the concern area</span>
+  in_typical_range:   <span class="ty">boolean</span>;          <span class="cm">// based on described concerns — NOT a diagnosis</span>
+  when_to_seek_help:  <span class="ty">string</span>;
+  reassuring_context: <span class="ty">string</span>;          <span class="cm">// children develop at different rates; tone calibrated</span>
+  next_steps:         <span class="ty">string</span>[];
+  disclaimer:         <span class="ty">string</span>;          <span class="cm">// "This is not a diagnosis. Contact your health visitor or GP if concerned."</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">eyfs_find_support</span></div>
+  <div class="td">Finds local support services by postcode — Best Start Family Hubs, speech and language therapy self-referral pathways, health visitor contacts, portage services, and children's centres. The most practically impactful tool for a parent who knows something is wrong but doesn't know where to go.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsFindSupportInput</span> {
+  postcode:           <span class="ty">string</span>;
+  support_type?:      <span class="ty">SupportType</span>[];   <span class="cm">// "speech_language"|"family_hub"|"portage"|"parenting"|"health_visitor"</span>
+  child_age_months?:  <span class="ty">number</span>;
+  language?:          <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">EarlyYearsService</span> {
+  name:               <span class="ty">string</span>;
+  type:               <span class="ty">SupportType</span>;
+  description:        <span class="ty">string</span>;
+  address?:           <span class="ty">string</span>;
+  contact:            <span class="ty">ContactInfo</span>;
+  self_referral:      <span class="ty">boolean</span>;         <span class="cm">// can parent refer directly, or needs professional referral?</span>
+  wait_time_est?:     <span class="ty">string</span>;
+  cost:               <span class="st">'free'</span> | <span class="st">'means_tested'</span> | <span class="st">'paid'</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">eyfs_navigate_send</span></div>
+  <div class="td">Step-by-step guide to the SEND (Special Educational Needs and Disabilities) system for young children — from initial concern to EHCP. Explains the difference between SEND Support (school/setting action) and an EHCP. Covers the SEND Code of Practice rights and timelines.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsNavigateSendInput</span> {
+  stage:            <span class="st">'just_concerned'</span> | <span class="st">'referred'</span> | <span class="st">'assessment'</span> | <span class="st">'send_support'</span> | <span class="st">'ehcp_request'</span>;
+  child_age_months: <span class="ty">number</span>;
+  setting_type?:    <span class="st">'home'</span> | <span class="st">'nursery'</span> | <span class="st">'childminder'</span> | <span class="st">'school'</span>;
+  local_area?:      <span class="ty">string</span>;          <span class="cm">// postcode — SEND local offer varies by council</span>
+  language?:        <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">EyfsNavigateSendOutput</span> {
+  current_stage_explained: <span class="ty">string</span>;
+  next_steps:              <span class="ty">SENDStep</span>[];
+  parents_rights:          <span class="ty">string</span>[];  <span class="cm">// SEND Code of Practice rights</span>
+  timelines:               <span class="ty">Timeline</span>[];
+  local_send_offer_url?:   <span class="ty">string</span>;
+  parent_carer_forum:      <span class="ty">Organisation</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">eyfs_explain_entitlements</span></div>
+  <div class="td">Explains what parents and children are entitled to — 15/30 hours funded childcare, Healthy Start vouchers, Early Help assessment, Pupil Premium for disadvantaged 3 and 4-year-olds, and Disability Living Allowance for children. Many entitlements are unclaimed.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsExplainEntitlementsInput</span> {
+  entitlement_name?: <span class="ty">string</span>;        <span class="cm">// specific entitlement, or omit for full overview</span>
+  child_age_months:  <span class="ty">number</span>;
+  family_context?:   <span class="ty">FamilyContext</span>;  <span class="cm">// work status, income band, housing — affects eligibility</span>
+  reading_level?:    <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:         <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">EyfsExplainEntitlementsOutput</span> {
+  entitlements:      <span class="ty">Entitlement</span>[];
+  gaps_identified:   <span class="ty">string</span>[];       <span class="cm">// entitlements not currently being used</span>
+  application_steps: <span class="ty">ApplicationStep</span>[];
+  further_info_url:  <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">eyfs_find_professional_guidance</span></div>
+  <div class="td">For early years professionals (childminders, nursery workers, health visitors): guidance on professional reporting obligations, how to raise developmental concerns with parents constructively, safeguarding referral pathways, and the Prevent duty in early years settings.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsFindProfessionalGuidanceInput</span> {
+  professional_role:  <span class="ty">string</span>;        <span class="cm">// "childminder"|"nursery_worker"|"health_visitor"|"SENCO"</span>
+  guidance_type:      <span class="ty">string</span>;        <span class="cm">// "reporting_concern"|"talking_to_parents"|"safeguarding"|"SEND_referral"</span>
+  setting_type?:      <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">EyfsFindProfessionalGuidanceOutput</span> {
+  obligations:        <span class="ty">string</span>[];       <span class="cm">// legal and regulatory obligations</span>
+  guidance_steps:     <span class="ty">string</span>[];
+  how_to_approach:    <span class="ty">string</span>;        <span class="cm">// how to raise concerns with parents sensitively</span>
+  referral_pathways:  <span class="ty">ReferralPath</span>[];
+  regulatory_sources: <span class="ty">string</span>[];      <span class="cm">// EYFS statutory framework, Keeping Children Safe etc.</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">eyfs_connect_parents</span></div>
+  <div class="td">Finds parenting courses, SEND parent-carer forums, peer support groups, and family learning opportunities by postcode. Social connection and peer support are themselves protective factors for children's development — this tool serves the parent's wellbeing as well as the child's.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">EyfsConnectParentsInput</span> {
+  postcode:           <span class="ty">string</span>;
+  support_type?:      <span class="st">'parenting_course'</span> | <span class="st">'send_forum'</span> | <span class="st">'peer_support'</span> | <span class="st">'family_learning'</span> | <span class="st">'all'</span>;
+  language?:          <span class="ty">string</span>;
+  child_age_months?:  <span class="ty">number</span>;
+}
+<span class="kw">interface</span> <span class="ty">EyfsConnectParentsOutput</span> {
+  groups:             <span class="ty">ParentGroup</span>[];
+  online_options:     <span class="ty">OnlineResource</span>[];
+  send_parent_forum:  <span class="ty">Organisation</span>;   <span class="cm">// always returned — critical for SEND navigating families</span>
+  nct_contact?:       <span class="ty">ContactInfo</span>;
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+<div class="dg">
+  <div class="dc main"><h3 style="color:#C04700">DfE EYFS statutory framework</h3><p>GOV.UK, free, public. The statutory framework all early years settings must follow — primary source for professional guidance and developmental expectations.</p></div>
+  <div class="dc main"><h3 style="color:#C04700">NHS child development milestones</h3><p>NHS.uk public guidance on developmental milestones by age. Clear, evidence-based. Core to eyfs_check_development — authoritative and already in accessible language.</p></div>
+  <div class="dc main"><h3 style="color:#C04700">SEND Code of Practice</h3><p>Statutory guidance (GOV.UK). Covers rights, timelines, and obligations for SEND support and EHCPs. Core to eyfs_navigate_send — legally authoritative.</p></div>
+  <div class="dc main"><h3 style="color:#C04700">Local authority SEND local offers</h3><p>Every council must publish a SEND local offer (legal requirement). Highly variable quality. Web search required per postcode. Core to local service finding.</p></div>
+  <div class="dc fut"><h3 style="color:#C04700">NDL early years linked data <span class="tag tg" style="font-size:10px">Phase 2+</span></h3><p>The NDL Early Years Kickstarter connecting health visiting, education and childcare provider data. When available, enables proactive identification of children needing support — the core innovation of this kickstarter.</p></div>
+</div>
+
+<h2>DEIA requirements</h2>
+<div class="deia">
+  <div class="di">Multi-language — FSM-eligible families disproportionately include EAL households; Welsh, Urdu, Somali, Romanian, Arabic as minimum</div>
+  <div class="di">Never diagnostic — explicitly clear that tools support navigation, not assessment of children</div>
+  <div class="di">Parent wellbeing aware — tone that doesn't increase parental anxiety unnecessarily</div>
+  <div class="di">WCAG 2.2 AA throughout — accessible to parents with their own disabilities</div>
+  <div class="di">Mobile-first — new parents access information on phones, often one-handed</div>
+  <div class="di">No login for milestones and entitlement information — consent-first for personal data</div>
+  <div class="di">Culturally sensitive — attitudes to child development, disability and professional support vary</div>
+  <div class="di">Professional/parent mode — content calibrated for the user type from the start</div>
+  <div class="di">Plain English — EHCP, SEND, EHNA, portage all explained; FK Grade 6 for parent-facing</div>
+  <div class="di">GDS service standard compliant — built around real parent/professional journeys</div>
+  <div class="di">Safeguarding aware — professional tools know where referral vs. support is appropriate</div>
+  <div class="di">Co-designed with families — SEND parent-carer forums, health visitors, childminders from alpha</div>
+</div>
+
+<h2>Recommended build order</h2>
+<ol class="bl">
+  <li><div class="sn">1</div><div class="sb"><h3><code>eyfs_check_development</code></h3><p>Simplest to build. NHS milestone guidance from GOV.UK/NHS.uk — public, authoritative, already in accessible language. The tool that most parents need first and that builds trust for the rest of the journey. Critical: tone must be non-anxious, non-diagnostic.</p></div></li>
+  <li><div class="sn">2</div><div class="sb"><h3><code>eyfs_find_support</code></h3><p>Converts milestone awareness into action. Best Start Family Hubs locator plus SALT self-referral pathways. Web search for local services. High immediate impact for families in the three NDL pilot areas (Leeds, Hammersmith, Liverpool).</p></div></li>
+  <li><div class="sn">3</div><div class="sb"><h3><code>eyfs_explain_entitlements</code></h3><p>GOV.UK Content API for 15/30 hours childcare, Healthy Start, Pupil Premium. Many entitlements go unclaimed — this is a gap with significant financial value to families.</p></div></li>
+  <li><div class="sn">4</div><div class="sb"><h3><code>eyfs_navigate_send</code></h3><p>Requires encoding SEND Code of Practice timelines and local offer data. High complexity but highest impact for families currently in the SEND system or waiting for assessment.</p></div></li>
+  <li><div class="sn">5</div><div class="sb"><h3><code>eyfs_find_professional_guidance</code></h3><p>Builds on statutory framework and safeguarding guidance. Serves Gloria and the 300,000+ early years professionals in England. Different user type with different liability considerations.</p></div></li>
+  <li><div class="sn">6</div><div class="sb"><h3><code>eyfs_connect_parents</code></h3><p>Requires local parenting group directory — most complex to keep current. Build last but ensure SEND parent-carer forum fallback is present from day one (every council must publish this).</p></div></li>
+</ol>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>The NDL Early Years Kickstarter was just announced (4 June 2026). Who are the DSIT and DfE leads on this project — we should make contact immediately given the lab's positioning.</li>
+  <li>The three pilot LAs (Leeds, Hammersmith & Fulham, Liverpool City Region) are starting user research now — can the lab embed alongside this research to shape the citizen-facing tool from the outset?</li>
+  <li>SEND waiting lists of 12-18 months for autism assessment are a national scandal. Does this tool need to address what to do while waiting, not just how to access the process?</li>
+  <li>The professional guidance tool (for childminders and nursery workers) has different liability considerations than the parent tools — should these be scoped as separate MCP servers?</li>
+  <li>Co-design recommendation: SEND parent-carer forums (National Network of Parent Carer Forums), health visitors, childminders, Family Hubs Network, and IPSEA (legal rights for SEND families).</li>
+</ol>
+
+<footer>Early Years Interventions MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment</footer>
+</body></html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adult Social Care MCP — Scope & Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff;max-width:900px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#1D9E75;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #E1F5EE}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.25rem 0 .5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#E1F5EE;padding:1px 5px;border-radius:4px;color:#085041}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#E1F5EE;color:#085041}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#f0fdf8;border-left:4px solid #1D9E75;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.pc{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #1D9E75}
+.pn{font-weight:700;font-size:15px;margin-bottom:2px}.ps{font-size:12px;color:#888;margin-bottom:8px}
+.pb{font-size:13px;color:#444;line-height:1.5;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tc{font-family:'SF Mono','Cascadia Code',monospace;font-size:14px;font-weight:600;color:#085041;background:#E1F5EE;padding:4px 12px;border-radius:6px;display:inline-block}
+.th{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tool{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.tool.hl{border-left:4px solid #1D9E75}
+.td{font-size:14px;color:#444;margin-bottom:1rem;line-height:1.5}
+.cb{background:#f0fdf8;border:1px solid #c6e9db;border-radius:8px;padding:1rem 1.25rem;font-family:'SF Mono','Cascadia Code',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.kw{color:#047857}.ty{color:#1d4ed8}.st{color:#0F6E56}.cm{color:#9ca3af;font-style:italic}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.dc{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.dc.main{border-left:4px solid #1D9E75}.dc.fut{border-left:4px dashed #1D9E75}
+.dc h3{font-size:14px;margin-bottom:6px}.dc p{margin:0;color:#555;line-height:1.5}
+.deia{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0 1.5rem}
+.di{display:flex;align-items:flex-start;gap:8px;background:#f9fafb;border-radius:6px;padding:8px 12px;font-size:13px}
+.di::before{content:"✓";color:#1D9E75;font-weight:700;flex-shrink:0;margin-top:1px}
+.bl{list-style:none;margin:1rem 0 1.5rem}
+.bl li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.bl li:last-child{border-bottom:none}
+.sn{background:#1D9E75;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.sb h3{margin:0 0 2px;font-size:14px}.sb p{margin:0;font-size:13px;color:#666}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:600px){body{padding:1.25rem 1rem}.deia{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Adult Social Care MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 3</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP server enabling AI assistants to help people navigate adult social care — from understanding their Care Act rights and requesting a needs assessment, to exploring funding options and finding local services. It aligns with the NDL Kickstarter on adult social care data and addresses the citizen-facing layer of a system that is deeply fragmented across 150+ local authorities.</p>
+</div>
+
+<h2>Problem statement</h2>
+<p>Adult social care is one of the most complex and least navigable parts of the UK welfare system. Data is fragmented across 152 upper-tier councils, each operating differently. Assessment waiting times in some areas exceed two years. People eligible for the Priority Services Register, direct payments, or NHS Continuing Healthcare often never claim them because they don't know they exist or don't understand their rights under the Care Act 2014.</p>
+<p>The NDL Kickstarter targets better-connected care data to enable smarter planning. This MCP targets the person trying to understand what they or a loved one are entitled to — before, during and after a care needs assessment.</p>
+
+<h2>Target users</h2>
+<div class="pg">
+  <div class="pc">
+    <div class="pn">Dorothy, 79</div><div class="ps">Rural Somerset</div>
+    <div class="pb">Has been told by her local council to "call back in six months" after requesting a care needs assessment. Her daughter lives in London and can't help regularly. Dorothy doesn't know she has a legal right to an assessment within a reasonable time, or that her daughter's needs as an informal carer should also be assessed.</div>
+    <div class="tags"><span class="tag tg">Elderly</span><span class="tag tg">Rural</span><span class="tag ta">Care Act rights unknown</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Leon, 51</div><div class="ps">Autistic · Manchester</div>
+    <div class="pb">Has been waiting 18 months for a care needs assessment that still hasn't happened. Doesn't know what a direct payment is, that his wait may be unlawful, or that he could self-fund an independent social worker to advocate for him. The council's website assumes knowledge he doesn't have.</div>
+    <div class="tags"><span class="tag tg">Autism</span><span class="tag tg">Direct payments unknown</span><span class="tag ta">Unlawful delay</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Meera, 69</div><div class="ps">Early dementia · Leicester</div>
+    <div class="pb">Bangladeshi origin, early-stage dementia. Her family believes the council is the only option for funding. They don't know she may qualify for NHS Continuing Healthcare — fully funded care — worth tens of thousands of pounds annually, and that the threshold is different from council eligibility.</div>
+    <div class="tags"><span class="tag tg">Dementia</span><span class="tag tg">NHS CHC unknown</span><span class="tag ta">High financial stakes</span></div>
+  </div>
+</div>
+
+<h2>MCP tool specifications</h2>
+
+<div class="tool hl">
+  <div class="th"><span class="tc">care_explain_rights</span><span class="tag tg">Build first</span></div>
+  <div class="td">Returns a plain-language explanation of a person's rights under the Care Act 2014 for a given situation. This is the foundational tool — most users don't know their rights exist before they can navigate the system. Uses GOV.UK statutory guidance.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareExplainRightsInput</span> {
+  situation:       <span class="ty">string</span>;         <span class="cm">// "needs assessment" | "waiting too long" | "carer's assessment" | "appeal"</span>
+  council_area?:   <span class="ty">string</span>;         <span class="cm">// postcode or council name for local context</span>
+  reading_level?:  <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:       <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">CareExplainRightsOutput</span> {
+  rights:              <span class="ty">Right</span>[];       <span class="cm">// plain English description of each right</span>
+  legal_basis:         <span class="ty">string</span>;       <span class="cm">// "Care Act 2014, Section X"</span>
+  council_must_do:     <span class="ty">string</span>[];
+  timelines:           <span class="ty">Timeline</span>[];   <span class="cm">// what must happen by when</span>
+  if_not_followed:     <span class="ty">string</span>;       <span class="cm">// complaint and escalation path</span>
+  further_info_url:    <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">care_check_eligibility</span></div>
+  <div class="td">Assesses likely eligibility for council-funded care based on Care Act wellbeing outcomes framework. Returns a plain English assessment and recommended next step. Not a formal assessment — helps people understand before they enter the system.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareCheckEligibilityInput</span> {
+  needs_description:   <span class="ty">string</span>;       <span class="cm">// free text description of needs and daily challenges</span>
+  household_situation: <span class="ty">string</span>;       <span class="cm">// living alone, with family, in residential care etc.</span>
+  current_support:     <span class="ty">string</span>[];     <span class="cm">// existing informal and formal support</span>
+  financial_situation?: <span class="ty">string</span>;      <span class="cm">// asset level if known — affects means testing</span>
+}
+<span class="kw">interface</span> <span class="ty">CareCheckEligibilityOutput</span> {
+  likely_eligible:     <span class="ty">boolean</span>;
+  eligible_domains:    <span class="ty">WellbeingDomain</span>[];  <span class="cm">// Care Act 2014 S.1 domains</span>
+  confidence_level:    <span class="st">'high'</span> | <span class="st">'medium'</span> | <span class="st">'low'</span>;
+  recommended_action:  <span class="ty">string</span>;
+  funding_pathway:     <span class="st">'council'</span> | <span class="st">'nhs_chc'</span> | <span class="st">'self_fund'</span> | <span class="st">'mixed'</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">care_navigate_assessment</span></div>
+  <div class="td">Step-by-step preparation guide for requesting and participating in a care needs assessment. Helps people know what to expect, what to say, and how to ensure their needs are properly captured — particularly important for those who may minimise difficulties or struggle to articulate needs under pressure.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareNavigateAssessmentInput</span> {
+  assessment_type:   <span class="st">'needs'</span> | <span class="st">'carers'</span> | <span class="st">'young_persons'</span> | <span class="st">'mental_capacity'</span>;
+  conditions?:       <span class="ty">string</span>[];
+  council_area?:     <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">CareNavigateAssessmentOutput</span> {
+  how_to_request:      <span class="ty">string</span>;
+  what_to_expect:      <span class="ty">AssessmentStage</span>[];
+  preparation_tips:    <span class="ty">string</span>[];
+  what_to_say:         <span class="ty">string</span>[];       <span class="cm">// example phrases for common questions</span>
+  documents_helpful:   <span class="ty">string</span>[];
+  after_assessment:    <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">care_explore_funding</span></div>
+  <div class="td">Explains the different funding pathways for adult social care — NHS Continuing Healthcare, council-funded care, direct payments, independent living funds, and self-funding — and helps navigate between them. The NHS CHC path is frequently missed and worth significant money to eligible individuals.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareExploreFundingInput</span> {
+  care_type:           <span class="ty">string</span>;        <span class="cm">// "residential" | "domiciliary" | "respite" | "day_care"</span>
+  conditions?:         <span class="ty">string</span>[];
+  approximate_assets?: <span class="ty">string</span>;       <span class="cm">// "under_23k" | "23k_to_100k" | "over_100k" — rough banding</span>
+}
+<span class="kw">interface</span> <span class="ty">CareExploreFundingOutput</span> {
+  funding_options:     <span class="ty">FundingOption</span>[];
+  nhs_chc_eligible:    <span class="ty">boolean</span>;
+  nhs_chc_pathway:     <span class="ty">string</span>;        <span class="cm">// how to request a CHC checklist</span>
+  direct_payments:     <span class="ty">string</span>;        <span class="cm">// plain English explanation if applicable</span>
+  financial_assessment: <span class="ty">string</span>;      <span class="cm">// what the means test involves</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">care_find_services</span></div>
+  <div class="td">Finds CQC-registered local care providers, day centres, direct payment support organisations, and respite services by postcode. Uses the CQC Provider API — one of the best public APIs in the UK public sector.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareFindServicesInput</span> {
+  postcode:            <span class="ty">string</span>;
+  service_type:        <span class="ty">CareServiceType</span>; <span class="cm">// "domiciliary"|"residential"|"day_care"|"respite"|"supported_living"</span>
+  conditions?:         <span class="ty">string</span>[];       <span class="cm">// filters providers with relevant specialisms</span>
+  rating_min?:         <span class="ty">number</span>;         <span class="cm">// CQC rating filter: 1-4</span>
+  radius_km?:          <span class="ty">number</span>;
+}
+<span class="kw">interface</span> <span class="ty">CareProvider</span> {
+  name:                <span class="ty">string</span>;
+  cqc_rating:          <span class="ty">string</span>;         <span class="cm">// "Outstanding"|"Good"|"Requires improvement"|"Inadequate"</span>
+  specialisms:         <span class="ty">string</span>[];
+  address:             <span class="ty">string</span>;
+  contact:             <span class="ty">string</span>;
+  last_inspection:     <span class="ty">string</span>;
+  cqc_report_url:      <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">care_find_advocacy</span></div>
+  <div class="td">Routes to the most appropriate advocacy service — Independent Mental Capacity Advocate (IMCA), Care Act advocate, Age UK, local carers centres, CQC complaints pathway. Always includes a fallback to Age UK national helpline.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">CareFindAdvocacyInput</span> {
+  postcode:          <span class="ty">string</span>;
+  need_type:         <span class="ty">AdvocacyNeedType</span>; <span class="cm">// "assessment_support"|"complaint"|"carer_support"|"legal_rights"</span>
+  language?:         <span class="ty">string</span>;
+  mental_capacity?:  <span class="ty">boolean</span>;          <span class="cm">// triggers IMCA pathway</span>
+}
+<span class="kw">interface</span> <span class="ty">AdvocacyService</span> {
+  name:              <span class="ty">string</span>;
+  type:              <span class="ty">string</span>;           <span class="cm">// "IMCA"|"Care Act advocate"|"voluntary sector"</span>
+  description:       <span class="ty">string</span>;
+  contact_methods:   <span class="ty">ContactMethod</span>[];
+  languages:         <span class="ty">string</span>[];
+  is_free:           <span class="ty">boolean</span>;
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+<div class="dg">
+  <div class="dc main"><h3 style="color:#1D9E75">GOV.UK Care Act guidance</h3><p>Statutory guidance (public, free). Primary source for care_explain_rights and care_navigate_assessment — the legal framework underpinning everything.</p></div>
+  <div class="dc main"><h3 style="color:#1D9E75">CQC Provider API <span class="tag tg" style="font-size:10px">Best public API</span></h3><p>Free, well-documented, RESTful. Returns registered providers with ratings, inspection dates, specialisms and location. Core data for care_find_services.</p></div>
+  <div class="dc main"><h3 style="color:#1D9E75">NHS England guidance</h3><p>NHS Continuing Healthcare framework (public). Critical for care_explore_funding — the NHS CHC pathway is systematically underused by eligible individuals.</p></div>
+  <div class="dc main"><h3 style="color:#1D9E75">Local authority websites</h3><p>Highly variable — each of 152 councils operates differently. Web search required. Used for local direct payment rates, waiting time information, and local charging policies.</p></div>
+  <div class="dc fut"><h3 style="color:#1D9E75">NDL linked care data <span class="tag tg" style="font-size:10px">Phase 2+</span></h3><p>Connected social care datasets across councils — the core of the NDL adult social care kickstarter. Enables better planning and proactive identification of unmet need.</p></div>
+</div>
+
+<h2>DEIA requirements</h2>
+<div class="deia">
+  <div class="di">Multi-language — Welsh (statutory), Urdu, Punjabi, Bengali, Somali, Gujarati as minimum</div>
+  <div class="di">WCAG 2.2 AA — with additional cognitive accessibility for dementia and LD users</div>
+  <div class="di">Proxy access — designed for family members and advocates acting on behalf of the person</div>
+  <div class="di">Mobile-first — many informal carers access services on mobile while caring</div>
+  <div class="di">Plain English — FK Grade 6 or below; jargon-free (no "wellbeing outcomes" unexplained)</div>
+  <div class="di">No login required for rights guidance — consent-first for personal data</div>
+  <div class="di">GDS service standard — all 14 points assessed, with emphasis on #1 (user need) and #5 (iterations)</div>
+  <div class="di">Culturally sensitive — family structures and attitudes to care vary significantly</div>
+  <div class="di">Rural accessibility — rural populations face compounded access barriers; location-aware</div>
+  <div class="di">Always routes to a human — including out-of-hours emergency care contacts</div>
+  <div class="di">Signposts CQC ratings clearly — helps people make informed choices about providers</div>
+  <div class="di">Co-designed with communities — people with lived experience involved from alpha</div>
+</div>
+
+<h2>Recommended build order</h2>
+<ol class="bl">
+  <li><div class="sn">1</div><div class="sb"><h3><code>care_explain_rights</code></h3><p>Simplest to build, highest foundational value. GOV.UK Care Act statutory guidance via Content API. Build first — rights knowledge is the prerequisite for everything else.</p></div></li>
+  <li><div class="sn">2</div><div class="sb"><h3><code>care_find_services</code></h3><p>CQC Provider API is free, excellent and well-documented. Can be built independently of the rights/eligibility logic. Shows tangible results quickly.</p></div></li>
+  <li><div class="sn">3</div><div class="sb"><h3><code>care_check_eligibility</code></h3><p>Requires implementing Care Act wellbeing outcome domains as structured TypeScript data. Complex but high value — many people are eligible and don't know it.</p></div></li>
+  <li><div class="sn">4</div><div class="sb"><h3><code>care_navigate_assessment</code></h3><p>Builds on rights and eligibility tools. Content primarily from GOV.UK guidance plus synthesis of what assessment conversations involve.</p></div></li>
+  <li><div class="sn">5</div><div class="sb"><h3><code>care_explore_funding</code></h3><p>NHS CHC pathway is complex but highest financial value. Requires encoding CHC decision support tool criteria and funding rules.</p></div></li>
+  <li><div class="sn">6</div><div class="sb"><h3><code>care_find_advocacy</code></h3><p>Requires IMCA/Care Act advocate directory. Build last but ensure a hardcoded fallback to Age UK (0800 678 1602) is present from day one.</p></div></li>
+</ol>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>Does the NDL adult social care kickstarter have a specific hypothesis about which data connections would most improve care planning — and who is leading it?</li>
+  <li>Is there a model for how local authority care data will eventually be accessible via NDL, given the 152-council fragmentation problem?</li>
+  <li>CQC has an excellent public API — are there other public sector bodies in the social care space with comparable APIs we should be aware of?</li>
+  <li>The NHS CHC pathway is systematically underused — is there existing DH/NHSE data on how many eligible people don't receive it?</li>
+  <li>Who should co-design this with us? Recommend: Disability Rights UK, Age UK, Carers UK, ADASS, and at least two local authority social care teams.</li>
+</ol>
+
+<footer>Adult Social Care MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment</footer>
+</body></html>

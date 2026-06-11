@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theory of Change — NDL PubSec MCP Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.75;color:#1a1a1a;background:#fff;max-width:960px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#0F6E56;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #E1F5EE}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.5rem 0 .5rem}
+h4{font-size:14px;font-weight:600;color:#1a1a1a;margin:1rem 0 .25rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#f0fdf8;padding:1px 5px;border-radius:4px;color:#085041}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2.5rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#E1F5EE;color:#085041}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#f0fdf8;border-left:4px solid #0F6E56;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.warn{background:#FFF8EC;border-left:4px solid #BA7517;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0}
+.warn p{margin:0;font-size:14px}
+.toc-chain{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:1.5rem 0}
+.toc-stage{border:1px solid #e5e7eb;padding:1rem;position:relative;background:#fff}
+.toc-stage:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:18px;color:#0F6E56;z-index:1;background:#fff;padding:0 2px}
+.toc-stage h4{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#0F6E56;margin:0 0 8px}
+.toc-stage ul{font-size:12px;color:#444;margin-left:1rem}
+.toc-stage li{margin-bottom:3px}
+.chain-section{margin:1.5rem 0 2rem}
+.chain-block{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;margin-bottom:1rem;border-left:4px solid #0F6E56}
+.chain-block h3{margin:0 0 .5rem;font-size:15px;color:#0F6E56}
+.chain-block p{font-size:14px;margin-bottom:.5rem}
+.chain-block p:last-child{margin:0}
+.evidence-row{font-size:12px;color:#888;margin-top:.5rem;padding-top:.5rem;border-top:0.5px solid #f0f0f0;font-style:italic}
+.cascade-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.cascade{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;font-size:13px}
+.cascade-num{font-size:24px;font-weight:700;color:#0F6E56;display:block;margin-bottom:4px}
+.cascade-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#0F6E56;display:block;margin-bottom:8px}
+.cascade p{color:#444;margin:0;line-height:1.5}
+.assump-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.assump{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.assump.hold{border-left:4px solid #0F6E56}.assump.risk{border-left:4px solid #BA7517}.assump.unknown{border-left:4px solid #9ca3af}
+.assump h4{font-size:13px;margin:0 0 5px}
+.assump p{margin:0;color:#555;line-height:1.5}
+.risk-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:13px}
+.risk-table th{background:#f9fafb;text-align:left;padding:8px 12px;font-weight:600;border-bottom:2px solid #e5e7eb;font-size:12px}
+.risk-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.risk-h{color:#991B1B;font-weight:600}.risk-m{color:#854D0E;font-weight:600}.risk-l{color:#166534;font-weight:600}
+.measure-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1rem 0 1.5rem;font-size:13px}
+.measure{border:1px solid #e5e7eb;border-radius:8px;padding:1rem}
+.measure h4{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#555;margin:0 0 8px}
+.measure p{margin:0 0 4px;color:#444;line-height:1.5;font-size:12px}
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.mission{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.mission h4{font-size:13px;margin:0 0 5px;color:#185FA5}
+.mission p{margin:0;color:#555;line-height:1.5}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:700px){body{padding:1.25rem 1rem}.cascade-grid,.assump-grid,.measure-grid,.mission-grid{grid-template-columns:1fr}.toc-chain{grid-template-columns:1fr}.toc-stage::after{display:none}}
+</style>
+</head>
+<body>
+
+<h1>Theory of Change</h1>
+<p class="subtitle">NDL PubSec MCP Platform — Causal Chain, Evidence Base, Assumptions, Risks and Measurement Framework</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab · DSIT</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+
+<div class="callout">
+  <p><strong>Programme theory.</strong> Citizens in the UK systematically fail to access support they are legally entitled to — not because the support doesn't exist, but because the information architecture of government is built around institutions rather than people. An AI-assisted MCP platform, built on authoritative public data, co-designed with vulnerable communities, and embedded in the citizen-facing layer of GOV.UK, can eliminate the information asymmetry that currently condemns millions of people to unclaimed entitlements, missed legal deadlines, and preventable crises. This change is measurable, reversible if we get it wrong, and independently verifiable.</p>
+</div>
+
+<h2>1. The causal chain</h2>
+
+<div class="toc-chain">
+  <div class="toc-stage" style="background:#E1F5EE;border-color:#9FE1CB">
+    <h4>Inputs</h4>
+    <ul>
+      <li>DSIT mandate</li>
+      <li>NDL programme</li>
+      <li>GOV.UK Chat</li>
+      <li>ADR UK partnership</li>
+      <li>Lab team capacity</li>
+      <li>Public APIs</li>
+      <li>Claude AI platform</li>
+    </ul>
+  </div>
+  <div class="toc-stage">
+    <h4>Activities</h4>
+    <ul>
+      <li>Build shared platform</li>
+      <li>Build 6 domain MCPs</li>
+      <li>User research (all phases)</li>
+      <li>Co-design with communities</li>
+      <li>Academic partnerships</li>
+      <li>ARI engagement</li>
+    </ul>
+  </div>
+  <div class="toc-stage">
+    <h4>Outputs</h4>
+    <ul>
+      <li>10 shared modules</li>
+      <li>36 domain tools</li>
+      <li>Measurement infrastructure</li>
+      <li>Research dataset</li>
+      <li>ARI evidence</li>
+      <li>GOV.UK Chat integration</li>
+    </ul>
+  </div>
+  <div class="toc-stage">
+    <h4>Outcomes</h4>
+    <ul>
+      <li>More people claim entitlements</li>
+      <li>Fewer missed legal deadlines</li>
+      <li>Earlier SEND identification</li>
+      <li>Higher flood alert sign-ups</li>
+      <li>Reduced care waiting times</li>
+    </ul>
+  </div>
+  <div class="toc-stage" style="background:#f0fdf8;border-color:#9FE1CB">
+    <h4>Impact</h4>
+    <ul>
+      <li>Reduced poverty</li>
+      <li>Better health outcomes</li>
+      <li>Higher school readiness</li>
+      <li>More equitable justice access</li>
+      <li>Better climate adaptation</li>
+    </ul>
+  </div>
+</div>
+
+<h2>2. Inputs — what makes this possible</h2>
+
+<div class="chain-section">
+
+  <div class="chain-block">
+    <h3>The information asymmetry problem is well evidenced and stable</h3>
+    <p>The fundamental problem this platform addresses — that citizens don't access support they're entitled to, not because it doesn't exist but because the information architecture fails them — is robustly documented across all six domains. It is not a hypothesis; it is a well-evidenced structural failure.</p>
+    <p>4.5 million households are fuel poor in England. 37% of legal problems go unresolved. 400,000+ people are waiting for social care assessments. 32% of children start school without basic skills. 5.2 million properties are at flood risk. These are not data gaps — they are data that has been systematically collected and ignored.</p>
+    <div class="evidence-row">Evidence: NEA Fuel Poverty Monitor; MOJ Legal Problem and Resolution Survey; CQC State of Care; DfE EYFS Profile; EA Flood Risk Registry; ADR UK impact report.</div>
+  </div>
+
+  <div class="chain-block">
+    <h3>The technology infrastructure exists to address it now</h3>
+    <p>The GOV.UK Content API provides structured, authoritative access to government guidance. The Environment Agency Flood Risk API, the CQC Provider API, and the legislation.gov.uk API provide domain-specific data at quality levels that enable reliable tool outputs. The MCP protocol provides a standard interface between AI assistants and tool servers. The GOV.UK Chat procurement signals that DSIT intends to deploy agentic AI at citizen scale.</p>
+    <p>The unique window is now: the NDL is being built, GOV.UK Chat is being procured, and ADR UK is investing £168 million in the data research infrastructure our tools will eventually plug into. The platform built today will be positioned to connect to all three as they mature.</p>
+    <div class="evidence-row">Evidence: DSIT GOV.UK Chat pre-market engagement notice (March 2025); ADR UK UKRI investment announcement (Jan 2026); NDL Progress Update (Jan 2026); GOV.UK API documentation.</div>
+  </div>
+
+</div>
+
+<h2>3. Activities — how we create change</h2>
+
+<div class="chain-section">
+
+  <div class="chain-block">
+    <h3>Build the shared platform foundation before the domain tools</h3>
+    <p>Ten shared modules (UK Services API Client, Plain English Synthesis Engine, Postcode Intelligence Layer, DEIA Compliance Layer, Eligibility Assessment Engine, Local Services Finder, Advocacy Router, Deadline Manager, Multilingual Translation Layer, and Consent Framework) serve all six domains and eliminate six-fold duplication. Building the foundation first means each domain tool is configuration rather than construction — reducing development time, improving quality consistency, and creating a government platform asset rather than six disconnected tools.</p>
+    <div class="evidence-row">Evidence: GDS Service Manual on building platforms. CDDO shared components strategy. Government Digital and AI Roadmap (Jan 2026) on foundational infrastructure.</div>
+  </div>
+
+  <div class="chain-block">
+    <h3>Co-design with target communities from the first sprint</h3>
+    <p>The GDS Service Standard requires genuine user need evidence before a service goes live. Our communities are not just research subjects — they are co-designers. Disability Rights UK, Law Centres Network, SEND parent-carer forums, community flood groups, and energy advice charities bring knowledge about what their communities actually need that desk research cannot replicate. Co-design is not a phase; it is a permanent feature of the programme.</p>
+    <div class="evidence-row">Evidence: GDS Service Standard Point 1 (user needs). Participatory design literature. Co-production evidence from NHS England. INVOLVE guidance on involvement in research.</div>
+  </div>
+
+  <div class="chain-block">
+    <h3>Generate and share research evidence through the ARI and ADR UK processes</h3>
+    <p>Tool interactions generate anonymised aggregate data on unmet need — which schemes are most asked about, which eligibility questions reveal the largest gaps, which postcodes show the highest concentration of legal rights queries. Shared through the ARI process and with ADR UK, this becomes a new evidence source for government research. The platform is both a service and a research instrument.</p>
+    <div class="evidence-row">Evidence: ARI process documentation (GovOffice for Science). ADR UK conference 2025 themes. DSIT public sector data survey 2026.</div>
+  </div>
+
+</div>
+
+<h2>4. Outputs and their evidence chain</h2>
+
+<div class="cascade-grid">
+
+  <div class="cascade">
+    <span class="cascade-num">36</span>
+    <span class="cascade-label">MCP tools across 6 domains</span>
+    <p>Each tool is an independently deployable, testable unit. The tool set covers the full citizen journey in each domain: from understanding entitlements → checking eligibility → preparing evidence → navigating processes → finding advocacy.</p>
+  </div>
+
+  <div class="cascade">
+    <span class="cascade-num">£150+</span>
+    <span class="cascade-label">Per household average benefit value</span>
+    <p>Warm Home Discount alone is worth £150/year per household. ECO4 insulation is worth thousands. PIP at Enhanced Rate is worth over £9,000/year. NHS CHC saves families £40-60k/year. Each tool can be valued per successful claim it facilitates.</p>
+  </div>
+
+  <div class="cascade">
+    <span class="cascade-num">74%</span>
+    <span class="cascade-label">Benefit appeal success rate when properly argued</span>
+    <p>74% of benefit tribunal appeals succeed when properly argued. Without advocacy, most people give up before tribunal. legal_check_deadlines and ltc_navigate_appeals exist to close this gap. The success rate is the evidence that the intervention can work.</p>
+  </div>
+
+  <div class="cascade">
+    <span class="cascade-num">£13</span>
+    <span class="cascade-label">Return per £1 invested in early years (Perry Preschool)</span>
+    <p>The Heckman Equation shows early childhood investment has the highest social return on investment of any public spending. eyfs_check_development and eyfs_navigate_send directly support earlier intervention — the causal chain to improved outcomes is the strongest of any domain.</p>
+  </div>
+
+  <div class="cascade">
+    <span class="cascade-num">£319bn</span>
+    <span class="cascade-label">Long-term social value of linked public data (ADR UK/Baringa)</span>
+    <p>Our tools become progressively more powerful as NDL data linkage matures. The platform is the citizen-facing implementation of the NDL vision. The £319bn figure quantifies the upper bound of what properly linked and used public data can deliver.</p>
+  </div>
+
+  <div class="cascade">
+    <span class="cascade-num">80M</span>
+    <span class="cascade-label">Monthly GOV.UK visits (potential reach via Chat integration)</span>
+    <p>Integration with DSIT's GOV.UK Chat programme would change the platform's reach from thousands to potentially millions. The tools are designed as the domain knowledge layer GOV.UK Chat needs. This is the scale multiplier.</p>
+  </div>
+
+</div>
+
+<h2>5. Outcomes — what changes in people's lives</h2>
+
+<div class="chain-section">
+
+  <div class="chain-block" style="border-left-color:#1D9E75">
+    <h3 style="color:#1D9E75">Short-term outcomes (0-6 months)</h3>
+    <p><strong>Citizens find relevant information faster</strong> and are less likely to abandon their query. Evidence from GDS service analytics consistently shows that well-designed services reduce phone calls and repeat contact.</p>
+    <p><strong>Advocates and support workers use tools in their practice.</strong> Social workers, community workers, and welfare rights advisers adopt the tools as reference resources — multiplying reach beyond direct citizen use.</p>
+    <p><strong>Government has a new evidence source on unmet need.</strong> Anonymised aggregate interaction data reveals which entitlements are least known about, which eligibility rules cause most confusion, and which geographic areas have the most unserved need.</p>
+    <div class="evidence-row">Evidence: GDS blog on digital service design outcomes. Citizens Advice evidence on information access and behaviour change. CDDO digital public services analytics.</div>
+  </div>
+
+  <div class="chain-block" style="border-left-color:#533AB7">
+    <h3 style="color:#533AB7">Medium-term outcomes (6-18 months)</h3>
+    <p><strong>Measurably more eligible people apply for and receive benefits.</strong> DWP's benefit take-up statistics (published annually) provide the baseline. Tool completion rates and eligibility-check results provide the numerator for impact measurement.</p>
+    <p><strong>Fewer legal rights are permanently lost to missed deadlines.</strong> Employment tribunal applications, benefit mandatory reconsiderations, and housing complaints increase. This is independently verifiable through HMCTS statistics, DWP MR data, and housing ombudsman annual reports.</p>
+    <p><strong>Children's SEND needs are identified earlier.</strong> Referral rates from parents and early years settings increase. Waiting list positions are taken earlier. The 20-week EHCP statutory timeline is more consistently met. DfE EHCP statistics track this.</p>
+    <p><strong>More people in flood risk areas are signed up for EA alerts</strong> and know about Flood Re. EA alert subscriber numbers by postcode area are trackable. This is verifiable against flood preparation behaviour data.</p>
+    <div class="evidence-row">Evidence: DWP benefit take-up statistics; HMCTS tribunal statistics; DfE SEND and EHCP data; EA flood alert subscriber data; CQC care waiting time data.</div>
+  </div>
+
+  <div class="chain-block" style="border-left-color:#0F6E56">
+    <h3 style="color:#0F6E56">Long-term impact (2+ years)</h3>
+    <p><strong>Reduced poverty and income inequality.</strong> Improved benefit take-up among eligible households reduces the gap between in-work and out-of-work poverty. IFS benefit take-up modelling shows the poverty impact of full take-up scenarios.</p>
+    <p><strong>Better health outcomes for people with LTCs and fuel poverty.</strong> ONS Excess Winter Deaths is the long-term outcome metric for energy tools. NHS secondary care demand falls as better-supported LTC patients need fewer crisis interventions.</p>
+    <p><strong>Higher school readiness.</strong> The government's own target (75% of 5-year-olds at Good Level of Development by 2028) is the stated outcome metric. Earlier identification and support through our tools is one causal pathway to this target.</p>
+    <p><strong>More equitable access to justice.</strong> The Legal Problem and Resolution Survey, run periodically by MOJ, measures the proportion of legal problems going unresolved. A future wave conducted after the platform has scaled would provide the long-term impact measure.</p>
+    <div class="evidence-row">Evidence: IFS benefit take-up poverty modelling; ONS Excess Winter Deaths; DfE EYFS Profile 2028 (target year); MOJ Legal Problem and Resolution Survey wave 3+; NHS secondary care admissions data.</div>
+  </div>
+
+</div>
+
+<h2>6. Assumptions</h2>
+
+<p>The theory of change holds only if the following assumptions are true. Those marked as high-confidence are well-evidenced. Those marked as uncertain require monitoring.</p>
+
+<div class="assump-grid">
+
+  <div class="assump hold">
+    <h4>✓ The information asymmetry problem is real and significant (high confidence)</h4>
+    <p>Fuel poverty take-up data, Legal Problem and Resolution Survey, CQC waiting time data, and DfE school readiness statistics all confirm that large populations are failing to access support they are entitled to. This assumption is the best-evidenced in the chain.</p>
+  </div>
+
+  <div class="assump hold">
+    <h4>✓ Plain English synthesis at scale is technically achievable (high confidence)</h4>
+    <p>GOV.UK already generates structured content via its Content API. LLM synthesis of structured content to FK Grade 6 has been demonstrated in analogous applications. The technical feasibility has been tested. Quality control mechanisms (FK scoring, expert review) are well established.</p>
+  </div>
+
+  <div class="assump risk">
+    <h4>⚠ Citizens will trust AI-assisted government services enough to use them (uncertain)</h4>
+    <p>DSIT's own RTA survey shows significant variation in AI trust by age, ethnicity, and prior experience. Trust cannot be assumed — it must be earned through design, transparency, and demonstrated accuracy. This is the single most important assumption to test in user research.</p>
+  </div>
+
+  <div class="assump risk">
+    <h4>⚠ GOV.UK Chat will succeed and reach scale (uncertain)</h4>
+    <p>Integration with GOV.UK Chat is the scale multiplier that turns thousands of users into millions. If GOV.UK Chat is delayed, scaled back, or chooses a different architecture, our tools' reach is significantly reduced. This is a dependency risk, not a design risk.</p>
+  </div>
+
+  <div class="assump risk">
+    <h4>⚠ NDL data linkage governance will be resolved in a reasonable timeframe (uncertain)</h4>
+    <p>The proactive push capability — the most powerful version of the platform — depends on NDL linked data being available with appropriate consent and governance frameworks. Current NDL Kickstarter timelines are at discovery phase. Our tools can launch without this, but the long-term impact model is stronger with it.</p>
+  </div>
+
+  <div class="assump unknown">
+    <h4>? LLM accuracy on specialised legal and benefits information (needs validation)</h4>
+    <p>Our tools synthesise complex, jurisdiction-specific, frequently updated information. Accuracy depends on the quality of source data (GOV.UK, legislation.gov.uk) and the reliability of LLM synthesis. Every output must be traceable to a source. A legal deadline that is even one day wrong could cause irreversible harm. This assumption requires ongoing, domain-expert quality assurance.</p>
+  </div>
+
+  <div class="assump unknown">
+    <h4>? Co-design with communities will be achievable within government constraints (needs validation)</h4>
+    <p>Genuine co-design with marginalised communities requires time, resource, flexibility, and institutional willingness to act on findings — including findings that challenge current service design. Government procurement and ethics processes may constrain the pace and depth of co-design. This must be actively managed.</p>
+  </div>
+
+  <div class="assump unknown">
+    <h4>? Government will maintain the information our tools depend on (needs validation)</h4>
+    <p>All six domains depend on authoritative government information remaining accurate and accessible via APIs. Policy changes (PIP reform, Care Act changes, changes to energy schemes) require rapid tool updates. The speed of government information maintenance is a dependency risk that requires a monitoring and alert system.</p>
+  </div>
+
+</div>
+
+<h2>7. Risks and mitigations</h2>
+
+<table class="risk-table">
+<thead>
+<tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>LLM produces inaccurate legal or benefits information, causing harm to a citizen</strong></td>
+  <td><span class="risk-m">Medium</span></td>
+  <td><span class="risk-h">High</span></td>
+  <td>Every output must cite its source. Expert review of all deadline and time-limit information before any tool goes live. Explicit "verify independently" disclaimers. Ongoing accuracy monitoring via expert panel review. Rapid update mechanism for policy changes.</td>
+</tr>
+<tr>
+  <td><strong>Tools are adopted faster than quality can be assured</strong></td>
+  <td><span class="risk-m">Medium</span></td>
+  <td><span class="risk-h">High</span></td>
+  <td>Staged rollout. Alpha with limited users and intensive monitoring before broader deployment. GDS service assessment as a quality gate. Every domain completes UR before beta. No domain tools launch before the DEIA compliance layer is in place.</td>
+</tr>
+<tr>
+  <td><strong>The most vulnerable users can't access the tools</strong></td>
+  <td><span class="risk-h">High</span></td>
+  <td><span class="risk-m">Medium</span></td>
+  <td>Accessibility testing (WCAG 2.2 AA) from the start. Explicit "I can't use this" exit to phone/in-person channels. Intermediary mode for social workers and carers. Research specifically with digitally excluded participants. Never claim 100% reach for a digital-only tool.</td>
+</tr>
+<tr>
+  <td><strong>Trust deficit prevents adoption in BAME communities</strong></td>
+  <td><span class="risk-m">Medium</span></td>
+  <td><span class="risk-m">Medium</span></td>
+  <td>Community-embedded distribution (mosques, community centres, foodbanks) rather than purely digital channels. Source transparency built into every output. Co-design with community organisations from the start. Multilingual research to validate culturally appropriate trust signals.</td>
+</tr>
+<tr>
+  <td><strong>Policy changes invalidate tool outputs and users receive wrong information</strong></td>
+  <td><span class="risk-h">High</span> (over 5yr lifecycle)</td>
+  <td><span class="risk-h">High</span></td>
+  <td>Monitoring system for changes to all source legislation and GOV.UK guidance pages. Domain expert alert network. Rapid update SLA for time-sensitive information (deadlines, rates, eligibility). Version tracking for all knowledge base content.</td>
+</tr>
+<tr>
+  <td><strong>GOV.UK Chat architecture diverges, breaking our integration assumption</strong></td>
+  <td><span class="risk-l">Low-medium</span></td>
+  <td><span class="risk-h">High</span></td>
+  <td>Engage with GOV.UK Chat programme team immediately (S-001 in backlog). Design as standalone MCP servers that work with any MCP-compatible AI assistant — not dependent on one deployment channel. MCP is the industry standard; non-GOV.UK Chat clients also exist.</td>
+</tr>
+<tr>
+  <td><strong>NRPF and other complex eligibility cases receive false-positive guidance</strong></td>
+  <td><span class="risk-h">High</span> without mitigation</td>
+  <td><span class="risk-h">High</span></td>
+  <td>NRPF screening question in all eligibility tools. Explicit handling of complex immigration-related eligibility. Legal expert review of eligibility logic for all benefits that have NRPF exclusions. Research with NRPF Network before any tool launches.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>8. Measurement framework</h2>
+
+<p>Every metric is either published by a government body (independently verifiable) or directly measurable from tool instrumentation (transparent). No vanity metrics.</p>
+
+<div class="measure-grid">
+
+  <div class="measure">
+    <h4>Process metrics (tool quality)</h4>
+    <p>FK Grade score of all citizen-facing outputs — target: ≤6 at 'simple' level, 100% of outputs.</p>
+    <p>Tool completion rate: % of sessions reaching an advocacy route or next step — target: >75%.</p>
+    <p>WCAG 2.2 AA compliance: tested monthly against all live tools.</p>
+    <p>Source accuracy: % of factual claims traceable to a cited GOV.UK or legislation.gov.uk source — target: 100%.</p>
+    <p>Language distribution: % of sessions using non-English modes — tracked monthly as adoption proxy.</p>
+  </div>
+
+  <div class="measure">
+    <h4>Outcome metrics (behaviour change)</h4>
+    <p>DWP benefit take-up statistics (annual) — baseline vs post-tool period by benefit type.</p>
+    <p>HMCTS ET/benefit tribunal application volumes (quarterly) — test for increase in small-value claims where legal guidance was missing.</p>
+    <p>DfE EHCP statistics (annual) — referral rates and time-to-assessment.</p>
+    <p>EA flood alert subscriber numbers by postcode (monthly) — direct from EA.</p>
+    <p>CQC care waiting time data — proportion of assessments within statutory timeframe.</p>
+  </div>
+
+  <div class="measure">
+    <h4>Impact metrics (population-level)</h4>
+    <p>ONS Excess Winter Deaths — fuel poverty mortality proxy. 5-year trend comparison against pre-platform baseline.</p>
+    <p>DfE EYFS Profile results — % children at Good Level of Development. Government target: 75% by 2028.</p>
+    <p>MOJ Legal Problem and Resolution Survey — unresolved legal problems rate. Next wave post-platform launch provides attribution test.</p>
+    <p>IFS benefit take-up poverty modelling — household poverty rate under current vs improved take-up scenario.</p>
+    <p>DSIT public attitudes tracker — trust in AI-assisted public services (Wave 5+).</p>
+  </div>
+
+</div>
+
+<h2>9. Alignment to government missions and DSIT priorities</h2>
+
+<div class="mission-grid">
+
+  <div class="mission">
+    <h4>Breaking down barriers to opportunity</h4>
+    <p>The primary mission served by five of six domains. Fuel poverty, benefit take-up gaps, legal advice deserts, unmet social care needs, and SEND identification failures are all structural barriers that disproportionately affect children and families from lower-income backgrounds. Platform-level evidence: energy (4.5m fuel-poor households), legal (37% of legal problems unresolved), early years (48% of FSM-eligible children not school-ready).</p>
+  </div>
+
+  <div class="mission">
+    <h4>NHS fit for the future</h4>
+    <p>LTC, social care, and early years domains directly serve health outcomes. Reduced benefit reassessment distress improves mental health. Earlier SEND identification reduces secondary health impacts. NHS CHC take-up reduces financial catastrophe for families. Better adult social care reduces inappropriate hospital admissions.</p>
+  </div>
+
+  <div class="mission">
+    <h4>Make Britain a clean energy superpower</h4>
+    <p>Energy support domain serves fuel poverty reduction, which is a prerequisite for the public acceptability of the clean energy transition. Climate resilience domain directly addresses flood and heat adaptation. Both align to the just transition agenda within the clean energy mission.</p>
+  </div>
+
+  <div class="mission">
+    <h4>Blueprint for Modern Digital Government</h4>
+    <p>The platform directly implements the Blueprint's central ambition: join up public sector services to enable next-generation experiences that are easier for citizens to use. The shared foundation modules are the "once only" principle in action. GOV.UK Chat integration is the agentic AI vision realised. The consent framework enables the "data follows the person" model the Blueprint aspires to.</p>
+  </div>
+
+  <div class="mission">
+    <h4>AI Opportunities Action Plan</h4>
+    <p>Responsible AI deployment in citizen-facing services at scale. Our DEIA compliance layer, consent framework, source-cited outputs, and co-design process are the responsible AI evidence base that DSIT's Responsible Technology Adoption Unit needs for the next wave of its public attitudes tracker.</p>
+  </div>
+
+  <div class="mission">
+    <h4>National Data Library programme</h4>
+    <p>The platform is the citizen-facing delivery vehicle for all six NDL Kickstarter domains. The consent framework is designed to be the NDL's citizen consent layer when data linkage governance is ready. The measurement infrastructure generates the aggregate need data that the NDL's impact reporting requires. We are not separate from the NDL — we are its implementation layer.</p>
+  </div>
+
+</div>
+
+<hr>
+<div class="callout">
+  <p><strong>A note on attribution and causality.</strong> Theories of change in complex social systems rarely permit clean attribution. Many factors affect benefit take-up rates, school readiness scores, and flood deaths. We should not claim our tools are the only cause of improvements in these metrics. What we can claim — and must be able to demonstrate — is a plausible causal pathway, a measurable mechanism of change, and a counterfactual (what would have happened without the tool). The measurement framework above is designed to generate that evidence, not to prove causation in a randomised controlled trial sense.</p>
+</div>
+
+<footer>Theory of Change · NDL PubSec MCP Platform · v0.1 · Cross-Gov AI Engineering Lab · DSIT · June 2026 · For review and comment</footer>
+</body></html>

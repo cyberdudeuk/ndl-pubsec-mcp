@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Guidance MCP — Scope & Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff;max-width:900px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#185FA5;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #E6F1FB}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.25rem 0 .5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#E6F1FB;padding:1px 5px;border-radius:4px;color:#0C447C}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#E6F1FB;color:#0C447C}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#EBF4FD;border-left:4px solid #185FA5;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.warn{background:#FFF8EC;border-left:4px solid #BA7517;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.warn p{margin:0;font-size:14px}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.pc{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #185FA5}
+.pn{font-weight:700;font-size:15px;margin-bottom:2px}.ps{font-size:12px;color:#888;margin-bottom:8px}
+.pb{font-size:13px;color:#444;line-height:1.5;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tc{font-family:'SF Mono','Cascadia Code',monospace;font-size:14px;font-weight:600;color:#0C447C;background:#E6F1FB;padding:4px 12px;border-radius:6px;display:inline-block}
+.th{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tool{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.tool.hl{border-left:4px solid #185FA5}
+.td{font-size:14px;color:#444;margin-bottom:1rem;line-height:1.5}
+.cb{background:#EBF4FD;border:1px solid #bfd8f2;border-radius:8px;padding:1rem 1.25rem;font-family:'SF Mono','Cascadia Code',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.kw{color:#1e40af}.ty{color:#7c3aed}.st{color:#047857}.cm{color:#9ca3af;font-style:italic}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.dc{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.dc.main{border-left:4px solid #185FA5}.dc.fut{border-left:4px dashed #185FA5}
+.dc h3{font-size:14px;margin-bottom:6px}.dc p{margin:0;color:#555;line-height:1.5}
+.deia{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0 1.5rem}
+.di{display:flex;align-items:flex-start;gap:8px;background:#f9fafb;border-radius:6px;padding:8px 12px;font-size:13px}
+.di::before{content:"✓";color:#185FA5;font-weight:700;flex-shrink:0;margin-top:1px}
+.bl{list-style:none;margin:1rem 0 1.5rem}
+.bl li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.bl li:last-child{border-bottom:none}
+.sn{background:#185FA5;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.sb h3{margin:0 0 2px;font-size:14px}.sb p{margin:0;font-size:13px;color:#666}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:600px){body{padding:1.25rem 1rem}.deia{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Legal Guidance MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 4</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP server enabling AI assistants to provide citizens — particularly those who cannot afford legal advice — with accurate, source-cited guidance on their legal rights, time limits, and how to access free help. Originally scoped by DSIT for SMEs using authoritative legal records; this scope extends the citizen-facing application to the highest-impact use cases: housing disrepair, benefit appeals, and employment disputes.</p>
+</div>
+<div class="warn">
+  <p><strong>Important legal boundary.</strong> This MCP provides legal information, not legal advice. Output must clearly distinguish between "here is what the law says" and "here is what you should do in your specific situation." Every flow must offer a route to qualified legal help. This boundary must be designed in, not bolted on.</p>
+</div>
+
+<h2>Problem statement</h2>
+<p>The UK has one of the largest legal advice deserts in the developed world. Legal Aid was cut by 35% between 2010 and 2020. Citizens Advice handles 2.7 million cases annually with insufficient capacity. Benefit claimants face mandatory reconsideration deadlines they don't know exist. Private tenants live in dangerous conditions they don't know they can challenge. Employment tribunal applications have 3-month time limits that expire before people know they have a case.</p>
+<p>The NDL Kickstarter on AI-powered legal guidance uses authoritative legal records to enable AI guidance. This MCP targets the citizen layer: where information asymmetry between government/employers/landlords and citizens is greatest, and where a time limit running down can close off remedy permanently.</p>
+
+<h2>Target users</h2>
+<div class="pg">
+  <div class="pc">
+    <div class="pn">Asha, 31</div><div class="ps">Private tenant · London</div>
+    <div class="pb">Serious damp and mould in her flat for 8 months. Landlord ignoring repair requests. Single mum with 2 children aged 3 and 5. Can't afford a solicitor. Doesn't know about the Renters' Rights Act 2025, local authority enforcement, or the Housing Ombudsman. Her children's health is being affected.</div>
+    <div class="tags"><span class="tag tg">Housing disrepair</span><span class="tag tg">Single parent</span><span class="tag ta">Health impact</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Ryan, 41</div><div class="ps">PIP refused · Newcastle</div>
+    <div class="pb">PIP refused at initial decision for his fibromyalgia and depression. He has 30 days to request mandatory reconsideration. Doesn't know what to write, that 74% of properly argued appeals succeed at tribunal, or that he can get free help from local welfare rights advisers.</div>
+    <div class="tags"><span class="tag tg">PIP appeal</span><span class="tag ta">30-day deadline critical</span><span class="tag tg">Tribunal success rate unknown</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Blessing, 28</div><div class="ps">Zero-hours worker · Bristol</div>
+    <div class="pb">Working zero-hours for a logistics firm for 2 years, denied holiday pay consistently. Wants to know if she has a case. Doesn't know the 3-month employment tribunal time limit, that she doesn't need a solicitor, or that her employer has broken the law clearly and repeatedly.</div>
+    <div class="tags"><span class="tag tg">Employment rights</span><span class="tag ta">3-month time limit</span><span class="tag tg">Zero hours</span></div>
+  </div>
+</div>
+
+<h2>MCP tool specifications</h2>
+
+<div class="tool hl">
+  <div class="th"><span class="tc">legal_explain_rights</span><span class="tag tg">Build first</span></div>
+  <div class="td">Returns specific statutory rights for a given situation — plain English, with the legal source cited. This is the foundational tool. Uses legislation.gov.uk API and GOV.UK guidance. Every right must be sourced so users can verify independently.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalExplainRightsInput</span> {
+  situation_type:  <span class="ty">string</span>;          <span class="cm">// "housing_disrepair"|"benefit_appeal"|"holiday_pay"|"unfair_dismissal"</span>
+  specific_context?: <span class="ty">string</span>;        <span class="cm">// free text: e.g. "landlord hasn't repaired damp for 8 months"</span>
+  reading_level?:  <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:       <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">LegalExplainRightsOutput</span> {
+  rights:          <span class="ty">LegalRight</span>[];
+  legal_sources:   <span class="ty">LegalSource</span>[];     <span class="cm">// { act_name, section, legislation_url } — independently verifiable</span>
+  what_this_means: <span class="ty">string</span>;            <span class="cm">// plain English summary</span>
+  time_limits:     <span class="ty">TimeLimit</span>[];       <span class="cm">// CRITICAL: always surface time limits</span>
+  next_steps:      <span class="ty">string</span>[];
+  disclaimer:      <span class="ty">string</span>;            <span class="cm">// "This is legal information, not legal advice."</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">legal_check_deadlines</span></div>
+  <div class="td">The most time-critical tool in the suite. Many legal remedies are permanently lost because citizens don't know the time limit is running. Returns all applicable deadlines for a situation with days remaining calculated from the triggering event date.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalCheckDeadlinesInput</span> {
+  situation_type:   <span class="ty">string</span>;
+  trigger_date:     <span class="ty">string</span>;          <span class="cm">// ISO date — e.g. date of refusal letter, date of dismissal</span>
+  council_area?:    <span class="ty">string</span>;          <span class="cm">// some limits vary by council/jurisdiction</span>
+}
+<span class="kw">interface</span> <span class="ty">LegalCheckDeadlinesOutput</span> {
+  deadlines:        <span class="ty">Deadline</span>[];
+  most_urgent:      <span class="ty">Deadline</span>;        <span class="cm">// the one expiring soonest</span>
+  days_remaining:   <span class="ty">number</span>;
+  urgency_level:    <span class="st">'critical'</span> | <span class="st">'urgent'</span> | <span class="st">'standard'</span>;
+  if_missed:        <span class="ty">string</span>;          <span class="cm">// what happens if deadline passes</span>
+  exceptions:       <span class="ty">string</span>[];        <span class="cm">// grounds for extension (e.g. mental health, disability)</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">legal_assess_situation</span></div>
+  <div class="td">Identifies the legal issue type from a free text description, maps it to relevant legal frameworks, and returns the most likely remedy. Entry point for users who don't know what type of problem they have — "is this even something I can do anything about?"</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalAssessSituationInput</span> {
+  description:     <span class="ty">string</span>;          <span class="cm">// free text description of the problem</span>
+  location:        <span class="ty">string</span>;          <span class="cm">// postcode — jurisdiction matters</span>
+}
+<span class="kw">interface</span> <span class="ty">LegalAssessSituationOutput</span> {
+  legal_area:      <span class="ty">string</span>;          <span class="cm">// "housing"|"employment"|"benefits"|"consumer"|"debt"</span>
+  issue_type:      <span class="ty">string</span>;          <span class="cm">// e.g. "housing_disrepair"|"PIP_appeal"</span>
+  has_legal_remedy: <span class="ty">boolean</span>;
+  time_sensitive:  <span class="ty">boolean</span>;
+  recommended_next_tools: <span class="ty">string</span>[];  <span class="cm">// which other tools to call next</span>
+  confidence:      <span class="st">'high'</span> | <span class="st">'medium'</span> | <span class="st">'low'</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">legal_find_free_help</span></div>
+  <div class="td">Finds Legal Aid eligible solicitors, law centres, free legal clinics, and specialist advice services by postcode and issue type. Legal Aid eligibility check included. Always returns Citizens Advice as a fallback.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalFindFreeHelpInput</span> {
+  postcode:        <span class="ty">string</span>;
+  issue_type:      <span class="ty">string</span>;
+  legal_aid_eligible?: <span class="ty">boolean</span>;     <span class="cm">// if known</span>
+  language?:       <span class="ty">string</span>;
+  contact_pref?:   <span class="st">'phone'</span> | <span class="st">'online'</span> | <span class="st">'in_person'</span>;
+}
+<span class="kw">interface</span> <span class="ty">FreeHelpService</span> {
+  name:            <span class="ty">string</span>;
+  type:            <span class="ty">string</span>;          <span class="cm">// "law_centre"|"legal_aid_solicitor"|"clinic"|"citizens_advice"</span>
+  specialisms:     <span class="ty">string</span>[];
+  contact:         <span class="ty">ContactInfo</span>;
+  languages:       <span class="ty">string</span>[];
+  legal_aid:       <span class="ty">boolean</span>;
+  wait_time_est?:  <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">legal_draft_correspondence</span></div>
+  <div class="td">Helps draft legally correct letters and emails — to landlords (repair notices, s.11 notifications), employers (holiday pay claims, flexible working requests), DWP (mandatory reconsideration requests). Includes the correct legal references and tone.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalDraftCorrespondenceInput</span> {
+  correspondence_type: <span class="ty">string</span>;     <span class="cm">// "repair_notice"|"MR_request"|"holiday_pay_demand"|"ET1_preparation"</span>
+  recipient_type:      <span class="ty">string</span>;     <span class="cm">// "landlord"|"DWP"|"employer"|"council"</span>
+  situation_detail:    <span class="ty">string</span>;     <span class="cm">// relevant facts</span>
+  formality_level?:    <span class="st">'formal'</span> | <span class="st">'standard'</span>;
+}
+<span class="kw">interface</span> <span class="ty">LegalDraftCorrespondenceOutput</span> {
+  letter_text:         <span class="ty">string</span>;
+  legal_references:    <span class="ty">string</span>[];   <span class="cm">// acts/sections cited in the letter</span>
+  key_points_included: <span class="ty">string</span>[];
+  suggested_sending:   <span class="ty">string</span>;    <span class="cm">// "recorded delivery and email" etc.</span>
+  next_steps:          <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">legal_guide_process</span></div>
+  <div class="td">Step-by-step guide to a specific legal process — employment tribunal, First-tier Tribunal (benefits), county court housing claim, Housing Ombudsman complaint. Demystifies the process for first-time users who assume courts are only for lawyers.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LegalGuideProcessInput</span> {
+  process_type:    <span class="ty">string</span>;         <span class="cm">// "employment_tribunal"|"FTT_benefits"|"county_court"|"housing_ombudsman"</span>
+  current_stage?:  <span class="ty">string</span>;         <span class="cm">// if already in the process</span>
+  represented?:    <span class="ty">boolean</span>;        <span class="cm">// has a solicitor or is self-representing</span>
+}
+<span class="kw">interface</span> <span class="ty">LegalGuideProcessOutput</span> {
+  stages:          <span class="ty">ProcessStage</span>[];
+  forms_needed:    <span class="ty">FormRef</span>[];
+  evidence_tips:   <span class="ty">string</span>[];
+  hearing_prep:    <span class="ty">string</span>;
+  timelines:       <span class="ty">Timeline</span>[];
+  costs:           <span class="ty">string</span>;         <span class="cm">// usually free for claimants at ET/FTT</span>
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+<div class="dg">
+  <div class="dc main"><h3 style="color:#185FA5">Legislation.gov.uk API <span class="tag tg" style="font-size:10px">Excellent</span></h3><p>Free, public, well-documented RESTful API returning full statutory text. The authoritative source for all rights cited. Core to the NDL legal kickstarter's use of authoritative legal records.</p></div>
+  <div class="dc main"><h3 style="color:#185FA5">GOV.UK Content API</h3><p>Plain English explanations of legal processes and rights — benefit appeals, employment rights, housing. Complements the statutory API.</p></div>
+  <div class="dc main"><h3 style="color:#185FA5">Legal Aid Agency data</h3><p>Registered Legal Aid providers by location and specialism (public data). Core for legal_find_free_help.</p></div>
+  <div class="dc main"><h3 style="color:#185FA5">Tribunal/Ombudsman decisions</h3><p>First-tier Tribunal and Housing Ombudsman publish decisions (public). Useful for calibrating success rates and what arguments work.</p></div>
+  <div class="dc fut"><h3 style="color:#185FA5">NDL authoritative legal records <span class="tag tg" style="font-size:10px">Phase 2+</span></h3><p>The NDL kickstarter's specific innovation — a curated corpus of authoritative legal content. Will enable more precise and current legal guidance than scraping alone.</p></div>
+</div>
+
+<h2>DEIA requirements</h2>
+<div class="deia">
+  <div class="di">Multi-language — advice deserts hit BAME communities hardest; Welsh, Urdu, Somali, Polish, Arabic minimum</div>
+  <div class="di">WCAG 2.2 AA — screen reader compatible; many users may be in distress</div>
+  <div class="di">Mobile-first — many vulnerable users access on mobile only</div>
+  <div class="di">Plain English — legal language must be translated, not reproduced; FK Grade 6</div>
+  <div class="di">No login required for rights information — consent-first for correspondence drafting</div>
+  <div class="di">Always cites source — every right includes the act and section for independent verification</div>
+  <div class="di">Clearly labelled as legal information, not advice — prominent, consistent, not buried</div>
+  <div class="di">Distress-aware — benefit appeals and housing crises are stressful; tone calibrated</div>
+  <div class="di">Always surfaces free help — no flow ends without a free legal help option</div>
+  <div class="di">Time limits always surfaced — never mentioned only when asked; proactively flagged</div>
+  <div class="di">GDS service standard compliant — especially #2 (solve the whole problem)</div>
+  <div class="di">Co-designed with communities — law centres, housing charities, welfare rights orgs from alpha</div>
+</div>
+
+<h2>Recommended build order</h2>
+<ol class="bl">
+  <li><div class="sn">1</div><div class="sb"><h3><code>legal_explain_rights</code></h3><p>Simplest to build. Legislation.gov.uk API + GOV.UK Content API. Start with housing disrepair (Landlord and Tenant Act 1985 s.11) and employment rights (holiday pay — Working Time Regulations 1998). Both APIs are free and public.</p></div></li>
+  <li><div class="sn">2</div><div class="sb"><h3><code>legal_check_deadlines</code></h3><p>Highest urgency. Build second because a missed deadline is irreversible. Requires encoding time limits as structured data — manageable but must be exhaustively verified.</p></div></li>
+  <li><div class="sn">3</div><div class="sb"><h3><code>legal_assess_situation</code></h3><p>Entry-point tool that routes to others. Build after the core tools so it can route accurately.</p></div></li>
+  <li><div class="sn">4</div><div class="sb"><h3><code>legal_find_free_help</code></h3><p>Requires Legal Aid Agency directory integration. Build after core information tools so there's something to refer users to help with.</p></div></li>
+  <li><div class="sn">5</div><div class="sb"><h3><code>legal_draft_correspondence</code></h3><p>High value but requires careful quality control — letters must be legally accurate. Build after rights explanation tool is verified.</p></div></li>
+  <li><div class="sn">6</div><div class="sb"><h3><code>legal_guide_process</code></h3><p>Most complex — requires encoding multiple tribunal and court processes. Build last but ensure a pointer to HMCTS guidance is present from day one.</p></div></li>
+</ol>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>What is the NDL "authoritative legal records" corpus — is it legislation.gov.uk data, case law, or something else? Who owns it within government?</li>
+  <li>What is the appropriate liability framework for AI-generated legal information? Has DSIT/MOJ taken a view on this?</li>
+  <li>Time limits are the highest-risk element — what QA process should apply to ensure they're always accurate and current?</li>
+  <li>Should legal_draft_correspondence output be reviewed by a qualified lawyer before going live, even in beta?</li>
+  <li>Co-design recommendation: Law Centres Network, housing charities (Shelter, Crisis), welfare rights advisers, Citizens Advice — all have deep user insight here.</li>
+</ol>
+
+<footer>Legal Guidance MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment</footer>
+</body></html>

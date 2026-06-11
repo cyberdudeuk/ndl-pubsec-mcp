@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Research Bundle — NDL PubSec MCP Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.75;color:#1a1a1a;background:#fff;max-width:960px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#C04700;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #FAECE7}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.5rem 0 .5rem}
+h4{font-size:14px;font-weight:600;color:#1a1a1a;margin:1rem 0 .25rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#FDF3F0;padding:1px 5px;border-radius:4px;color:#712B13}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2.5rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#FAECE7;color:#712B13}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}.tb{background:#E6F1FB;color:#0C447C}
+.callout{background:#FDF3F0;border-left:4px solid #C04700;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.warn{background:#FFF8EC;border-left:4px solid #BA7517;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0}
+.warn p{margin:0;font-size:14px}
+.info{background:#EBF4FD;border-left:4px solid #185FA5;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0}
+.info p{margin:0;font-size:14px}
+.phase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1rem 0 1.5rem}
+.phase{border:1px solid #e5e7eb;border-radius:10px;padding:1rem;text-align:center}
+.phase-num{font-size:22px;font-weight:700;color:#C04700;display:block;margin-bottom:4px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.profile{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;border-left:4px solid #C04700}
+.profile h4{color:#C04700;margin:0 0 .5rem;font-size:14px}
+.blind-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin:1rem 0 1.5rem}
+.blind{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;border-left:4px solid #BA7517}
+.blind h4{color:#BA7517;margin:0 0 .5rem;font-size:14px;display:flex;align-items:center;gap:8px}
+.blind-num{background:#BA7517;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.blind p{font-size:13px;color:#444;margin:0 0 .5rem;line-height:1.5}
+.blind p:last-child{margin:0}
+.implication{font-size:12px;color:#712B13;background:#FAECE7;padding:5px 10px;border-radius:5px;margin-top:.5rem}
+.ev-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.ev{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.ev h4{font-size:13px;margin-bottom:.5rem}
+.ev p{margin:0;color:#555;line-height:1.5}
+.ev cite{font-style:italic;color:#888;font-size:12px}
+.methods-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.method{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;background:#fafafa;font-size:13px}
+.method h4{font-size:13px;margin-bottom:.5rem;color:#1a1a1a}
+.method p{margin:0;color:#555;line-height:1.5}
+.ethics-list{list-style:none;margin:1rem 0 1.5rem}
+.ethics-list li{display:flex;gap:10px;padding:.75rem 0;border-bottom:1px solid #f0f0f0;font-size:14px;align-items:flex-start}
+.ethics-list li:last-child{border-bottom:none}
+.ethics-list li::before{content:"⚠";color:#C04700;flex-shrink:0;margin-top:1px}
+.dg-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:13px}
+.dg-table th{background:#FDF3F0;text-align:left;padding:8px 12px;font-weight:600;border-bottom:2px solid #f0c4b3}
+.dg-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:700px){body{padding:1.25rem 1rem}.profile-grid,.ev-grid,.methods-grid,.phase-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>User Research Bundle</h1>
+<p class="subtitle">NDL PubSec MCP Platform — Research Strategy, Participant Profiles, Blindspot Analysis & Evidence Synthesis</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">Living document — update as research proceeds</span>
+</div>
+
+<div class="callout">
+  <p><strong>Purpose.</strong> This document governs the user research programme for all six NDL kickstarter MCP domains. It establishes research objectives, defines who we must talk to (including groups our initial scoping underrepresented), sets out methods, addresses ethical obligations, and synthesises the formal research evidence base each domain must build on — not replace. User research is not bolt-on validation. It is the design input.</p>
+</div>
+
+<h2>1. Platform-wide research objectives</h2>
+
+<p>Six questions must be answered before any domain tool enters alpha. These are platform-level questions that sit above domain-specific research and must inform the shared foundation design:</p>
+
+<ol>
+  <li><strong>Do citizens in our target cohorts encounter the information problem we've assumed?</strong> Are people failing to access support because they don't know it exists, because they can't navigate to it, because they don't trust it, or because of a structural barrier our scoping didn't surface?</li>
+  <li><strong>Who is actually using the tool, and are they the person with the need?</strong> Many of our most vulnerable users will be reached through intermediaries — family members, social workers, community workers, volunteers. We must understand proxy use patterns from the start.</li>
+  <li><strong>What is the minimum viable digital intervention?</strong> For some cohorts, digital-first tools are not the answer. The research must establish where the platform should defer to phone, in-person, or paper channels — and design handoff gracefully.</li>
+  <li><strong>What does trust look like for each cohort?</strong> BAME communities, people with prior bad experiences of government digital services, and people with low literacy or digital confidence will have very different trust thresholds. We cannot assume GOV.UK branding is sufficient.</li>
+  <li><strong>Where is the crisis moment?</strong> Most of our tool flows are designed for "I want to find information" journeys. But Asha's landlord just threatened eviction. Ryan just got his PIP refusal letter. Vera's house flooded overnight. Crisis-moment journeys are structurally different and require distinct UX design.</li>
+  <li><strong>How does multilingual need actually present itself in practice?</strong> Our language set (Welsh, Urdu, Somali, Polish, Bengali, Punjabi, Arabic) is a starting assumption. Research must validate it and reveal how language choice interacts with trust, digital confidence, and topic sensitivity.</li>
+</ol>
+
+<h2>2. Research phases and timeline</h2>
+
+<div class="phase-grid">
+  <div class="phase">
+    <span class="phase-num">1</span>
+    <strong style="font-size:13px">Discovery</strong>
+    <p style="font-size:12px;color:#555;margin-top:6px">Contextual inquiry with target cohorts. Validate problem assumptions. Identify proxy use patterns. Map trust landscape. No prototypes shown.</p>
+    <p style="font-size:11px;color:#C04700;margin-top:6px">Sprint 1-2 · Before any build</p>
+  </div>
+  <div class="phase">
+    <span class="phase-num">2</span>
+    <strong style="font-size:13px">Alpha</strong>
+    <p style="font-size:12px;color:#555;margin-top:6px">Prototype testing with target users. Focus on energy domain first (most bounded). Test plain English quality, mobile UX, language variants. Identify where journeys break.</p>
+    <p style="font-size:11px;color:#C04700;margin-top:6px">Sprint 3-4 · After first builds</p>
+  </div>
+  <div class="phase">
+    <span class="phase-num">3</span>
+    <strong style="font-size:13px">Beta</strong>
+    <p style="font-size:12px;color:#555;margin-top:6px">Accessibility testing, multilingual testing, proxy use testing. Live service with limited users. Measure FK Grade quality, language distribution, completion rates.</p>
+    <p style="font-size:11px;color:#C04700;margin-top:6px">Sprint 5-8 · With real users</p>
+  </div>
+  <div class="phase">
+    <span class="phase-num">4</span>
+    <strong style="font-size:13px">Live / Iterate</strong>
+    <p style="font-size:12px;color:#555;margin-top:6px">Continuous UR with data from tool interactions. Co-design ongoing improvements. GDS service assessment. Expand domains in priority order.</p>
+    <p style="font-size:11px;color:#C04700;margin-top:6px">Ongoing · Per domain</p>
+  </div>
+</div>
+
+<h2>3. Target participant profiles</h2>
+
+<div class="warn">
+  <p><strong>Recruitment principle.</strong> We must not research with the articulate, digitally confident version of our personas. We must specifically over-recruit from: people with very low digital confidence or skills, people with learning disabilities or cognitive impairments, people for whom English is not a first language, people who have had bad experiences with government digital services, people who are currently in crisis rather than planning ahead. The hardest-to-reach participants are the most important ones.</p>
+</div>
+
+<div class="profile-grid">
+  <div class="profile">
+    <h4>Benefit claimants with LTCs</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">People currently navigating PIP/ESA applications or reassessments. Include people mid-appeal and people who gave up before appealing. Recruit through disabled people's organisations, not just general population panels.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include progressive/fluctuating conditions, late diagnoses, comorbidities. At least 30% from BAME backgrounds. Include people with low digital confidence.</p>
+  </div>
+  <div class="profile">
+    <h4>Fuel-poor households</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">People currently behind on energy bills or on pre-payment meters in debt. Includes elderly on fixed incomes, single parents, private renters without fixed addresses. Recruit through food banks, warm banks, and energy advice charities.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include non-English-speaking households. Include people with no smartphone or shared smartphone. Include people who have never used GOV.UK.</p>
+  </div>
+  <div class="profile">
+    <h4>Unpaid carers</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">People caring full-time for a disabled, elderly, or ill family member. Often the person who navigates services on behalf of the cared-for person — the prototype proxy user. Time-poor, often stressed, often not the primary benefit holder.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include carers of people with dementia, learning disabilities, and terminal illness. Include young carers (under 25). Include carers from South Asian and Black communities where family care is culturally primary.</p>
+  </div>
+  <div class="profile">
+    <h4>Tenants in housing disrepair</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">Private renters with active disrepair issues who have either not escalated or are currently in dispute. Recruit through housing charities, Citizens Advice, and Shelter drop-ins. High proportion will be on low incomes and may have children.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include people who have received Section 21 notices. Include people with outstanding repair requests over 3 months old. Include non-English-speaking tenants. At least 40% from BAME backgrounds (reflecting housing disrepair distribution).</p>
+  </div>
+  <div class="profile">
+    <h4>Parents of children with developmental concerns</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">Parents currently waiting for SEND assessments or recently received a diagnosis for their child. Includes parents navigating EHCP process for the first time. Emotionally sensitive recruitment — must be handled with care.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include single parents, parents where English is not the first language, parents with their own disabilities. Recruit through SEND parent-carer forums — do not recruit through schools, which creates institutional trust bias.</p>
+  </div>
+  <div class="profile">
+    <h4>People in or near flood risk areas</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">Homeowners and renters in flood risk areas, especially those who have experienced flooding and those who haven't yet but are at risk. Includes elderly people living alone in rural flood zones who are least likely to have engaged with flood alerts.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include at least 30% over-65s. Include people who don't know they are in a flood risk area (test the risk communication as well as the response). Include people in social housing (different landlord dynamics).</p>
+  </div>
+  <div class="profile">
+    <h4>Early years professionals</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">Registered childminders, nursery workers, and health visitors who need professional guidance tools. Different from parent users: different trust model, different liability concerns, different vocabulary. Represent approximately 300,000 people in England.</p>
+    <p style="font-size:12px;color:#666"><strong>Quotas:</strong> Include sole-trader childminders (different resources from large nurseries), health visitors at different career stages, staff from deprived-area settings. Include staff whose first language is not English.</p>
+  </div>
+  <div class="profile">
+    <h4>People with no or low digital access</h4>
+    <p style="font-size:13px;color:#444;margin-bottom:8px">This is a meta-profile that cuts across all domains. ~1.7m people in the UK have never been online. ~8m have very low digital skills. These are disproportionately the people our tools are designed to serve. We must understand what the platform should do for them.</p>
+    <p style="font-size:12px;color:#666"><strong>Approach:</strong> Conduct research in libraries, community centres, food banks. Include research with intermediaries who help people access digital services. Design the "I can't use this" exit as carefully as the core journey.</p>
+  </div>
+</div>
+
+<h2>4. Research methods</h2>
+
+<div class="methods-grid">
+  <div class="method">
+    <h4>Contextual inquiry (discovery phase)</h4>
+    <p>Observe participants navigating similar situations in their real context — at home, on mobile, possibly under stress. Not in a lab. Not with a nice laptop and fast wifi. In the environment where they will actually use the tool. Generates genuine behavioural insight rather than stated preference.</p>
+  </div>
+  <div class="method">
+    <h4>Cognitive walkthrough with think-aloud</h4>
+    <p>Participants narrate their thoughts while navigating prototype flows. Reveals comprehension failures, decision points where they get stuck, and moments where they lose trust. Essential for testing plain English quality and reading level with low-literacy participants.</p>
+  </div>
+  <div class="method">
+    <h4>Co-design workshops</h4>
+    <p>Structured workshops where target users and community partners help design tool flows, vocabulary, and escalation paths. Not focus groups — participants actively create solutions, not just critique existing ones. Run with each priority partner organisation.</p>
+  </div>
+  <div class="method">
+    <h4>Accessibility testing</h4>
+    <p>Structured testing with screen reader users (NVDA, VoiceOver), keyboard navigation, cognitive accessibility with people with learning disabilities, mobile testing on low-end Android devices on 3G. Minimum 5 participants per modality. Separate from general usability testing.</p>
+  </div>
+  <div class="method">
+    <h4>Multilingual research</h4>
+    <p>Native speaker review of all translated outputs — not linguist review, native speaker community member review. Test in community settings (community centres, mosques, temples) where the social context of using the tool is authentic. Address trust dynamics specific to each community.</p>
+  </div>
+  <div class="method">
+    <h4>Proxy use testing</h4>
+    <p>Test scenarios where a family member, social worker, or community worker uses the tool on behalf of someone else. Observe how the experience differs when the user is not the person with the need. Identify where consent, data handling, and trust dynamics differ from direct use.</p>
+  </div>
+  <div class="method">
+    <h4>Crisis scenario testing</h4>
+    <p>Test tools in simulated crisis scenarios: just received a PIP refusal, landlord just threatened eviction, house is flooding. These journeys are structurally different from calm information-seeking. Test time pressure, comprehension under stress, and whether advocacy routing works in the critical moment.</p>
+  </div>
+  <div class="method">
+    <h4>Expert review panels</h4>
+    <p>Subject matter expert review by legal aid solicitors, welfare rights advisers, disability social workers, SEND support workers, and energy advice specialists before any tool goes live. These are the people who will know immediately if the information is wrong or dangerously incomplete.</p>
+  </div>
+</div>
+
+<h2>5. Ethical considerations</h2>
+
+<ul class="ethics-list">
+  <li>
+    <div>
+      <strong>Power asymmetry and extractive research.</strong> Our target participants are in difficult circumstances. We cannot extract their knowledge and experience without reciprocal benefit. Every research session must offer something useful: genuine information about their rights, a direct referral to a service, or at minimum a plain statement of what their participation will change. Research with vulnerable communities cannot be purely extractive.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Safeguarding obligations during research.</strong> Participants may disclose situations that involve risk — to themselves, to a child, or to a vulnerable adult in their care. Research moderators must have training in recognising disclosure risk and a clear protocol for what to do. This is not a standard research ethics requirement — it is a specific obligation for research with this population.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Re-traumatisation risk in sensitive domains.</strong> Asking someone to role-play being in a housing crisis, benefit refusal, or early years SEND situation is potentially re-traumatising if they have lived experience of that situation — which many of our participants will. Use trigger warnings, offer opt-outs from specific scenarios, and have welfare protocols in place. Do not end a session with a participant in distress.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Informed consent in non-English languages.</strong> Informed consent forms must be available in all languages used in research sessions. Consent must be genuinely informed — not a formality. For participants with learning disabilities or cognitive impairments, use accessible consent formats and allow participants to bring a supporter.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Compensation must be appropriate and not coercive.</strong> Research with vulnerable populations requires payment to be fair (reflecting the value of their time and experience) but not so high as to be coercive for people in financial hardship. Follow INVOLVE/NIHR guidelines on involvement payments for each participant type.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Institutional ethics approvals may be required.</strong> Research with children, people with cognitive impairments, and in some cases people with LTCs may require full ethics approval (analogous to NHS ethics processes). Do not assume that government UCD ethics processes are sufficient for all participant types in this programme.
+    </div>
+  </li>
+  <li>
+    <div>
+      <strong>Do not publish individual stories without explicit consent.</strong> Blog posts, case studies, and presentations that describe individual participants' situations require separate, specific consent — even when anonymised. Many of our participants' situations are sufficiently specific that anonymisation is not straightforward.
+    </div>
+  </li>
+</ul>
+
+<h2>6. Blindspot analysis — what initial scoping missed</h2>
+
+<p>The initial domain scoping was conducted through desk research, API documentation review, and evidence synthesis. Fifteen structural blindspots require specific design responses before any tool enters testing with real users.</p>
+
+<div class="blind-grid">
+
+  <div class="blind">
+    <h4><span class="blind-num">1</span> Digital exclusion — the people most likely to need us are least likely to reach us</h4>
+    <p>~1.7 million people in the UK have never been online. ~8 million have very low digital skills. These groups are disproportionately elderly, economically disadvantaged, and low-literacy — in other words, precisely our target cohorts. Our tools currently assume a minimum level of digital confidence that a significant portion of our target population does not have.</p>
+    <p><strong>Design response:</strong> Every domain must have an explicit "I can't use this" exit that routes to phone and in-person services. The platform must be designed as a digital layer within a broader multi-channel service, not as the only channel. Advocate-facing modes (for social workers and support workers) may reach more of this cohort than citizen-facing modes.</p>
+    <div class="implication">Evidence: Lloyds Bank Consumer Digital Index (published annually). OFCOM Adults' Media Use and Attitudes report. Good Things Foundation digital inclusion research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">2</span> Proxy access — the user is often not the person with the need</h4>
+    <p>Our personas (Marjorie, Daniel, Amara, Dorothy, Ryan, Asha) were designed as self-advocates. In practice, many interactions will be initiated by a family member navigating on behalf of a vulnerable person, a social worker helping a client, a community worker supporting someone in crisis, or a carer who needs information to support someone they care for. The tool's trust model, consent architecture, and data handling are completely different in proxy scenarios.</p>
+    <p><strong>Design response:</strong> Explicitly design a "helping someone else" mode from the start. This affects: who consent is obtained from, what information is shown, what referrals are appropriate, and how advocacy routing works. Build proxy use testing into every domain's UR plan.</p>
+    <div class="implication">Evidence: Carers UK State of Caring survey (8.1m unpaid carers in UK). GDS research on assisted digital use patterns. Age UK digital inclusion research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">3</span> Trust deficit in government digital services — especially for BAME communities</h4>
+    <p>DSIT's own Responsible Technology Adoption Unit (Wave 4, Dec 2024) shows that trust in AI-assisted government services varies significantly by ethnicity, age, and prior experience. Communities with historical reasons to distrust government institutions — including many of our specific target cohorts (Somali, Bangladeshi, Black British) — will require a fundamentally different trust architecture than GOV.UK branding alone can provide.</p>
+    <p><strong>Design response:</strong> Community trusted intermediaries (mosques, community centres, foodbanks) must be part of the trust architecture, not just recruitment channels. Tools must show their work: where information comes from, what it can and can't do, and how to challenge it. "Trusted by GOV.UK" is not enough.</p>
+    <div class="implication">Evidence: DSIT Public Attitudes to Data and AI Tracker Wave 4 (Dec 2024). Runnymede Trust research on BAME communities and public services. Equality and Human Rights Commission trust research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">4</span> Safeguarding edge cases — what does the AI do when it detects risk?</h4>
+    <p>The early years domain explicitly notes its "safeguarding adjacent" nature. But every domain in this platform could encounter a disclosure that creates a safeguarding obligation — a parent describing a situation that suggests domestic abuse, a person in energy poverty who mentions they are not eating, a person navigating benefits who discloses suicidal ideation. The platform currently has no safeguarding protocol.</p>
+    <p><strong>Design response:</strong> Establish a clear safeguarding protocol before any domain goes live: what types of disclosure should trigger an immediate escalation, what the escalation looks like (routing to 999, Samaritans, NSPCC, local authority), and how to do this without creating a "surveillance" experience. This is a legal and ethical requirement, not a nice-to-have.</p>
+    <div class="implication">Evidence: NICE safeguarding guidelines. Information Commissioners Office guidance on processing sensitive data. Care Act 2014 Section 42 duty to enquire.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">5</span> No Recourse to Public Funds — a significant excluded population</h4>
+    <p>People with No Recourse to Public Funds (NRPF) — a condition attached to some immigration visas — are excluded from most benefits that our eligibility tools will recommend. Our energy_check_eligibility, ltc_map_entitlements, and care_check_eligibility tools will currently return false positives for this population. There are approximately 1.4 million people with NRPF in the UK, with high overlap with our target language communities.</p>
+    <p><strong>Design response:</strong> All eligibility tools must include NRPF as a screening question. Tools must know the difference between what NRPF means for different visa types. Must route to specialist NRPF advice organisations (NRPF Network, Hackney NRPF service, etc.) rather than standard benefits routes.</p>
+    <div class="implication">Evidence: NRPF Network. Migrants' Rights Network. Project 17 research on families with NRPF. Approximate 1.4m figure from Home Office data via NRPF Network.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">6</span> People with criminal records — significant access barriers not surfaced</h4>
+    <p>People with criminal convictions face additional barriers to housing, benefits, and employment that our tools don't currently account for. Former prisoners re-entering the community face immediate simultaneous crises across energy, legal, housing, and benefits domains. They are a major user group for legal_guidance and energy_support tools in particular, but their specific situation (e.g. benefits not starting for up to 6 weeks post-release) is not addressed.</p>
+    <p><strong>Design response:</strong> Research with prison leavers and organisations supporting prison leavers (St Giles Trust, Nacro, UNLOCK). Specifically test eligibility tools for accuracy against known prison-leaver scenarios. Add prison_leaver as a vulnerability flag in eligibility engine.</p>
+    <div class="implication">Evidence: St Giles Trust research. Ministry of Justice statistics on reoffending and benefit access. Prison Reform Trust reports on benefits access post-release.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">7</span> Rough sleepers and people without a fixed address</h4>
+    <p>Our entire platform is built around postcode-based service discovery. People without a fixed address — rough sleepers, people sofa-surfing, people in emergency temporary accommodation — cannot use our most critical tools. They are simultaneously the people most likely to need them. The legal_check_deadlines and energy_check_eligibility tools are particularly inaccessible to this population.</p>
+    <p><strong>Design response:</strong> Support "no fixed address" mode for all postcode inputs — route to national services rather than local ones. Provide a "use a day centre's address" workaround as a documented pattern. Research specifically with homelessness charities (Crisis, Shelter) on what postcode-free service discovery looks like.</p>
+    <div class="implication">Evidence: Crisis research on rough sleeping and digital access. Shelter housing evidence. Homelessness Monitor (Crisis/Joseph Rowntree Foundation annual publication).</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">8</span> Mental health and cognitive accessibility under stress</h4>
+    <p>Our tools are designed for users in an ideally calm, information-seeking state. Many of our actual users will be experiencing acute mental health difficulties — anxiety about benefit reassessment, grief and exhaustion in care situations, post-traumatic stress in domestic abuse housing situations. The cognitive load of navigating complex government systems is itself a factor that mental illness makes worse. Our tools may be least usable by the people who need them most.</p>
+    <p><strong>Design response:</strong> Design for the distressed mind first, not the calm mind. This means: shorter steps, no dead ends, never display more than one decision at a time, never require users to hold information in memory, and make the "I need to talk to someone now" button always visible. Test with Mind, Rethink, and mental health drop-in services.</p>
+    <div class="implication">Evidence: Mind digital mental health research. NHS Digital mental health and technology evidence review. NICE guidelines on accessible information for mental health patients.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">9</span> The crisis moment — entirely different UX to the information-seeking journey</h4>
+    <p>Asha's landlord just called and said he's changing the locks. Ryan just received his PIP refusal letter with a 30-day deadline. Vera's house is flooding right now. These are the moments when our tools can have the greatest impact — and they are structurally different from the "I'm looking into my options" journeys we've designed for. Crisis users need: the most critical action first, the time limit front and centre, and a direct human contact immediately available.</p>
+    <p><strong>Design response:</strong> Design crisis entry points for all time-limited domains (legal, LTC appeals, energy disconnection, flooding). These are not normal journeys — they need a distinct UX pattern. Test with participants who are genuinely in crisis, not participants simulating crisis.</p>
+    <div class="implication">Evidence: GDS crisis-service design research (DVLA, HMRC). Citizens Advice service design evidence. Shelter crisis-housing UX research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">10</span> Data exploitation and impersonation risk</h4>
+    <p>Our users are in difficult circumstances that make them more susceptible to scams. We are building tools that ask them about their benefit status, household composition, and income. These are exactly the questions scams ask. We have not designed trust signals that distinguish our service from an impersonation. A bad actor replicating the interface of our tools could cause serious harm to our target users.</p>
+    <p><strong>Design response:</strong> Anti-impersonation design must be built in from day one: GOV.UK One Login integration as an option, clear "how to verify this is legitimate" guidance, never asking for bank details or National Insurance numbers, and proactive scam-awareness messaging. Coordinate with DSIT's Cyber Security and Digital Identity team.</p>
+    <div class="implication">Evidence: National Cyber Security Centre public sector guidance. Age UK scam awareness research. Citizens Advice scam reporting data. OFCOM online harms research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">11</span> Welsh language parity — equal service quality, not just translation</h4>
+    <p>The Welsh Language (Wales) Measure 2011 and Government's Welsh Language Scheme create a statutory obligation for equal treatment, not just translation availability. Our current multilingual design treats Welsh as one of seven languages. It should be treated as a statutory equal-service obligation with its own quality standard, testing protocol, and content design process. This applies to all tools used or usable in Wales.</p>
+    <p><strong>Design response:</strong> Welsh must have its own UR track — research with Welsh-speaking users in Wales, native speaker review of all outputs, parity of quality with English version. Engage with Welsh Government's digital team and Comisiynydd y Gymraeg (Welsh Language Commissioner) from the start.</p>
+    <div class="implication">Evidence: Welsh Language Commissioner annual reports. Welsh Government Digital Service Standards. Welsh Language (Wales) Measure 2011. Welsh National Survey statistics on Welsh language use.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">12</span> Rural digital connectivity — intermittent access undermines mobile-first design</h4>
+    <p>Our climate resilience and early years tools are particularly likely to be needed in rural areas. Catrin's Welsh farm, Vera's Worcestershire flood zone, Dorothy's rural Somerset situation — these are not urban mobile users with reliable 4G. In flood situations specifically, connectivity may be compromised exactly when emergency tools are most needed. Our mobile-first, low-bandwidth design assumption needs stress-testing against real rural connectivity.</p>
+    <p><strong>Design response:</strong> Test on rural connectivity profiles (2G, intermittent, dropped connections). Design progressive loading so critical information (flood risk level, time limits, emergency numbers) loads first. Investigate service worker caching for flood risk and emergency contacts.</p>
+    <div class="implication">Evidence: OFCOM Connected Nations report (UK connectivity by geography). Good Things Foundation rural digital access research. Defra rural connectivity data. Environment Agency incident response research.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">13</span> GDS Service Standard assessment — plan for it, don't retrofit to it</h4>
+    <p>All government digital services must meet the GDS Service Standard (14 points). Our tools will need to pass a service assessment before going live as part of any government service. We have referenced the Standard throughout our scoping but have not incorporated assessment planning into our research methodology. Retrofitting for service assessment is expensive and disruptive.</p>
+    <p><strong>Design response:</strong> Treat GDS service assessment as a design constraint from day one. All UR should generate artefacts that directly address Standard points 1-5 (user need, solve the whole problem, provide a joined up experience, make the service simple to use, ensure everyone can use the service). Engage a GDS assessor informally during alpha.</p>
+    <div class="implication">Evidence: GDS Service Standard documentation. GDS Service Manual on assessment. GDS blog on service assessment common failure points.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">14</span> Carer-specific navigation — completely different from self-advocacy</h4>
+    <p>Daniel (energy domain) and Dorothy (social care domain) have a carer in their life who is effectively the service navigator. But carers navigating for someone else face a different experience: they are managing their own exhaustion, they may be dealing with the cognitive decline of the person they care for, they may have different rights than the cared-for person, and the information they need is split across multiple systems. Our tools were designed with the cared-for person as the primary user — but the carer is often the actual user.</p>
+    <p><strong>Design response:</strong> Add a "I am a carer for someone" mode to all relevant tools. This changes: the rights information shown (carer's rights vs cared-for person's rights), the eligibility checking (carer's benefits as well as the cared-for person's), and the advocacy routing (Carers UK, carers' centres). Research specifically with unpaid carers, not just with the people they care for.</p>
+    <div class="implication">Evidence: Carers UK State of Caring (annual). ADASS research on carer support. Carers Trust research on navigation barriers. ONS unpaid carers data from census 2021.</div>
+  </div>
+
+  <div class="blind">
+    <h4><span class="blind-num">15</span> Intersectional poverty — multiple simultaneous domain needs</h4>
+    <p>The people most likely to use our tools will often need all of them simultaneously. Amara (energy domain) is also a private renter who may have housing disrepair rights (legal domain), has children whose development we should screen (early years domain), and lives in a ward with high flood risk (climate domain). Our cross-domain citizen intelligence layer addresses this architecturally — but our UR has studied each domain in isolation. The most important user journeys may be the ones that span multiple domains.</p>
+    <p><strong>Design response:</strong> Include at least two cross-domain research sessions per UR phase — specifically recruit participants with multiple simultaneous needs and observe which domain they need most urgently, how they prioritise, and whether cross-domain routing works in practice. This is only possible after multi-domain tools are built.</p>
+    <div class="implication">Evidence: Joseph Rowntree Foundation Destitution in the UK (2023). Citizens Advice complex needs research. Marmot Review evidence on clustering of social determinants. ADR UK research on linked disadvantage datasets.</div>
+  </div>
+
+</div>
+
+<h2>7. Formal research evidence base by domain</h2>
+
+<p>Our tools must build on — not substitute for — the substantial body of academic and policy research in each domain. The following is the minimum evidence base our team should be familiar with before designing, testing, or deploying tools in each domain.</p>
+
+<div class="ev-grid">
+
+  <div class="ev">
+    <h4 style="color:#1D9E75">Energy support</h4>
+    <p><strong>National Energy Action</strong> annual Fuel Poverty Monitor — provides the definitive data on households in fuel poverty, demographic breakdown, and geographic distribution. The source for our core impact metrics.</p>
+    <p style="margin-top:6px"><strong>End Fuel Poverty Coalition</strong> — advocacy research on barriers to scheme take-up. Specifically addresses awareness gaps.</p>
+    <p style="margin-top:6px"><strong>ONS Excess Winter Deaths</strong> — provides the cold-related mortality data (~10,000/year) that quantifies the life-or-death stakes of our energy tools.</p>
+    <p style="margin-top:6px"><strong>BEIS/DESNZ fuel poverty statistics</strong> (published annually) — official denominator for measuring tool impact against the national fuel poverty rate.</p>
+    <cite>NEA · End Fuel Poverty Coalition · ONS · BEIS/DESNZ</cite>
+  </div>
+
+  <div class="ev">
+    <h4 style="color:#533AB7">Long-term conditions</h4>
+    <p><strong>DWP benefit take-up statistics</strong> — published data on PIP and ESA take-up rates. The numerator/denominator for measuring whether our tools reduce the take-up gap.</p>
+    <p style="margin-top:6px"><strong>Scope</strong> — Disability and poverty research. Specifically their research on PIP assessment distress and the psychological cost of reassessment.</p>
+    <p style="margin-top:6px"><strong>Mind</strong> — Mental health and benefits research. The mental health impact of benefit administration is well evidenced here.</p>
+    <p style="margin-top:6px"><strong>CPAG</strong> (Child Poverty Action Group) — Welfare rights and benefit take-up evidence. Annual Welfare Benefits and Tax Credits Handbook is the practitioner reference.</p>
+    <cite>DWP · Scope · Mind · CPAG · Mencap</cite>
+  </div>
+
+  <div class="ev">
+    <h4 style="color:#0F6E56">Adult social care</h4>
+    <p><strong>CQC State of Care</strong> annual report — the authoritative sector review. Provides waiting time data, quality distribution, and geographic variation that our tools must build on.</p>
+    <p style="margin-top:6px"><strong>King's Fund</strong> adult social care research — systematic analysis of the funding crisis and Care Act implementation gaps.</p>
+    <p style="margin-top:6px"><strong>ADASS</strong> annual survey — local authority social care directors' data on waiting times, financial pressures, and service availability.</p>
+    <p style="margin-top:6px"><strong>NHS England CHC framework review</strong> — the evidence on how many eligible people are not receiving NHS Continuing Healthcare is systematically under-collected.</p>
+    <cite>CQC · King's Fund · ADASS · NHS England · Skills for Care</cite>
+  </div>
+
+  <div class="ev">
+    <h4 style="color:#0E4F8C">Legal guidance</h4>
+    <p><strong>Legal Problem and Resolution Survey</strong> (MOJ) — the systematic evidence base for the legal advice desert. 37% of legal problems go unresolved. The denominator for measuring our tools' impact.</p>
+    <p style="margin-top:6px"><strong>Law Centres Network</strong> annual report — data on unmet need at law centres, case types, and geographic distribution of legal advice deserts.</p>
+    <p style="margin-top:6px"><strong>Access to Justice Foundation</strong> — the charity coordinating legal advice charities. Maps the advice gap nationally.</p>
+    <p style="margin-top:6px"><strong>Shelter</strong> housing legal evidence — specific data on housing disrepair and section 21 cases, including outcomes by representation status.</p>
+    <cite>MOJ · Law Centres Network · Access to Justice Foundation · Shelter</cite>
+  </div>
+
+  <div class="ev">
+    <h4 style="color:#3B6D11">Climate resilience</h4>
+    <p><strong>Environment Agency flood risk data</strong> — the authoritative source. 5.2 million properties at flood risk in England. Underpins climate_check_flood_risk directly.</p>
+    <p style="margin-top:6px"><strong>UK Health Security Agency heat-health research</strong> — evidence on heat-related mortality and morbidity, with specific evidence on outdoor workers and elderly populations.</p>
+    <p style="margin-top:6px"><strong>Joseph Rowntree Foundation</strong> — climate justice research showing the regressive distribution of climate risk and adaptive capacity.</p>
+    <p style="margin-top:6px"><strong>NFU</strong> (National Farmers Union) — agricultural climate risk data for the small farm rural use case.</p>
+    <cite>EA · UKHSA · JRF · NFU · Met Office Hadley Centre · Flood Re</cite>
+  </div>
+
+  <div class="ev">
+    <h4 style="color:#A33500">Early years</h4>
+    <p><strong>The Heckman Equation</strong> — Nobel laureate James Heckman's evidence base for early childhood investment. £1 invested in early childhood returns £13 in improved outcomes (Perry Preschool Project). The single most powerful evidence base for our tools' public value.</p>
+    <p style="margin-top:6px"><strong>ECHILD</strong> (ADR UK) — Education and Child Health Insights from Linked Data. The research dataset linking NPD and NHS data that most directly parallels our NDL vision for early years.</p>
+    <p style="margin-top:6px"><strong>Sutton Trust</strong> early years social mobility research — evidence on the school readiness gap by income and ethnicity.</p>
+    <p style="margin-top:6px"><strong>IPSEA</strong> — Independent Provider of Special Education Advice. Legal rights evidence base for SEND families.</p>
+    <cite>Heckman · ECHILD/ADR UK · Sutton Trust · IPSEA · EEF · Nuffield Foundation</cite>
+  </div>
+
+</div>
+
+<h2>8. Discussion guide outlines by domain</h2>
+
+<p>These are abbreviated outlines for moderated research sessions. Full discussion guides should be co-designed with community partner organisations before use.</p>
+
+<table class="dg-table">
+<thead>
+<tr><th>Domain</th><th>Opening (5-10 min)</th><th>Core exploration (20-30 min)</th><th>Prototype / tool (15-20 min)</th><th>Close (5 min)</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Energy</strong></td>
+  <td>Tell me about your experience with energy bills this winter. Have you ever looked for help with costs?</td>
+  <td>Walk me through the last time you tried to find out about energy support. What happened? Where did you start? Where did you get stuck?</td>
+  <td>I'd like to show you something we're working on. [Show prototype] What's your first reaction? Can you tell me what you think this will do?</td>
+  <td>What would need to be different for this to be genuinely useful to you? Is there anything we haven't covered?</td>
+</tr>
+<tr>
+  <td><strong>LTC</strong></td>
+  <td>Can you tell me a bit about your condition and how it affects your day-to-day life? How does that interact with the services and support you access?</td>
+  <td>When you've applied for benefits or services related to your condition, what's been the hardest part? Have you ever been refused something you think you were entitled to?</td>
+  <td>[Show prototype] Without reading it, what do you think this page is for? Who do you think it's for? What would you do next?</td>
+  <td>What would you want this tool to do that it doesn't do right now? Who else in your life might benefit from something like this?</td>
+</tr>
+<tr>
+  <td><strong>Legal</strong></td>
+  <td>Have you ever had a problem with your landlord, employer, or with a benefit decision? How did you respond to it?</td>
+  <td>What stopped you from taking action? Was it not knowing your rights, not knowing who to contact, cost, time, or something else? Did you know there was a time limit?</td>
+  <td>[Show legal_explain_rights prototype] How confident are you that this information is accurate? How would you verify it? What's missing?</td>
+  <td>If this tool had given you the same information during your real situation, what would you have done differently?</td>
+</tr>
+<tr>
+  <td><strong>Social care</strong></td>
+  <td>Who in your life needs care support right now? How long have they been waiting? What have you tried?</td>
+  <td>Did you know what the council was legally obliged to do? If not — when did you find out? What would have been different if you'd known earlier?</td>
+  <td>[Show care_explain_rights prototype] Does this match your experience? Where is it wrong or incomplete? Would you trust this?</td>
+  <td>What is the one thing you wish someone had told you at the start of this process?</td>
+</tr>
+<tr>
+  <td><strong>Climate</strong></td>
+  <td>Have you experienced flooding, or are you worried about it? Have you done anything to prepare?</td>
+  <td>How did you find out about your flood risk? Did you know the EA sends free alerts? Have you heard of Flood Re?</td>
+  <td>[Show climate_check_flood_risk prototype] After reading this, does your flood risk feel clearer or more confusing? What would you do with this information?</td>
+  <td>What would make you actually sign up for flood alerts after this session?</td>
+</tr>
+<tr>
+  <td><strong>Early years</strong></td>
+  <td>Tell me about your child. How old are they? Is there anything about their development you've been thinking about?</td>
+  <td>When you've had concerns, who have you talked to first? What happened? What did you wish you'd known earlier?</td>
+  <td>[Show eyfs_check_development prototype] How does this make you feel? Is the tone right? What worries you about using something like this?</td>
+  <td>Who else — apart from you — would benefit from a tool like this? Your health visitor? A childminder? The nursery?</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+<div class="info">
+  <p><strong>Living document.</strong> This UR bundle is a starting point, not a prescription. It should be updated after each research phase with findings, updated participant profiles, and revised discussion guides. The blindspot list should grow, not shrink — every research session will surface new things we hadn't anticipated.</p>
+</div>
+
+<footer>User Research Bundle · NDL PubSec MCP Platform · v0.1 · Cross-Gov AI Engineering Lab · June 2026</footer>
+</body></html>

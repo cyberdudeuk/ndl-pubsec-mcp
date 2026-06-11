@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Long-Term Conditions MCP — Scope & Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff;max-width:900px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#533AB7;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #EEEDFE}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.25rem 0 .5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#f3f0ff;padding:1px 5px;border-radius:4px;color:#533AB7}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#EEEDFE;color:#3C3489}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#f5f3ff;border-left:4px solid #533AB7;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.pc{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #533AB7}
+.pn{font-weight:700;font-size:15px;margin-bottom:2px}.ps{font-size:12px;color:#888;margin-bottom:8px}
+.pb{font-size:13px;color:#444;line-height:1.5;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tc{font-family:'SF Mono','Cascadia Code',monospace;font-size:14px;font-weight:600;color:#533AB7;background:#EEEDFE;padding:4px 12px;border-radius:6px;display:inline-block}
+.th{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tool{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.tool.hl{border-left:4px solid #533AB7}
+.td{font-size:14px;color:#444;margin-bottom:1rem;line-height:1.5}
+.cb{background:#fafafa;border:1px solid #e8e4f7;border-radius:8px;padding:1rem 1.25rem;font-family:'SF Mono','Cascadia Code',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.kw{color:#7c3aed}.ty{color:#1d4ed8}.st{color:#047857}.cm{color:#9ca3af;font-style:italic}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.dc{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.dc.main{border-left:4px solid #533AB7}.dc.fut{border-left:4px dashed #533AB7}
+.dc h3{font-size:14px;margin-bottom:6px}.dc p{margin:0;color:#555;line-height:1.5}
+.deia{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0 1.5rem}
+.di{display:flex;align-items:flex-start;gap:8px;background:#f9fafb;border-radius:6px;padding:8px 12px;font-size:13px}
+.di::before{content:"✓";color:#533AB7;font-weight:700;flex-shrink:0;margin-top:1px}
+.bl{list-style:none;margin:1rem 0 1.5rem}
+.bl li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.bl li:last-child{border-bottom:none}
+.sn{background:#533AB7;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.sb h3{margin:0 0 2px;font-size:14px}.sb p{margin:0;font-size:13px;color:#666}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:600px){body{padding:1.25rem 1rem}.deia{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Long-Term Conditions MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 2</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP server enabling AI assistants to help people with long-term health conditions navigate the complex, fragmented landscape of benefits, services and assessments — without having to repeatedly prove the same condition to services that cannot see each other's data. It aligns with the NDL Kickstarter on reducing administrative burden for people with LTCs.</p>
+</div>
+
+<h2>Problem statement</h2>
+<p>People with long-term conditions face a system built around institutional data silos, not around their lives. They must repeatedly prove the same condition — sometimes to DWP, NHS, local authority and their employer simultaneously — submitting identical medical evidence to each. The NDL Kickstarter addresses the data linkage problem. This MCP addresses the citizen-facing layer: helping people understand what they're entitled to, prepare evidence once, and navigate when things go wrong.</p>
+<p>The people most harmed are those with progressive conditions (where re-assessment causes repeated distress), late diagnoses (who arrive at services without a navigator), and those with comorbidities who fall between the mandates of multiple systems.</p>
+
+<h2>Target users</h2>
+<div class="pg">
+  <div class="pc">
+    <div class="pn">Sarah, 45</div><div class="ps">Progressive MS · Manchester</div>
+    <div class="pb">Re-applying for PIP at reassessment despite a permanent, progressive condition. Has submitted identical medical evidence six times across different services in three years. Each reassessment causes significant distress and takes weeks of her limited energy.</div>
+    <div class="tags"><span class="tag tg">PIP reassessment</span><span class="tag tg">Progressive condition</span><span class="tag ta">High admin burden</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Kwame, 58</div><div class="ps">Diabetes + depression · Birmingham</div>
+    <div class="pb">Navigating NHS, DWP and housing simultaneously. Each system wants different evidence in a different format. Doesn't understand why the NHS can't simply tell DWP he's unwell. Has missed deadlines for benefits because he didn't understand the process.</div>
+    <div class="tags"><span class="tag tg">Comorbidities</span><span class="tag tg">Benefits navigation</span><span class="tag ta">Missed deadlines</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Aisha, 35</div><div class="ps">Autistic + ADHD · Leeds</div>
+    <div class="pb">Late-diagnosed adult trying to access PIP, workplace reasonable adjustments and NHS support simultaneously with zero coordination between systems. The cognitive load of navigating multiple disconnected bureaucracies is itself disabling.</div>
+    <div class="tags"><span class="tag tg">Late diagnosis</span><span class="tag tg">Multiple systems</span><span class="tag ta">Cognitive load</span></div>
+  </div>
+</div>
+
+<h2>MCP tool specifications</h2>
+<p>Six composable tools. The server's unique value over existing resources is its ability to chain these — mapping entitlements, then reducing duplication, then generating personalised evidence structures — in a single citizen-facing interaction.</p>
+
+<div class="tool hl">
+  <div class="th"><span class="tc">ltc_explain_benefit</span><span class="tag tg">Build first</span></div>
+  <div class="td">Returns a plain-language explanation of any named LTC-related benefit or service — PIP, ESA, Blue Badge, NHS Continuing Healthcare — adapted to reading level and language. Foundational tool; all others link to it for benefit detail. Uses GOV.UK Content API.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcExplainBenefitInput</span> {
+  benefit_name:      <span class="ty">string</span>;             <span class="cm">// "PIP" | "ESA" | "Blue Badge" | "NHS CHC" | "Access to Work"</span>
+  condition_context?: <span class="ty">string</span>;            <span class="cm">// personalises the explanation</span>
+  reading_level?:    <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:         <span class="ty">string</span>;             <span class="cm">// ISO 639-1, default 'en'</span>
+}
+<span class="kw">interface</span> <span class="ty">LtcExplainBenefitOutput</span> {
+  benefit_name:       <span class="ty">string</span>;
+  plain_description:  <span class="ty">string</span>;
+  weekly_or_annual_amount?: <span class="ty">string</span>;
+  who_qualifies:      <span class="ty">string</span>;
+  assessment_process?: <span class="ty">string</span>;          <span class="cm">// if applicable</span>
+  application_steps:  <span class="ty">ApplicationStep</span>[];
+  further_info_url:   <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">ltc_map_entitlements</span></div>
+  <div class="td">Given a set of conditions and current benefits, returns a complete map of everything the person may be entitled to — including benefits, services, workplace adjustments and NHS pathways — with gaps highlighted.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcMapEntitlementsInput</span> {
+  conditions:           <span class="ty">string</span>[];           <span class="cm">// e.g. ["MS", "depression", "chronic pain"]</span>
+  current_benefits:     <span class="ty">BenefitType</span>[];
+  employment_status:    <span class="ty">EmploymentStatus</span>;  <span class="cm">// "employed"|"self_employed"|"unemployed"|"carer"</span>
+  household_type:       <span class="ty">HouseholdType</span>;
+}
+<span class="kw">interface</span> <span class="ty">LtcMapEntitlementsOutput</span> {
+  entitled_to:          <span class="ty">Entitlement</span>[];
+  gaps_identified:      <span class="ty">Gap</span>[];              <span class="cm">// benefits/services not currently claimed</span>
+  possibly_entitled:    <span class="ty">Entitlement</span>[];      <span class="cm">// need one more piece of info to confirm</span>
+  recommended_actions:  <span class="ty">Action</span>[];
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">ltc_reduce_duplication</span></div>
+  <div class="td">Identifies where medical evidence already exists across services and can be safely reused — with consent — so the person doesn't have to gather the same information again. Central to the NDL data linkage vision for this kickstarter.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcReduceDuplicationInput</span> {
+  conditions:        <span class="ty">string</span>[];
+  applying_for:      <span class="ty">string</span>;            <span class="cm">// e.g. "PIP", "Blue Badge", "care needs assessment"</span>
+  services_using:    <span class="ty">string</span>[];           <span class="cm">// ["NHS", "DWP", "local_authority"]</span>
+}
+<span class="kw">interface</span> <span class="ty">LtcReduceDuplicationOutput</span> {
+  existing_evidence:       <span class="ty">EvidenceLocation</span>[];
+  shareable_with_consent:  <span class="ty">string</span>[];
+  still_needed:            <span class="ty">string</span>[];
+  consent_process:         <span class="ty">string</span>;
+  nhs_sharing_rights:      <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">ltc_prepare_evidence</span></div>
+  <div class="td">Helps structure and organise evidence for assessments based on the specific descriptors and criteria used by assessors — WCA for ESA, functional descriptors for PIP, medical criteria for Blue Badge. Turns "tell me about your condition" into "here is what assessors are looking for."</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcPrepareEvidenceInput</span> {
+  assessment_type:    <span class="ty">string</span>;            <span class="cm">// "PIP" | "WCA" | "Blue Badge" | "care needs"</span>
+  conditions:         <span class="ty">string</span>[];
+  current_evidence?:  <span class="ty">string</span>[];          <span class="cm">// what they already have</span>
+}
+<span class="kw">interface</span> <span class="ty">LtcPrepareEvidenceOutput</span> {
+  evidence_needed:    <span class="ty">EvidenceItem</span>[];
+  evidence_gaps:      <span class="ty">string</span>[];
+  how_to_obtain:      Record&lt;<span class="ty">string</span>, <span class="ty">string</span>&gt;;
+  assessor_focus:     <span class="ty">string</span>[];           <span class="cm">// what descriptors assessors prioritise</span>
+  common_mistakes:    <span class="ty">string</span>[];
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">ltc_navigate_appeals</span></div>
+  <div class="td">Guides through the mandatory reconsideration and First-tier Tribunal process for any refused LTC-related benefit. Provides timelines, what to write, and where to get free help. Critical for a cohort where appeal success rates are high but most people give up before reaching tribunal.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcNavigateAppealsInput</span> {
+  decision_type:    <span class="ty">string</span>;             <span class="cm">// "PIP refused" | "ESA refused" | "Blue Badge refused"</span>
+  decision_date:    <span class="ty">string</span>;             <span class="cm">// ISO date — triggers deadline calculation</span>
+  decision_reason?: <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">LtcNavigateAppealsOutput</span> {
+  appeal_stage:         <span class="st">'MR'</span> | <span class="st">'tribunal'</span>;
+  deadline:             <span class="ty">string</span>;
+  days_remaining:       <span class="ty">number</span>;
+  steps:                <span class="ty">AppealStep</span>[];
+  what_to_include:      <span class="ty">string</span>[];
+  success_rate_context: <span class="ty">string</span>;
+  free_help_available:  <span class="ty">Organisation</span>[];
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">ltc_find_condition_support</span></div>
+  <div class="td">Finds condition-specific charities, NHS services, and peer support networks by postcode and condition type. Includes referral pathways back into NHS where direct access is possible (e.g. self-referral to IAPT/Talking Therapies).</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">LtcFindConditionSupportInput</span> {
+  conditions:       <span class="ty">string</span>[];
+  postcode:         <span class="ty">string</span>;
+  support_type?:    <span class="st">'peer'</span> | <span class="st">'advocacy'</span> | <span class="st">'clinical'</span> | <span class="st">'financial'</span> | <span class="st">'all'</span>;
+  language?:        <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">LtcFindConditionSupportOutput</span> {
+  national_charities:      <span class="ty">Organisation</span>[];
+  local_services:          <span class="ty">Organisation</span>[];
+  peer_support_groups:     <span class="ty">Organisation</span>[];
+  nhs_self_referral_paths: <span class="ty">string</span>[];
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+<div class="dg">
+  <div class="dc main"><h3 style="color:#533AB7">GOV.UK Content API</h3><p>Free, public, no auth. PIP, ESA, Blue Badge, NHS CHC guidance. Start here for ltc_explain_benefit.</p></div>
+  <div class="dc main"><h3 style="color:#533AB7">NICE guidelines</h3><p>Public, downloadable. Condition-specific clinical guidance useful for evidence preparation and what assessors may ask about.</p></div>
+  <div class="dc main"><h3 style="color:#533AB7">DWP assessment guidance</h3><p>PIP and WCA descriptor frameworks (public). Critical for ltc_prepare_evidence — these are the actual criteria assessors score against.</p></div>
+  <div class="dc main"><h3 style="color:#533AB7">Condition charity websites</h3><p>MS Society, Parkinson's UK, Diabetes UK etc. No APIs — fetched/curated. Rich source of condition-specific entitlement guides.</p></div>
+  <div class="dc fut"><h3 style="color:#533AB7">NDL linked data <span class="tag tg" style="font-size:10px;vertical-align:middle">Phase 2+</span></h3><p>Cross-service evidence sharing with consent — the core of the NDL LTC kickstarter. Enables ltc_reduce_duplication to work with live data.</p></div>
+</div>
+
+<h2>DEIA requirements</h2>
+<div class="deia">
+  <div class="di">Multi-language — BSL (written guidance), Urdu, Punjabi, Polish, Welsh as minimum viable set</div>
+  <div class="di">WCAG 2.2 AA throughout — screen reader compatible at every interaction</div>
+  <div class="di">Cognitive accessibility — structured, predictable, no complex navigation for people with cognitive LTCs</div>
+  <div class="di">Mobile-first — many claimants are on mobile only, often during flare-ups when laptop use isn't possible</div>
+  <div class="di">Plain English — FK Grade 6 or below for all citizen-facing output at 'simple' level</div>
+  <div class="di">No login required for general guidance — consent-first if accessing personal data</div>
+  <div class="di">GDS service standard compliant — all 14 points assessed at each tool</div>
+  <div class="di">Intersectional vulnerability — comorbidities, caring responsibilities, late diagnosis all handled</div>
+  <div class="di">Never substitutes for a doctor — always signposts professional support</div>
+  <div class="di">Distress-aware — appeals and assessments are stressful; tone calibrated accordingly</div>
+  <div class="di">Always routes to a human — every flow surfaces a route to a person</div>
+  <div class="di">Co-designed with communities — disabled people's organisations involved from alpha</div>
+</div>
+
+<h2>Recommended build order</h2>
+<ol class="bl">
+  <li><div class="sn">1</div><div class="sb"><h3><code>ltc_explain_benefit</code></h3><p>Simplest to build. GOV.UK Content API, same pattern as energy_explain_scheme. Build this first — it's the foundation all other tools link to.</p></div></li>
+  <li><div class="sn">2</div><div class="sb"><h3><code>ltc_map_entitlements</code></h3><p>Core value. Implement a structured TypeScript knowledge base mapping condition types to relevant benefits and services. High complexity but highest strategic value.</p></div></li>
+  <li><div class="sn">3</div><div class="sb"><h3><code>ltc_prepare_evidence</code></h3><p>Builds on knowledge of assessment criteria. Requires encoding PIP descriptors and WCA criteria — all publicly available — as structured data.</p></div></li>
+  <li><div class="sn">4</div><div class="sb"><h3><code>ltc_navigate_appeals</code></h3><p>Time-sensitive tool with highest urgency for users. Requires deadline calculation logic and knowledge of MR/tribunal process. Build after evidence prep tool is working.</p></div></li>
+  <li><div class="sn">5</div><div class="sb"><h3><code>ltc_find_condition_support</code></h3><p>Requires curated condition charity directory plus local service web search. Build after core entitlement and evidence tools are stable.</p></div></li>
+  <li><div class="sn">6</div><div class="sb"><h3><code>ltc_reduce_duplication</code></h3><p>Most complex — requires understanding of what data exists where and consent frameworks. Build after NDL data linkage governance is clearer. Highest future value.</p></div></li>
+</ol>
+
+<h2>First build: <code>ltc_explain_benefit</code></h2>
+<div class="callout"><p><strong>Implementation approach:</strong> Same pattern as <code>energy_explain_scheme</code> — GOV.UK Content API fetch, LLM synthesis into structured output at requested reading level and language. The unique addition here is <code>assessment_process</code> field, which explains what the PIP or WCA assessment actually involves — reducing the fear of the unknown that causes many people to not apply.</p></div>
+<h3>Key GOV.UK content paths for v1</h3>
+<ul>
+  <li><code>/pip</code> — Personal Independence Payment</li>
+  <li><code>/employment-support-allowance</code> — ESA (new and legacy)</li>
+  <li><code>/apply-blue-badge</code> — Blue Badge scheme</li>
+  <li><code>/nhs-continuing-healthcare</code> — NHS CHC</li>
+  <li><code>/access-to-work</code> — workplace support scheme</li>
+  <li><code>/attendance-allowance</code> — for people over State Pension age</li>
+</ul>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>Is there existing DWP data or research on the most common failure points where eligible people don't claim — is it awareness, evidence gathering, or the assessment itself?</li>
+  <li>Are there disability organisations already connected to the lab who should be co-designing this from the start?</li>
+  <li>What's the data governance model for ltc_reduce_duplication — does NDL have a consent framework being designed that we should align with?</li>
+  <li>PIP descriptors are public but the scoring thresholds are sometimes contested. How do we handle the tension between accuracy and over-promising?</li>
+  <li>Should this tool be aware of upcoming PIP reform (2025-26 consultation) and flag when guidance may change?</li>
+</ol>
+
+<footer>Long-Term Conditions MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment</footer>
+</body></html>

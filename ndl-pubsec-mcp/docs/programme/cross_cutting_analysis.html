@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-Cutting Analysis — NDL PubSec MCP Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.75;color:#1a1a1a;background:#fff;max-width:960px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:28px;font-weight:700;color:#0F6E56;margin-bottom:4px}
+.subtitle{font-size:17px;font-weight:400;color:#555;margin-bottom:1.25rem}
+h2{font-size:19px;font-weight:600;color:#1a1a1a;margin:2.75rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #E1F5EE}
+h3{font-size:16px;font-weight:600;color:#1a1a1a;margin:1.5rem 0 .5rem}
+h4{font-size:14px;font-weight:600;color:#1a1a1a;margin:1rem 0 .25rem}
+p{margin-bottom:.75rem;color:#2d2d2d}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#f0fdf8;padding:1px 5px;border-radius:4px;color:#085041}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2.5rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#E1F5EE;color:#085041}.tp{background:#EEEDFE;color:#3C3489}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}.tb{background:#E6F1FB;color:#0C447C}
+.exec{background:#f0fdf8;border:1px solid #9FE1CB;border-radius:12px;padding:1.5rem;margin:1rem 0 2rem}
+.exec h3{color:#0F6E56;margin-top:0}
+.exec p{font-size:14px;margin-bottom:.5rem}
+.exec p:last-child{margin-bottom:0}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.25rem 0 1.5rem}
+.stat{text-align:center;padding:1rem;border:1px solid #e5e7eb;border-radius:10px;background:#fafafa}
+.stat-n{font-size:28px;font-weight:700;color:#0F6E56;display:block}
+.stat-l{font-size:12px;color:#666;line-height:1.4}
+.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.module{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;border-left:4px solid #0F6E56}
+.module h4{color:#0F6E56;margin:0 0 .5rem;font-size:14px}
+.module p{font-size:13px;color:#444;margin:0 0 .5rem;line-height:1.5}
+.module p:last-child{margin:0}
+.domains{display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem}
+.dchip{font-size:10px;padding:1px 7px;border-radius:3px}
+.kb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 1.5rem}
+.kb{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;background:#fafafa}
+.kb h4{font-size:14px;margin-bottom:.5rem;color:#1a1a1a}
+.kb p{font-size:13px;color:#444;margin:0;line-height:1.5}
+.priority-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:13px}
+.priority-table th{background:#f3f4f6;text-align:left;padding:8px 12px;font-weight:600;border-bottom:2px solid #e5e7eb}
+.priority-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.priority-table tr:last-child td{border-bottom:none}
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-weight:700;font-size:12px;color:#fff}
+.opp-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin:1rem 0 1.5rem}
+.opp{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-left:4px solid #533AB7}
+.opp h4{color:#533AB7;margin:0 0 .5rem;font-size:15px;display:flex;align-items:center;gap:8px}
+.opp p{font-size:14px;color:#444;margin:0 0 .5rem;line-height:1.55}
+.opp p:last-child{margin:0}
+.opp .why{font-size:13px;color:#533AB7;background:#EEEDFE;padding:6px 10px;border-radius:6px;margin-top:.5rem}
+.ari-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.ari{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.ari-dept{font-size:11px;font-weight:700;color:#185FA5;margin:0 0 4px;text-transform:uppercase;letter-spacing:.05em}
+.ari-q{font-weight:600;color:#1a1a1a;margin:0 0 4px;line-height:1.4;font-size:13px}
+.ari-conn{color:#555;margin:0;font-size:12px;line-height:1.4}
+.route-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 1.5rem}
+.route{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;background:#fafafa}
+.route h4{font-size:13px;margin-bottom:.5rem;color:#185FA5}
+.route p{font-size:12px;color:#555;margin:0;line-height:1.5}
+.steps{list-style:none;margin:1rem 0 1.5rem}
+.steps li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start;font-size:14px}
+.steps li:last-child{border-bottom:none}
+.step-n{background:#0F6E56;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-b h4{margin:0 0 2px;font-size:14px}.step-b p{margin:0;font-size:13px;color:#666}
+.callout{background:#f0fdf8;border-left:4px solid #0F6E56;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.warn{background:#FFF8EC;border-left:4px solid #BA7517;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0}
+.warn p{margin:0;font-size:14px}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:700px){body{padding:1.25rem 1rem}.module-grid,.kb-grid,.ari-grid,.route-grid,.stat-row{grid-template-columns:1fr}}
+@media print{body{font-size:13px;padding:1rem}.opp{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>Cross-Cutting Analysis</h1>
+<p class="subtitle">NDL PubSec MCP Platform — Shared Foundations, DSIT Frontier Opportunities & Evidence-Based Priority Ranking</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tp">DSIT · For review and discussion</span>
+</div>
+
+<div class="exec">
+  <h3>Executive summary</h3>
+  <p>Scoping all six NDL Kickstarter domains reveals a consistent structural pattern beneath each: every domain needs the same ten foundational capabilities, the same language set, the same DEIA requirements, and the same consent architecture for when NDL data linkage matures. Building these ten shared modules first — before any domain-specific work — eliminates six-fold duplication, creates a reusable government platform rather than six siloed tools, and positions DSIT to lead the technical architecture underpinning the broader NDL programme.</p>
+  <p>The evidence-based priority order for domain depth is: <strong>Legal Guidance</strong> (irreversible consequences of missed deadlines; widest legal advice desert), <strong>Long-Term Conditions</strong> (~15 million affected; repeated systemic harm), <strong>Energy Support</strong> (already well scoped; ~10,000 cold deaths annually; continue deepening), <strong>Adult Social Care</strong> (£bn in unclaimed NHS Continuing Healthcare; 400k+ waiting), <strong>Early Years</strong> (generational impact; highest long-term ROI; live NDL pilots), <strong>Climate Resilience</strong> (5.2m at flood risk; growing but structurally distinct from other domains).</p>
+  <p>As DSIT, five frontier opportunities exist that go well beyond what comparable government digital programmes have attempted: integration with the GOV.UK agentic AI Chat procurement (which DSIT itself launched in March 2025), a cross-domain citizen intelligence layer, proactive NDL push capability, a live policy impact measurement product, and an open research dataset in partnership with ADR UK. Eight active ARI questions across DSIT, DWP, DHSC, DfE, MOJ and DEFRA map directly to this work.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><span class="stat-n">36</span><span class="stat-l">MCP tools across 6 domains</span></div>
+  <div class="stat"><span class="stat-n">10</span><span class="stat-l">shared capabilities to build once</span></div>
+  <div class="stat"><span class="stat-n">£319bn</span><span class="stat-l">long-term social value potential from linked public data (ADR UK/Baringa)</span></div>
+  <div class="stat"><span class="stat-n">8</span><span class="stat-l">active ARI questions directly aligned to this programme</span></div>
+</div>
+
+<h2>1. The shared technical foundation</h2>
+
+<p>Across all six domain scopes, the same structural pattern appears beneath every tool: a capability to fetch from a UK government API, synthesise content into plain English at a defined reading level, resolve a postcode to a local authority, check eligibility against a benefits crosswalk, find local services, and route to human advocacy. These are not similarities of coincidence — they are the shape of the citizen-government information asymmetry problem itself.</p>
+
+<p>Building these ten modules first, before any domain-specific work, means each subsequent domain tool is configured rather than built from scratch. It also means quality improvements (better plain English, a new language, an improved consent pattern) propagate across all six domains simultaneously.</p>
+
+<div class="module-grid">
+
+  <div class="module">
+    <h4>UK Services API Client</h4>
+    <p>Shared TypeScript library wrapping GOV.UK Content API, GOV.UK Search API, and any other public UK government data APIs used across domains. Handles HTTP, caching (24h TTL for content), rate limiting, retry logic, and structured error responses that all tools can act on.</p>
+    <p>All six domains call GOV.UK Content API. Building a shared client means one set of tests, one cache, one error handling pattern. Not building it means writing the same code six times with six different quality levels.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Plain English Synthesis Engine</h4>
+    <p>A shared prompt engineering module that converts fetched GOV.UK content (and other structured data) into Flesch-Kincaid Grade ≤ 6 output at the 'simple' level, or FK Grade 8-10 at 'standard'. Enforces output structure (description, eligibility, steps, contacts). Applies reading level scoring as a quality gate.</p>
+    <p>Every single tool across all six domains has a reading level parameter. The synthesis pattern is identical. One module with domain-specific prompt templates is vastly more maintainable than six separate implementations.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Multilingual Translation Layer</h4>
+    <p>A shared translation pipeline applied to all citizen-facing tool outputs. Minimum set (same across all six domains): Welsh (statutory), Urdu, Somali, Polish, Bengali, Punjabi, Arabic. Consistent glossary for government terms (e.g. "personal independence payment" should have a standardised translation, not be translated differently by each domain tool).</p>
+    <p>Welsh has a statutory requirement. All other languages in the set appear in the target populations of all six domains. A shared glossary of government terminology is critical — terms like "eligible" and "entitlement" need consistent translations.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Postcode Intelligence Layer</h4>
+    <p>Maps any UK postcode to: local authority, region, devolved nation (England/Wales/Scotland/Northern Ireland), parliamentary constituency, and NHS region. Uses postcodes.io (free, public, well-maintained). Detects Welsh postcodes to trigger mandatory bilingual mode. Used by every tool that personalises by location.</p>
+    <p>Devolved nation detection is critical — Care Act applies in England; different legislation applies in Wales and Scotland. Not resolving this correctly produces legally incorrect output. Build it correctly once.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Eligibility Assessment Engine</h4>
+    <p>A shared TypeScript knowledge base encoding the benefits crosswalk that appears across five of six domains. UC, PIP, ESA, Pension Credit, Carer's Allowance, DLA, Housing Benefit, Council Tax Reduction, and Child Benefit appear as eligibility triggers in energy, LTC, social care, early years, and legal domains. Build the crosswalk once, extend with domain-specific rules.</p>
+    <p>The energy domain checks if someone claiming Pension Credit qualifies for Warm Home Discount. The LTC domain checks if a PIP claimant also qualifies for Blue Badge. The social care domain checks if a UC claimant falls below the means test threshold. These share 80% of the same underlying eligibility data.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">Energy · LTC · Care · Legal · Early Years</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Deadline & Time Limit Manager</h4>
+    <p>A shared module encoding time limits across all domains where irreversibility is a risk. Inputs: trigger event type + date. Outputs: deadline(s), days remaining, urgency classification (critical/urgent/standard), what happens if missed, grounds for extension. Applies to: benefit appeal MR (30 days), Employment Tribunal (3 months), EHCP statutory timeline (20 weeks), PIP reassessment windows, energy scheme annual deadlines.</p>
+    <p>Missed time limits cause permanent loss of remedy. This is the highest-stakes shared capability. It should be built with exhaustive testing before any deadline-surfacing tool goes live.</p>
+    <div class="domains"><span class="dchip" style="background:#E6F1FB;color:#0C447C">Legal · LTC · Energy · Early Years</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Local Services Finder</h4>
+    <p>Shared web search integration that finds local services by postcode across all domains. Uses a structured query template per domain (e.g. "Citizens Advice [city]", "SEND local offer [council]", "warm bank [area]") and returns standardised service card output. Also integrates the Citizens Advice network lookup (free, public data) as a universal fallback.</p>
+    <p>Every domain has a local services tool. The underlying capability is identical — search for services near a postcode, return name/type/contact. Domain-specific prompt templates configure what to search for. Build the infrastructure once.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Advocacy Router</h4>
+    <p>A shared "always route to a human" module that every tool flow must eventually connect to. Contains: Citizens Advice (0800 144 8848), domain-specific escalation bodies (Ofgem Extra Help Unit, CQC, HSE, EHRC, Legal Aid Agency, IPSEA), emergency contacts, and out-of-hours routing. The single hardcoded rule across the platform: every conversation must surface a human route.</p>
+    <p>GDS service standard point 13: make sure users succeed first time. Users in crisis — energy disconnection, legal deadline, flooding — need a human immediately. This must never fail. Build it once, test it thoroughly, apply it everywhere.</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+  <div class="module">
+    <h4>Consent Framework</h4>
+    <p>A shared UK GDPR-compliant consent module covering all personal data use across the platform. Provides: consent capture UI pattern, granular consent management (domain-specific, revocable), data minimisation logic, retention policy enforcement, and audit logging. Designed to scale to NDL data linkage when governance is in place — consent captured now can govern future linked data access.</p>
+    <p>All six domains will eventually need this when NDL data linkage matures. Building the consent architecture now, before it's needed for any single domain, means it's ready to plug in when NDL makes linked data available — and means the platform can grow to support proactive push notifications without rebuilding consent infrastructure from scratch.</p>
+    <div class="domains"><span class="dchip" style="background:#FAEEDA;color:#633806">All 6 — NDL phase</span></div>
+  </div>
+
+  <div class="module">
+    <h4>DEIA Compliance Layer</h4>
+    <p>A shared quality wrapper applied to all tool outputs: Flesch-Kincaid Grade scorer (enforces FK ≤ 6 for 'simple' outputs), WCAG 2.2 metadata tagging, reading level enforcement gate (fails output and retries if FK too high), screen reader compatibility metadata, and accessibility audit logging. Also enforces the "no login for guidance" rule and "always include a human route" rule as platform-level invariants.</p>
+    <p>DEIA requirements are identical across all six domains. Building compliance as a shared wrapper means one set of quality tests, one audit trail, and one place to improve when standards change (e.g. when WCAG 3.0 is finalised).</p>
+    <div class="domains"><span class="dchip" style="background:#E1F5EE;color:#085041">All 6 domains</span></div>
+  </div>
+
+</div>
+
+<h3>Shared knowledge bases</h3>
+<p>Three structured knowledge bases appear across multiple domains and should be maintained centrally rather than duplicated:</p>
+
+<div class="kb-grid">
+  <div class="kb">
+    <h4>UK Benefits Reference</h4>
+    <p>A structured TypeScript data model encoding all major UK benefits with current rates, eligibility criteria, application routes, and interactions with other benefits. UC, PIP, ESA, PC, CA, DLA, HB, CT reduction, CHB appear in five of six domains. When benefit rates change, update in one place.</p>
+    <p style="margin-top:.5rem">Maintained by: lab team, with quarterly review against DWP publications.</p>
+  </div>
+  <div class="kb">
+    <h4>Local Authority Directory</h4>
+    <p>All 152 English upper-tier councils plus Welsh, Scottish, Northern Irish equivalents. Maps postcode → council → SEND local offer URL, social care team contact, emergency planning contact, council warm home discount scheme. Foundation for any domain tool that resolves local variation.</p>
+    <p style="margin-top:.5rem">Maintained by: lab team + automated monitoring for broken URLs.</p>
+  </div>
+  <div class="kb">
+    <h4>Condition → Entitlement Crosswalk</h4>
+    <p>Maps medical conditions (MS, autism, diabetes, dementia, ADHD...) to the benefits, services, workplace adjustments and NHS pathways they qualify for. Shared between LTC, social care and early years (SEND) at minimum. Used by ltc_map_entitlements, care_check_eligibility, eyfs_navigate_send.</p>
+    <p style="margin-top:.5rem">Maintained by: co-designed with disability orgs + quarterly review.</p>
+  </div>
+</div>
+
+<h2>2. Evidence-based priority ranking</h2>
+
+<p>Priority is determined by three criteria as defined: (1) broadest impact to widest demographics, focusing on vulnerable cohorts, (2) highest adverse impact if unaddressed, (3) highest public value deliverable, evidence-based and independently verifiable.</p>
+
+<div class="warn">
+  <p><strong>Energy Support was scoped first — this was correct.</strong> It's the most buildable domain for an engineering lab starting from zero (excellent APIs, bounded problem, immediate tangible impact). The ranking below applies to the order of depth of development and prototype priority once the shared foundation is in place. Energy continues in parallel — it's the test bed for the foundation itself.</p>
+</div>
+
+<table class="priority-table">
+<thead>
+<tr><th>Priority</th><th>Domain</th><th>Scale of impact</th><th>Adverse impact if unaddressed</th><th>Public value metric</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="rank-badge" style="background:#185FA5">1</span></td>
+  <td><strong>Legal Guidance</strong></td>
+  <td>Everyone facing a housing, benefits or employment dispute — disproportionately low-income, BAME, disabled. ~2.7m cases handled by Citizens Advice annually with insufficient capacity.</td>
+  <td><strong>Irreversible.</strong> 30-day MR deadline. 3-month ET limitation. One missed deadline permanently closes the legal route. No comparable consequence in any other domain.</td>
+  <td>74% of benefit tribunal appeals succeed when properly argued. 37% of legal problems go unresolved (Legal Problem and Resolution Survey). Access to Justice Foundation has quantified this gap. Independently verifiable impact per case.</td>
+</tr>
+<tr>
+  <td><span class="rank-badge" style="background:#533AB7">2</span></td>
+  <td><strong>Long-Term Conditions</strong></td>
+  <td>~15 million people in the UK have one or more LTC. Disproportionately disabled people, older adults, lower-income households. ~900,000 PIP reassessments annually.</td>
+  <td>Repeated, systemic harm for those least able to bear it. Reassessment distress is well evidenced in disability research. Take-up gaps in PIP and ESA run to billions of unclaimed entitlement annually.</td>
+  <td>DWP benefit take-up statistics (published annually) provide the denominator. ltc_check_eligibility output can be benchmarked against take-up rates to demonstrate gap closure. Quantifiable, independently verifiable.</td>
+</tr>
+<tr>
+  <td><span class="rank-badge" style="background:#1D9E75">3</span></td>
+  <td><strong>Energy Support</strong></td>
+  <td>~4.5m fuel-poor households. ~10,000 cold-related deaths annually, strongly correlated with fuel poverty. Disproportionate impact on elderly, disabled, single-parent households.</td>
+  <td>Cold deaths in winter. Health deterioration. Energy debt and disconnection. Highest acute welfare harm per unclaimed entitlement (£150 Warm Home Discount, ECO4 insulation worth thousands).</td>
+  <td>BEIS/DESNZ fuel poverty statistics provide the denominator. Warm Home Discount take-up tracked by Ofgem. Cold-related excess deaths tracked by ONS. All independently verifiable.</td>
+</tr>
+<tr>
+  <td><span class="rank-badge" style="background:#0F6E56">4</span></td>
+  <td><strong>Adult Social Care</strong></td>
+  <td>~1m people receiving adult social care in England. NHS CHC affects ~70,000 people annually. 400,000+ waiting for care needs assessments. Carers (unpaid) number ~8m in UK.</td>
+  <td>Deterioration during waiting periods. Carer burnout. NHS CHC wrongly denied is worth ~£40-60k/year per person. Care Act delays are often unlawful but rarely challenged.</td>
+  <td>CQC sector reports, NHS CHC national framework decision data, Skills for Care workforce statistics. NHS CHC application rates by LA are published. Gap between eligible and applying is quantifiable.</td>
+</tr>
+<tr>
+  <td><span class="rank-badge" style="background:#C04700">5</span></td>
+  <td><strong>Early Years</strong></td>
+  <td>All children 0-5 (700,000 born per year). 32% school readiness gap (48% for FSM-eligible). Children with SEND: ~340,000 with EHCPs, many more with SEND Support.</td>
+  <td>Intergenerational harm. 32% school readiness gap becomes a lifetime earnings gap. Perry Preschool Project showed £13 return per £1 invested. Most futures at stake per intervention of any domain.</td>
+  <td>DfE EYFS profile statistics provide the baseline. The 75% by 2028 target is the government's own metric. SEND local offer access rates, EHCP assessment waiting times (published quarterly). Measurable against a named national target.</td>
+</tr>
+<tr>
+  <td><span class="rank-badge" style="background:#3B6D11">6</span></td>
+  <td><strong>Climate Resilience</strong></td>
+  <td>5.2m properties at flood risk. Outdoor workers: ~1.5m in highest-risk occupations. Agricultural sector: 100,000+ farm businesses facing climate adaptation.</td>
+  <td>Flood deaths and property loss. Heat-related illness and deaths (increasing annually). Agricultural business failure. Longer-term but accelerating.</td>
+  <td>EA flood data (published), ONS excess heat deaths (published), NFU agricultural impact surveys. EA alert sign-up rates are measurable. Flood Re uptake trackable. All independently verifiable — but current harm more diffuse than other domains.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>3. Push the envelope: frontier opportunities for DSIT</h2>
+
+<p>As the department responsible for data, technology and AI in government, DSIT has a unique mandate to lead on what comes next — not just deliver incrementally. The following five opportunities go beyond what comparable government digital programmes have attempted. They are ordered by buildability (how ready the infrastructure is) and then by transformational potential.</p>
+
+<div class="opp-grid">
+
+  <div class="opp">
+    <h4>01 · Agentic GOV.UK integration — we are building the right thing at the right time</h4>
+    <p>In March 2025, DSIT published a pre-market engagement notice for a "National AI Tender for frontier AI companies to support agentic AI powered GOV.UK Chat." The vision is explicit: "a fully integrated, AI-powered, personalised GOV.UK experience for citizens." This is not a parallel initiative — it is the same problem, at scale.</p>
+    <p>Our six-domain MCP server is exactly the domain-specific knowledge and action layer that an agentic GOV.UK Chat needs to handle energy, legal, health, care, early years and climate queries. MCP (Model Context Protocol) is the architecture standard that allows AI assistants to call external tools and data sources. We should be positioning our work as the citizen domain intelligence layer for GOV.UK Chat — not building in isolation.</p>
+    <p><strong>Recommended action:</strong> Make formal contact with the GOV.UK Chat programme team (GDS/DSIT). Share the six scope documents. Position the lab as the domain MCP server partner for the citizen services layer.</p>
+    <div class="why">This is the single highest-leverage opportunity. GOV.UK has ~80 million visits per month. Plugging our MCP servers into GOV.UK Chat is the difference between 10,000 users and 10 million.</div>
+  </div>
+
+  <div class="opp">
+    <h4>02 · Cross-domain citizen intelligence — the citizen layer of the NDL vision</h4>
+    <p>The NDL's thesis is that services organised around institutions miss the whole person. Our MCP platform can act on this thesis at the citizen-facing layer, even before NDL data linkage is in place: with consent, an AI assistant that detects a citizen describing fuel poverty, a long-term condition, and a young child should proactively offer all three relevant tools — energy, LTC, and early years.</p>
+    <p>This requires a meta-agent layer that routes between domain MCPs. Technically this is straightforward using a multi-agent architecture: a routing agent with tool-call access to all six domain servers, triggered by need pattern detection in the conversation. The consent framework built as a shared module enables this by ensuring cross-domain data use is explicitly consented to.</p>
+    <p><strong>Push the envelope further:</strong> Design the meta-agent to detect the intersections that services never see — the carer who is also fuel poor, the child with SEND in a flood-risk area. These are the people most likely to fall through every gap simultaneously.</p>
+    <div class="why">Intersectional vulnerability is where the NDL's value is greatest. A single-domain tool misses it. A cross-domain intelligence layer catches it.</div>
+  </div>
+
+  <div class="opp">
+    <h4>03 · Proactive push via NDL data linkage — from reactive to preventive</h4>
+    <p>Every tool built so far is reactive: a citizen comes to the tool. The NDL vision is proactive: services find citizens who need help before crisis point. Once NDL linked data is available (Phase 2+), the platform can shift register entirely. "You're receiving UC and live in a Flood Zone 2 postcode — here's what you should know before winter." "Your child's health visitor record shows a developmental review is due — here are the SEND support services in your area."</p>
+    <p>The consent framework and postcode intelligence layer built in the shared foundation are the infrastructure this requires. By designing them now with future push capability in mind, we create the architecture for genuinely proactive, consent-based, citizen-controlled support — the most powerful version of the NDL's public service transformation agenda.</p>
+    <p><strong>ADR UK connection:</strong> ADR UK's ECHILD dataset already links education + health data for children. This is the research proof of concept. Our platform is the delivery mechanism when NDL makes this operational.</p>
+    <div class="why">£319bn long-term social value potential from linked public data (ADR UK/Baringa 2025). Proactive tools are where the majority of that value sits — preventing crises rather than navigating them.</div>
+  </div>
+
+  <div class="opp">
+    <h4>04 · Policy impact measurement as a live government intelligence product</h4>
+    <p>Every citizen interaction with the platform generates a signal about unmet need. Which energy schemes are most asked about but rarely applied for? Which postcodes have the highest concentration of SEND navigation queries? Which benefit categories produce the most eligibility confusion? This is not surveillance — it is anonymised, aggregate intelligence about where the system is failing the people it's meant to serve.</p>
+    <p>Built correctly, with privacy by design and transparent methodology, this becomes a live dashboard for NDL programme managers, DSIT policy leads, and partner departments. It provides the independent, verifiable evidence of public value that the NDL programme needs to demonstrate impact and justify continued investment.</p>
+    <p><strong>DSIT ARI alignment:</strong> DSIT's ARI on AI in public services explicitly asks for evidence on how AI transforms citizen-government interaction. This measurement product is that evidence, generated in real time from real use.</p>
+    <div class="why">The NDL programme needs to demonstrate impact. This tool generates it as a by-product of serving citizens. Build the measurement layer from day one — retrofit is much harder.</div>
+  </div>
+
+  <div class="opp">
+    <h4>05 · Open research dataset via ADR UK — turning service delivery into public science</h4>
+    <p>ADR UK has £168 million of UKRI investment to 2031, infrastructure for safe access to linked administrative data, and active research questions that our platform can help answer. Anonymised aggregate interaction data from the platform, linked to administrative records in the ADR UK trusted research environment, could answer questions that no single government dataset can: "What share of PIP-eligible people with progressive MS never apply?" "Which local authority has the worst NHS Continuing Healthcare take-up rate?" "What does the school readiness gap look like when mapped against early SEND identification rates?"</p>
+    <p>This is not speculative — ADR UK already has the infrastructure. ECHILD (Education and Child Health Insights from Linked Data) is exactly this model applied to early years. The ESRC funds research fellowships aligned to ADR UK datasets. The route to formal partnership is well-trodden: respond to the relevant ARI questions, propose a research collaboration, apply through ADR UK's governance process.</p>
+    <div class="why">This elevates the platform from a service tool to a national research asset. It's the difference between DSIT as a technology deliverer and DSIT as a science and innovation department in the fullest sense of its mandate.</div>
+  </div>
+
+</div>
+
+<h2>4. ARI alignment and academic engagement</h2>
+
+<p>The ARI (Areas of Research Interest) process is the formal channel through which government departments signal where academic expertise would most improve policy. Eight ARI questions across six departments map directly to this platform. The lab should respond formally to each.</p>
+
+<div class="ari-grid">
+
+  <div class="ari">
+    <p class="ari-dept">DSIT</p>
+    <p class="ari-q">How can AI transform how citizens interact with government services? What evidence is needed for responsible AI in public sector delivery?</p>
+    <p class="ari-conn">Direct answer: our platform. The DEIA layer, consent framework, reading level enforcement and measurement layer generate the responsible AI evidence DSIT's ARI is seeking. The lab should respond to this ARI with a summary of the platform design.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">DWP</p>
+    <p class="ari-q">What prevents eligible people from claiming benefits they're entitled to? How can administrative burden be reduced for claimants with long-term conditions?</p>
+    <p class="ari-conn">ltc_reduce_duplication and energy_check_eligibility generate the empirical data DWP needs. Tool interaction patterns (which eligibility questions cause most confusion) answer the first question directly. Respond to DWP ARI citing the LTC and energy domain scopes.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">DHSC</p>
+    <p class="ari-q">How can health and social care data be safely linked to improve care planning and reduce inequalities? What interventions improve NHS CHC take-up among eligible populations?</p>
+    <p class="ari-conn">The social care MCP directly implements the citizen-facing layer DHSC ARIs are seeking. care_explore_funding and care_check_eligibility will, when built, generate NHS CHC take-up data that answers DHSC's second question.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">DfE</p>
+    <p class="ari-q">What enables earlier identification of children with SEND needs? How does access to early intervention services affect school readiness outcomes?</p>
+    <p class="ari-conn">The early years MCP, operating in the three NDL pilot LAs, is a live intervention experiment answering both DfE ARIs. Respond to DfE ARI citing the NDL early years kickstarter and the lab's citizen-facing tool design.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">MOJ</p>
+    <p class="ari-q">What is the impact of unmet legal need on individuals and the justice system? How can technology reduce barriers to accessing justice?</p>
+    <p class="ari-conn">legal_guidance MCP is the most direct response to any MOJ ARI on the legal advice desert. Law centres, legal academics, and the Access to Justice Foundation are natural co-designers. Respond to MOJ ARI + consider formal partnership with Law Centres Network.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">DEFRA / MHCLG</p>
+    <p class="ari-q">How can vulnerable communities be supported to adapt to climate risk? What prevents uptake of flood resilience schemes?</p>
+    <p class="ari-conn">climate_check_flood_risk and climate_find_flood_support generate granular, postcode-level data on which communities are engaging with flood risk information — and which aren't. This is the DEFRA/MHCLG ARI gap data.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">ADR UK · ESRC · UKRI</p>
+    <p class="ari-q">£168m investment to 2031. ECHILD links education + health data. Benefits + housing + social care linkage underway. What can linked administrative data tell us about unmet need?</p>
+    <p class="ari-conn">ADR UK is the natural academic partner for this entire platform. Formal routes: respond to ADR UK's published research agenda, propose a research data access agreement for anonymised aggregate platform data, apply for ADR UK Research Fellowship funding.</p>
+  </div>
+
+  <div class="ari">
+    <p class="ari-dept">GSE Profession · Government Chief Scientific Adviser</p>
+    <p class="ari-q">How can Government Science and Engineering professionals better contribute to cross-cutting digital transformation? What does responsible AI delivery look like in practice?</p>
+    <p class="ari-conn">This platform is a case study in responsible AI delivery: consent-first, DEIA-compliant, independently measurable public value, co-designed with communities. GSE professionals across DSIT, DWP, DHSC and DfE could contribute domain expertise and act as the expert community for ongoing development.</p>
+  </div>
+
+</div>
+
+<h3>Formal academic engagement routes</h3>
+<p>The Government Chief Scientific Adviser's guide to academic engagement (updated March 2026) defines six routes. We should activate at least three:</p>
+
+<div class="route-grid">
+  <div class="route">
+    <h4>ARI Responses</h4>
+    <p>Submit short (3-4 bullet) responses to the eight aligned ARI questions identified above. This is the lowest-friction, highest-visibility route. Responses should summarise the lab's work on the relevant domain and offer to share scope documents and engage further.</p>
+    <p style="margin-top:.5rem">Timeline: immediate — respond within current quarter.</p>
+  </div>
+  <div class="route">
+    <h4>Exchange Schemes</h4>
+    <p>Secondment schemes (Policy Fellowships, GSE fellowships, ESRC IAA internships) bring academic researchers into the lab and send civil servants to universities. ADR UK, UCL Institute of Education, Manchester Met University (AI in Government conference) are natural partners. A 6-month ADR UK fellowship embedded in the lab would accelerate the research dataset opportunity.</p>
+    <p style="margin-top:.5rem">Timeline: identify and apply within 3 months.</p>
+  </div>
+  <div class="route">
+    <h4>Calls for Evidence</h4>
+    <p>When DSIT, DWP, DHSC, DfE publish relevant calls for evidence (NDL design, PIP reform, social care reform, SEND review), submit formal evidence based on the lab's scoping work. These are higher-effort but create formal policy record. The lab's six scope documents are already at the quality level needed for formal evidence submissions.</p>
+    <p style="margin-top:.5rem">Timeline: monitor and respond opportunistically.</p>
+  </div>
+</div>
+
+<h2>5. Immediate next steps</h2>
+
+<ul class="steps">
+  <li><div class="step-n">1</div><div class="step-b"><h4>Build the shared foundation (6-8 weeks)</h4><p>Start with the UK Services API Client, Plain English Synthesis Engine, and Postcode Intelligence Layer. These three are prerequisites for everything else. Use the energy domain as the test bed — every energy tool exercises all three foundation modules.</p></div></li>
+  <li><div class="step-n">2</div><div class="step-b"><h4>Contact GOV.UK Chat programme team (this week)</h4><p>DSIT's March 2025 agentic GOV.UK Chat tender is the most important strategic alignment opportunity. Make contact with the GDS/DSIT programme team. Share the six scope documents. Propose the lab as the citizen domain MCP partner. This is a time-sensitive positioning opportunity.</p></div></li>
+  <li><div class="step-n">3</div><div class="step-b"><h4>Respond to ARI questions (within 1 month)</h4><p>Identify the 3-4 most closely aligned ARI questions (DSIT on AI, DWP on benefit take-up, DHSC on data linkage, DfE on SEND identification). Submit short ARI responses citing the lab's scope documents. This opens the academic partnership door formally.</p></div></li>
+  <li><div class="step-n">4</div><div class="step-b"><h4>Reach out to ADR UK (within 1 month)</h4><p>ADR UK is the natural research partner for this entire programme. Make contact via the ADR UK Strategic Hub. Propose a research collaboration around anonymised aggregate platform data. Explore ADR UK Research Fellowship for an academic to embed in the lab.</p></div></li>
+  <li><div class="step-n">5</div><div class="step-b"><h4>Identify co-design partners for each domain (within 6 weeks)</h4><p>Every scope document includes co-design recommendations. Across all six domains the highest-priority co-design partners are: Disability Rights UK (LTC/care), Law Centres Network (legal), Citizens Advice (all domains), SEND parent-carer forums (early years), community flood action groups (climate), and energy advice charities (energy). At least two should be engaged before any prototype goes to user testing.</p></div></li>
+  <li><div class="step-n">6</div><div class="step-b"><h4>Set up measurement from day one</h4><p>Instrument all tool calls with anonymised, aggregated metrics from the first build. Track: schema validation pass rate, reading level scores, language distribution, tool chain completion rates, and which eligibility questions reveal the largest apparent gaps. This becomes the evidence base for everything that follows — ARI responses, policy engagement, NDL programme reporting.</p></div></li>
+</ul>
+
+<div class="callout">
+  <p><strong>The most important strategic insight from this analysis:</strong> We are not building six tools. We are building a citizen intelligence platform for the National Data Library — the thing that connects the NDL's data infrastructure to the 67 million people it's meant to serve. That is a different thing, with different ambition, different partnerships, and different public value. DSIT should own that framing.</p>
+</div>
+
+<hr>
+
+<h2>Appendix: shared foundation build order</h2>
+
+<p>Within the foundation itself, the recommended sequence is based on dependency order and which modules unblock the most domain work:</p>
+
+<ol>
+  <li><strong>UK Services API Client</strong> — blocks everything. Build first.</li>
+  <li><strong>Plain English Synthesis Engine</strong> — needed for first domain tool (energy_explain_scheme). Build simultaneously with #1.</li>
+  <li><strong>Postcode Intelligence Layer</strong> — needed for any local personalisation. Build before any local services tool.</li>
+  <li><strong>DEIA Compliance Layer</strong> — quality gate. Build before any tool goes beyond internal testing.</li>
+  <li><strong>Eligibility Assessment Engine</strong> — needed for energy_check_eligibility. Highest complexity foundation module. Separate sprint.</li>
+  <li><strong>Local Services Finder</strong> — web search integration. Builds on #3 (postcode) and #1 (API client). Build after core explanation tools are working.</li>
+  <li><strong>Advocacy Router</strong> — simple but critical. Include in every tool from first build. Never let a tool ship without it.</li>
+  <li><strong>Multilingual Translation Layer</strong> — needed before any public beta. Build after core tools are functionally correct in English.</li>
+  <li><strong>Deadline & Time Limit Manager</strong> — high criticality. Build before any tool that surfaces time-sensitive information (legal, LTC, early years).</li>
+  <li><strong>Consent Framework</strong> — needed for NDL data linkage phase. Design the architecture now; implement when first personal data use case is defined.</li>
+</ol>
+
+<footer>Cross-Cutting Analysis · NDL PubSec MCP Platform · v0.1 · Cross-Gov AI Engineering Lab · DSIT · June 2026 · For review and discussion</footer>
+
+</body>
+</html>

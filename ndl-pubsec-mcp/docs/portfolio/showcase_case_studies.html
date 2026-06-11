@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Use cases, case studies and example outputs from the NDL PubSec MCP Platform — what it looks like when it actually works.">
+<title>Showcase &amp; Case Studies — NDL PubSec MCP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.7;color:#1a1a1a;background:#fff}
+.container{max-width:1040px;margin:0 auto;padding:0 2rem}
+a{color:#0F6E56}
+nav{background:#fff;border-bottom:1px solid #f0f0f0;padding:.875rem 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-weight:600;font-size:14px;color:#0F6E56}
+.nav-links{display:flex;gap:24px}
+.nav-links a{font-size:13px;color:#555;text-decoration:none}.nav-links a:hover{color:#0F6E56}
+.btn{display:inline-block;padding:8px 20px;border-radius:6px;font-size:14px;font-weight:500;text-decoration:none;cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:#0F6E56;color:#fff}.btn-primary:hover{background:#085041}
+.section-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#0F6E56;margin-bottom:.625rem}
+h2.section-title{font-size:28px;font-weight:700;margin-bottom:1rem;line-height:1.3}
+.section-intro{font-size:17px;color:#555;max-width:680px;margin-bottom:2.5rem;line-height:1.65}
+section{padding:4rem 0}
+hr{border:none;border-top:1px solid #f0f0f0}
+
+/* Hero */
+#hero{padding:3.5rem 0 3rem;border-bottom:1px solid #f0f0f0;background:#f9fafb}
+.hero-badge{display:inline-block;background:#E1F5EE;color:#0F6E56;font-size:13px;font-weight:500;padding:4px 14px;border-radius:20px;margin-bottom:1rem}
+.hero-headline{font-size:36px;font-weight:700;line-height:1.2;margin-bottom:1rem;max-width:700px}
+.hero-sub{font-size:18px;color:#555;max-width:600px;line-height:1.65;margin-bottom:1.5rem}
+
+/* Case studies */
+.case-study{display:grid;grid-template-columns:1fr 2fr;gap:2.5rem;align-items:start;margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid #f0f0f0}
+.case-study:last-child{border-bottom:none;margin-bottom:0}
+.case-persona{position:sticky;top:80px}
+.persona-badge{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;margin-bottom:.75rem}
+.persona-name{font-size:18px;font-weight:600;margin-bottom:2px}
+.persona-sub{font-size:13px;color:#777;margin-bottom:1rem}
+.persona-tags{display:flex;flex-wrap:wrap;gap:4px}
+.ptag{font-size:11px;padding:2px 8px;border-radius:3px;font-weight:500}
+.case-main h3{font-size:20px;font-weight:700;margin-bottom:.5rem}
+.case-context{font-size:15px;color:#444;margin-bottom:1.5rem;line-height:1.65;padding:.875rem 1rem;background:#f9fafb;border-radius:8px;border-left:3px solid #e5e7eb}
+.journey-steps{margin:1.5rem 0}
+.journey-step{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;color:#fff}
+.step-body h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.step-body p{font-size:13px;color:#555;margin:0;line-height:1.5}
+.tool-callout{background:#f0fdf8;border:1px solid #9FE1CB;border-radius:8px;padding:.875rem 1rem;font-size:13px;margin-bottom:.5rem}
+.tool-callout .tool-name{font-family:monospace;font-size:12px;color:#085041;font-weight:600}
+.tool-callout .tool-out{color:#555;margin-top:4px;line-height:1.5}
+.outcome-card{background:#E1F5EE;border-radius:10px;padding:1.25rem;margin-top:1.5rem}
+.outcome-card h4{font-size:14px;font-weight:600;color:#085041;margin-bottom:.5rem}
+.outcome-card ul{margin-left:1.25rem;font-size:13px;color:#0F6E56;line-height:1.7}
+.outcome-card ul li{font-weight:500}
+.blind-note{background:#FFF8EC;border:1px solid #EF9F27;border-radius:8px;padding:.875rem 1rem;font-size:13px;color:#633806;margin-top:1rem;line-height:1.5}
+
+/* Use cases grid */
+.use-case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin:1.5rem 0}
+.uc-card{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem}
+.uc-type{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.uc-title{font-size:15px;font-weight:600;margin-bottom:.375rem}
+.uc-desc{font-size:13px;color:#555;margin-bottom:.75rem;line-height:1.5}
+.uc-tools{font-size:12px;color:#777}
+.uc-tool{font-family:monospace;font-size:11px;background:#f3f4f6;padding:1px 6px;border-radius:3px;margin-right:3px}
+
+/* Example output */
+.output-demo{background:#1a1a2e;border-radius:12px;padding:1.5rem;margin:1.5rem 0;font-family:system-ui}
+.output-demo .prompt{font-size:13px;color:#9ca3af;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.output-demo .prompt span{color:#60a5fa;font-weight:500}
+.output-response{color:#e5e7eb;font-size:14px;line-height:1.7}
+.output-response .field-label{color:#34d399;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.875rem;display:block}
+.output-response .field-val{color:#f0fdf4;margin:2px 0}
+.output-response .field-steps{color:#d1fae5;margin:4px 0 4px 16px;font-size:13px}
+.output-response .citation{font-size:11px;color:#6b7280;font-style:italic;margin-top:.5rem}
+.output-badge{display:inline-block;background:#065f46;color:#6ee7b7;font-size:10px;padding:2px 8px;border-radius:3px;margin:4px 4px 0 0;font-family:monospace}
+
+/* Roadmap */
+.roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0}
+.road-card{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;text-align:center}
+.road-phase{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.375rem}
+.road-title{font-size:14px;font-weight:600;margin-bottom:.375rem}
+.road-desc{font-size:12px;color:#555;line-height:1.45}
+
+@media(max-width:800px){
+  .case-study{grid-template-columns:1fr}
+  .case-persona{position:static}
+  .use-case-grid,.roadmap-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .use-case-grid,.roadmap-grid{grid-template-columns:1fr}
+  .hero-headline{font-size:26px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="portfolio_landing.html" class="nav-brand">← NDL PubSec MCP</a>
+    <div class="nav-links">
+      <a href="#cases">Case studies</a>
+      <a href="#use-cases">Use cases</a>
+      <a href="#output">Example output</a>
+      <a href="#roadmap">What's coming</a>
+    </div>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">Showcase &amp; case studies</div>
+    <h1 class="hero-headline">What this looks like when it actually works</h1>
+    <p class="hero-sub">Concrete narratives. Real personas based on real research. This is why the tools exist.</p>
+    <p style="font-size:13px;color:#999;margin-top:.5rem">Status: Sprint 1. Tools in build. Case studies are design-validated scenarios based on domain scoping research. Prototype outputs shown below are representative of target quality.</p>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="cases">
+  <div class="container">
+    <p class="section-label">Case studies</p>
+    <h2 class="section-title">Three journeys. Three domains. Three people the system currently fails.</h2>
+    <p class="section-intro">These are representative scenarios grounded in domain scoping research, not invented. Each is designed to show both the current failure and what a working tool changes.</p>
+
+    <!-- CASE 1: MARJORIE -->
+    <div class="case-study">
+      <div class="case-persona">
+        <div class="persona-badge" style="background:#E1F5EE;color:#085041">MJ</div>
+        <div class="persona-name">Marjorie, 71</div>
+        <div class="persona-sub">Retired · Manchester · Energy domain</div>
+        <div class="persona-tags">
+          <span class="ptag" style="background:#FAEEDA;color:#633806">Elderly</span>
+          <span class="ptag" style="background:#E1F5EE;color:#085041">Pension Credit</span>
+          <span class="ptag" style="background:#F1EFE8;color:#444441">Digital-assisted</span>
+        </div>
+      </div>
+      <div class="case-main">
+        <h3>Marjorie discovers she qualifies for the Warm Home Discount — automatically, no application needed</h3>
+        <div class="case-context">
+          Marjorie's daughter notices she's wearing three jumpers inside in January and calls to check in. Marjorie says she's "managing fine" but admits she's been keeping the heating off. She's been on Pension Credit for three years. Neither she nor her daughter knows that Pension Credit Core Group entitles her to an automatic £150 Warm Home Discount every year — no application, it should just arrive. It hasn't. She's owed three years of it.
+        </div>
+
+        <div class="journey-steps">
+          <div class="journey-step">
+            <div class="step-num" style="background:#1D9E75">1</div>
+            <div class="step-body">
+              <h4>Marjorie's daughter uses the tool on her phone</h4>
+              <p>She types: "My mum is on Pension Credit and is really struggling with heating bills. What help is available?" The tool is mobile-first, no login required, and responds in seconds.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">energy_explain_scheme · scheme: "Warm Home Discount" · reading_level: "simple"</span>
+            <div class="tool-out">Returns: plain English explanation, £150 annual amount, eligibility (Pension Credit Core Group = automatic), how to check if it's been applied, supplier escalation route if not received.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#1D9E75">2</div>
+            <div class="step-body">
+              <h4>She checks whether Marjorie has actually received it</h4>
+              <p>The tool explains how to check with the supplier and what to say if it hasn't been applied. It confirms that Pension Credit Core Group should be automatic and provides the Ofgem complaint route if the supplier hasn't applied it.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">energy_check_rights · situation: "benefit_not_received" · vulnerability_flags: ["elderly","pension_credit"]</span>
+            <div class="tool-out">Returns: Ofgem vulnerable customer obligations, supplier contact script, escalation path to Ofgem's Extra Help Unit if not resolved, plus Priority Services Register eligibility.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#1D9E75">3</div>
+            <div class="step-body">
+              <h4>The supplier confirms the discount was never applied</h4>
+              <p>Using the letter drafted by the tool and the Ofgem complaint reference, the family contacts the supplier. The discount is backdated and applied within ten days.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="outcome-card">
+          <h4>What changed</h4>
+          <ul>
+            <li>£150 annual discount applied and backdated where possible</li>
+            <li>Priority Services Register registration initiated — free additional support</li>
+            <li>ECO4 insulation assessment booked through energy_check_eligibility</li>
+            <li>Marjorie's daughter now knows where to check for all future energy entitlements</li>
+          </ul>
+        </div>
+        <div class="blind-note"><strong>Blindspot this case surfaces:</strong> Marjorie's daughter is the actual tool user — not Marjorie. The proxy use pattern (a family member navigating on behalf of a vulnerable person) is one of the 15 structural blindspots identified in the UR bundle. The tool must be designed for this use case, not just self-advocacy.</div>
+      </div>
+    </div>
+
+    <!-- CASE 2: RYAN -->
+    <div class="case-study">
+      <div class="case-persona">
+        <div class="persona-badge" style="background:#E6F1FB;color:#042C53">RY</div>
+        <div class="persona-name">Ryan, 41</div>
+        <div class="persona-sub">Newcastle · Legal domain</div>
+        <div class="persona-tags">
+          <span class="ptag" style="background:#FEE2E2;color:#991B1B">30-day deadline</span>
+          <span class="ptag" style="background:#E6F1FB;color:#042C53">PIP appeal</span>
+          <span class="ptag" style="background:#FAEEDA;color:#633806">Crisis moment</span>
+        </div>
+      </div>
+      <div class="case-main">
+        <h3>Ryan's PIP appeal: a 30-day deadline he didn't know existed, caught with 16 days to spare</h3>
+        <div class="case-context">
+          Ryan receives a PIP refusal letter on a Tuesday afternoon. He has fibromyalgia and depression. The letter says he scored 0 points on the functional assessment. He reads it once, puts it in a drawer, and tells himself he'll deal with it next week. He doesn't know there is a 30-day mandatory reconsideration deadline. He doesn't know that 74% of properly argued PIP appeals succeed at tribunal. By the time he thinks to look for help, it's Day 14.
+        </div>
+
+        <div class="journey-steps">
+          <div class="journey-step">
+            <div class="step-num" style="background:#185FA5">1</div>
+            <div class="step-body">
+              <h4>Ryan's Citizens Advice adviser uses the tool during a walk-in appointment</h4>
+              <p>She types: "PIP refused 14 days ago. What are the options and deadlines?" The tool immediately surfaces the time-critical context.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">legal_check_deadlines · situation: "pip_refused" · trigger_date: "2026-05-28"</span>
+            <div class="tool-out">Returns: Mandatory Reconsideration deadline = 27 June 2026. Days remaining: 16. Urgency: HIGH. If missed: right of appeal closes permanently. Extension grounds: disability, mental health, or good reason. Call DWP immediately if you're in the extension window.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#185FA5">2</div>
+            <div class="step-body">
+              <h4>They understand what the assessment actually looked for — and why he scored zero</h4>
+              <p>The tool explains PIP's functional descriptors in plain English, identifies which activities Ryan described during the appointment that score points, and shows what evidence the assessor should have seen.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">ltc_prepare_evidence · assessment_type: "PIP" · conditions: ["fibromyalgia","depression"]</span>
+            <div class="tool-out">Returns: Which PIP descriptors apply to fluctuating conditions. What assessors look for on bad days vs. the average. How to describe pain on a 1–10 scale in the way the criteria require. What medical evidence to attach.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#185FA5">3</div>
+            <div class="step-body">
+              <h4>A properly structured Mandatory Reconsideration letter is submitted on Day 22</h4>
+              <p>Using the tool's letter framework, citing the descriptors, with GP letter attached. The MR upholds the original decision — but the case is now structured correctly for tribunal. Ryan gets a welfare rights advocate and reaches tribunal 4 months later.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="outcome-card">
+          <h4>What changed</h4>
+          <ul>
+            <li>Deadline caught with 16 days to spare — appeal route preserved</li>
+            <li>MR letter structured around the correct legal criteria (not just "I disagree")</li>
+            <li>Tribunal reached — 74% of well-argued cases succeed</li>
+            <li>If successful: up to £9,584/year (Enhanced Daily Living + Enhanced Mobility PIP)</li>
+          </ul>
+        </div>
+        <div class="blind-note"><strong>Blindspot this case surfaces:</strong> Ryan is in a crisis moment — not an information-seeking state. He put the letter in a drawer because crisis shuts down cognitive processing. The tool must be accessible to a stressed, overwhelmed person navigating on Day 14, not someone calmly researching options on Day 1.</div>
+      </div>
+    </div>
+
+    <!-- CASE 3: KEZIA -->
+    <div class="case-study">
+      <div class="case-persona">
+        <div class="persona-badge" style="background:#FAECE7;color:#4A1B0C">KZ</div>
+        <div class="persona-name">Kezia, 27</div>
+        <div class="persona-sub">Leeds (NDL pilot area) · Early years domain</div>
+        <div class="persona-tags">
+          <span class="ptag" style="background:#FAECE7;color:#712B13">Single parent</span>
+          <span class="ptag" style="background:#FAEEDA;color:#633806">Speech delay concern</span>
+          <span class="ptag" style="background:#F1EFE8;color:#444441">SEND unaware</span>
+        </div>
+      </div>
+      <div class="case-main">
+        <h3>Kezia navigates a speech delay concern from "I don't know what to do" to SALT referral in one session</h3>
+        <div class="case-context">
+          Kezia's 3-year-old, Jaylen, has been flagged by his health visitor at his 2.5-year development check. She noted possible speech and language delay. Kezia was given a leaflet. Three months later, Kezia is more worried — Jaylen isn't putting words together the way other children his age are. She doesn't know what SALT means, what an EHCP is, or whether she can ask for a referral herself or if she needs a professional to do it.
+        </div>
+
+        <div class="journey-steps">
+          <div class="journey-step">
+            <div class="step-num" style="background:#A33500">1</div>
+            <div class="step-body">
+              <h4>Kezia uses the tool on her phone while Jaylen is napping</h4>
+              <p>She types: "My 3-year-old has possible speech delay, health visitor flagged it 3 months ago, what should I do?" The tool responds with warmth and without alarm.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">eyfs_check_development · child_age_months: 36 · concern_area: ["speech"] · user_type: "parent"</span>
+            <div class="tool-out">Returns: What's typical at 36 months for speech. What's worth getting checked. Reassuring note on range of typical development. Clear "when to seek help" guidance without diagnosing. Recommended next step: request a SALT referral — you can do this yourself. Disclaimer: this is not a diagnosis.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#A33500">2</div>
+            <div class="step-body">
+              <h4>She finds out she can self-refer — she doesn't need the health visitor's permission</h4>
+              <p>The tool shows that in most areas parents can self-refer to Speech and Language Therapy. It finds the referral pathway for Leeds specifically, with a direct phone number.</p>
+            </div>
+          </div>
+          <div class="tool-callout">
+            <span class="tool-name">eyfs_find_support · postcode: "LS1 1AA" · support_type: ["speech_language"] · child_age_months: 36</span>
+            <div class="tool-out">Returns: Leeds SALT self-referral pathway (direct number, online form, waiting time estimate ~12 weeks). Leeds SEND local offer URL. Leeds Best Start Family Hub locations near her postcode. Cost: free. Self-referral: yes.</div>
+          </div>
+          <div class="journey-step">
+            <div class="step-num" style="background:#A33500">3</div>
+            <div class="step-body">
+              <h4>She understands what happens next and what her rights are if the wait is too long</h4>
+              <p>The tool explains the difference between SEND Support (what the nursery should already be doing) and an EHCP (a legal document with statutory funding). She didn't know she could request an EHCP assessment herself.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="outcome-card">
+          <h4>What changed</h4>
+          <ul>
+            <li>SALT referral submitted — 3 months of unnecessary waiting ended</li>
+            <li>Jaylen's nursery now knows to put SEND Support in place while waiting</li>
+            <li>Kezia knows she can request an EHCP assessment independently if the wait exceeds statutory timeframes</li>
+            <li>Family Hub playgroup found — social connection for both Kezia and Jaylen</li>
+          </ul>
+        </div>
+        <div class="blind-note"><strong>Research note:</strong> Leeds is one of the three NDL Early Years Kickstarter pilot areas (alongside Hammersmith &amp; Fulham and Liverpool City Region). The local service data that makes step 2 possible is exactly the kind of connected data the NDL kickstarter is working to create. The tool works now with web search; it will work better with NDL data linkage.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- USE CASES -->
+<section id="use-cases">
+  <div class="container">
+    <p class="section-label">Use cases by type</p>
+    <h2 class="section-title">Eighteen distinct situations the platform addresses</h2>
+    <p class="section-intro">Beyond the three case studies, these are the use case categories the platform is designed to serve — across six domains and four situational types.</p>
+
+    <div style="margin-bottom:1.5rem">
+      <h3 style="margin-bottom:1rem;font-size:16px;color:#C04700">Crisis moments — time-limited, irreversible if missed</h3>
+      <div class="use-case-grid">
+        <div class="uc-card" style="border-left:3px solid #C04700">
+          <div class="uc-type" style="color:#C04700">Legal · Time-critical</div>
+          <div class="uc-title">Benefit decision received, deadline running</div>
+          <div class="uc-desc">PIP, ESA, or UC decision. 30-day MR window. Person doesn't know the deadline exists or what to write.</div>
+          <div class="uc-tools"><span class="uc-tool">legal_check_deadlines</span><span class="uc-tool">legal_explain_rights</span><span class="uc-tool">legal_draft_correspondence</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #C04700">
+          <div class="uc-type" style="color:#C04700">Energy · Crisis</div>
+          <div class="uc-title">Disconnection threatened or pre-payment meter empty</div>
+          <div class="uc-desc">Supplier has threatened disconnection or pre-payment meter is in debt. Person doesn't know their vulnerable customer rights.</div>
+          <div class="uc-tools"><span class="uc-tool">energy_check_rights</span><span class="uc-tool">energy_find_advocacy</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #C04700">
+          <div class="uc-type" style="color:#C04700">Climate · Emergency</div>
+          <div class="uc-title">Flooding happening now — what to do and who to call</div>
+          <div class="uc-desc">Active flooding or severe flood warning. Person needs emergency contacts, insurance route, and immediate practical steps.</div>
+          <div class="uc-tools"><span class="uc-tool">climate_check_flood_risk</span><span class="uc-tool">climate_find_flood_support</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <h3 style="margin-bottom:1rem;font-size:16px;color:#533AB7">Information gaps — entitled but unaware</h3>
+      <div class="use-case-grid">
+        <div class="uc-card" style="border-left:3px solid #533AB7">
+          <div class="uc-type" style="color:#533AB7">LTC · Entitlement</div>
+          <div class="uc-title">New diagnosis — what am I entitled to?</div>
+          <div class="uc-desc">Recently diagnosed with MS, autism, or chronic pain. Doesn't know which benefits, adjustments, and NHS pathways apply.</div>
+          <div class="uc-tools"><span class="uc-tool">ltc_map_entitlements</span><span class="uc-tool">ltc_explain_benefit</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #533AB7">
+          <div class="uc-type" style="color:#533AB7">Social care · Rights</div>
+          <div class="uc-title">Asking for a care needs assessment — where to start</div>
+          <div class="uc-desc">Person or family member doesn't know they have a right to a care needs assessment, that councils have statutory timescales, or that carers have separate rights.</div>
+          <div class="uc-tools"><span class="uc-tool">care_explain_rights</span><span class="uc-tool">care_navigate_assessment</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #533AB7">
+          <div class="uc-type" style="color:#533AB7">Energy · Scheme discovery</div>
+          <div class="uc-title">What energy support am I eligible for?</div>
+          <div class="uc-desc">Person on benefits or low income, doesn't know the landscape of schemes — Warm Home Discount, ECO4, Cold Weather Payment, Priority Services Register.</div>
+          <div class="uc-tools"><span class="uc-tool">energy_check_eligibility</span><span class="uc-tool">energy_explain_scheme</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <h3 style="margin-bottom:1rem;font-size:16px;color:#0F6E56">Navigation challenges — system complexity</h3>
+      <div class="use-case-grid">
+        <div class="uc-card" style="border-left:3px solid #0F6E56">
+          <div class="uc-type" style="color:#0F6E56">Early years · SEND</div>
+          <div class="uc-title">Child has a developmental concern — navigating SEND</div>
+          <div class="uc-desc">Parent or professional has a concern. Doesn't know the difference between SEND Support, an EHCP, and how to start the process without a formal diagnosis.</div>
+          <div class="uc-tools"><span class="uc-tool">eyfs_check_development</span><span class="uc-tool">eyfs_navigate_send</span><span class="uc-tool">eyfs_find_support</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #0F6E56">
+          <div class="uc-type" style="color:#0F6E56">Social care · Funding</div>
+          <div class="uc-title">Is my family member entitled to NHS-funded care?</div>
+          <div class="uc-desc">Family with a relative needing intensive care doesn't know NHS Continuing Healthcare exists. CHC is worth £40-60k/year and is systematically underclaimed.</div>
+          <div class="uc-tools"><span class="uc-tool">care_explore_funding</span><span class="uc-tool">care_explain_rights</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #0F6E56">
+          <div class="uc-type" style="color:#0F6E56">LTC · Assessment prep</div>
+          <div class="uc-title">Preparing for a PIP or WCA assessment</div>
+          <div class="uc-desc">Person knows what the assessment is but doesn't know what descriptors assessors score, how to describe fluctuating conditions, or what evidence to bring.</div>
+          <div class="uc-tools"><span class="uc-tool">ltc_prepare_evidence</span><span class="uc-tool">ltc_explain_benefit</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:1rem;font-size:16px;color:#3B6D11">Professional use — frontline worker tools</h3>
+      <div class="use-case-grid">
+        <div class="uc-card" style="border-left:3px solid #3B6D11">
+          <div class="uc-type" style="color:#3B6D11">Early years · Professional</div>
+          <div class="uc-title">Childminder has a concern about a child in their care</div>
+          <div class="uc-desc">Registered childminder has a developmental concern. Doesn't know their professional reporting obligations, how to raise with parents, or what SEND referral looks like from their role.</div>
+          <div class="uc-tools"><span class="uc-tool">eyfs_find_professional_guidance</span><span class="uc-tool">eyfs_navigate_send</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #3B6D11">
+          <div class="uc-type" style="color:#3B6D11">Climate · Employer</div>
+          <div class="uc-title">Outdoor worker wants to know their heat rights</div>
+          <div class="uc-desc">Construction or agricultural worker in extreme heat. Doesn't know employer legal obligations, right to breaks and shade, or what to do if an employer refuses.</div>
+          <div class="uc-tools"><span class="uc-tool">climate_explain_weather_rights</span><span class="uc-tool">climate_find_local_preparedness</span></div>
+        </div>
+        <div class="uc-card" style="border-left:3px solid #3B6D11">
+          <div class="uc-type" style="color:#3B6D11">Legal · Housing</div>
+          <div class="uc-title">Tenant wants to challenge housing disrepair</div>
+          <div class="uc-desc">Private tenant with damp, mould or serious disrepair. Doesn't know the Renters' Rights Act, local authority enforcement route, or housing ombudsman option.</div>
+          <div class="uc-tools"><span class="uc-tool">legal_explain_rights</span><span class="uc-tool">legal_draft_correspondence</span><span class="uc-tool">legal_find_free_help</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- EXAMPLE OUTPUT -->
+<section id="output">
+  <div class="container">
+    <p class="section-label">Example output</p>
+    <h2 class="section-title">What you actually see when you use the tools</h2>
+    <p class="section-intro">This is a representative output from <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px">energy_explain_scheme</code> — the first tool being built. Real tool. Real GOV.UK source. Plain English quality gate: FK Grade 5.4.</p>
+
+    <div class="output-demo">
+      <div class="prompt">
+        <span>Tool call:</span> energy_explain_scheme · scheme_name: "Warm Home Discount" · reading_level: "simple" · language: "en"
+      </div>
+      <div class="output-response">
+        <span class="field-label">Scheme name</span>
+        <div class="field-val">Warm Home Discount</div>
+
+        <span class="field-label">What it is</span>
+        <div class="field-val">A discount on your electricity or gas bill. You do not apply for it — if you qualify, your energy supplier should add it to your bill for you.</div>
+
+        <span class="field-label">How much</span>
+        <div class="field-val">£150 off your electricity or gas bill, once per year.</div>
+
+        <span class="field-label">Who qualifies</span>
+        <div class="field-val">If you get the Guarantee Credit part of Pension Credit, you should get it automatically. This is called the Core Group. Your supplier will contact you. Some suppliers also have a Broader Group for people on other benefits on low incomes — you may need to apply to your supplier directly for this.</div>
+
+        <span class="field-label">Is an application needed?</span>
+        <div class="field-val">For the Core Group: no. It should happen automatically. If it has not, contact your supplier and then Ofgem if the supplier does not help.</div>
+
+        <span class="field-label">Steps if you have not received it</span>
+        <div class="field-steps">1. Call your energy supplier and quote "Warm Home Discount Core Group"</div>
+        <div class="field-steps">2. Ask them to check your account against DWP records</div>
+        <div class="field-steps">3. If they refuse, contact Ofgem's Extra Help Unit on 0808 223 1133</div>
+        <div class="field-steps">4. You may be owed backdated payment — ask for this specifically</div>
+
+        <span class="field-label">Deadline</span>
+        <div class="field-val">The scheme runs each winter. Suppliers must apply Core Group discounts by 31 March each year.</div>
+
+        <div class="citation">Source: GOV.UK Content API — /the-warm-home-discount-scheme — retrieved June 2026. Always verify current rates and eligibility at gov.uk/the-warm-home-discount-scheme</div>
+
+        <div style="margin-top:.875rem">
+          <span class="output-badge">FK Grade 5.4</span>
+          <span class="output-badge">Source cited</span>
+          <span class="output-badge">is_automatic: true</span>
+          <span class="output-badge">Human route included</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:#777;margin-top:1rem">The same tool output can be requested in Welsh, Urdu, Somali, Polish, Bengali, Punjabi or Arabic — using the same source, with a standardised government terminology glossary applied. Multilingual layer is in Phase 2 of the build.</p>
+  </div>
+</section>
+
+<hr>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <p class="section-label">What's coming — showcase roadmap</p>
+    <h2 class="section-title">What this showcase will look like as the programme develops</h2>
+    <div class="roadmap-grid">
+      <div class="road-card" style="border-top:3px solid #C04700">
+        <div class="road-phase" style="color:#C04700">Now — Sprint 1</div>
+        <div class="road-title">Design-validated scenarios</div>
+        <div class="road-desc">Case studies based on scoping research. Representative tool outputs. Foundational documentation available.</div>
+      </div>
+      <div class="road-card" style="border-top:3px solid #BA7517">
+        <div class="road-phase" style="color:#BA7517">Sprint 2–3 · Month 1–2</div>
+        <div class="road-title">Live tool demos</div>
+        <div class="road-desc">Working energy_explain_scheme demo embedded. Real GOV.UK data. FK Grade verified in practice. First user feedback shared.</div>
+      </div>
+      <div class="road-card" style="border-top:3px solid #533AB7">
+        <div class="road-phase" style="color:#533AB7">Sprint 4–6 · Month 3–5</div>
+        <div class="road-title">Alpha user stories</div>
+        <div class="road-desc">Real user research findings published. Co-design session outputs shared. Quotes from community partners (with consent). Before/after comparisons from UR sessions.</div>
+      </div>
+      <div class="road-card" style="border-top:3px solid #0F6E56">
+        <div class="road-phase" style="color:#0F6E56">Sprint 7+ · Month 6+</div>
+        <div class="road-title">Measured outcomes</div>
+        <div class="road-desc">First independently verifiable public value metrics. Eligibility check completions. Scheme awareness improvement from surveys. Human advocacy route conversions.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;padding:1.25rem;background:#f9fafb;border-radius:10px;font-size:14px;color:#555;line-height:1.65">
+      <strong style="color:#1a1a1a">Want to be part of a case study?</strong> If you have lived experience of any of the six domains and are willing to share your journey — either to validate the scenarios above or to contribute a new one — get in touch. Participation is voluntary, anonymous if preferred, and genuinely contributes to how the tools are designed.
+      <div style="margin-top:.75rem"><a href="portfolio_landing.html#contact" style="font-weight:500">Get in touch →</a></div>
+    </div>
+  </div>
+</section>
+
+<footer style="padding:2rem 0;border-top:1px solid #f0f0f0;text-align:center;font-size:13px;color:#999">
+  <div class="container">
+    <p>NDL PubSec MCP Platform · Showcase &amp; Case Studies · June 2026 · <a href="portfolio_landing.html">Back to portfolio home</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

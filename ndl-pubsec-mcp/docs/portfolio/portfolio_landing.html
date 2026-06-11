@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Building the citizen intelligence layer for the UK National Data Library. An AI engineering experiment in responsible, DEIA-first public service transformation.">
+<title>NDL PubSec MCP Platform — Digital Portfolio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;--purple:#533AB7;--purple-light:#EEEDFE;--amber:#BA7517;--amber-light:#FAEEDA;--coral:#C04700;--coral-light:#FAECE7}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.7;color:#1a1a1a;background:#fff}
+a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1080px;margin:0 auto;padding:0 2rem}
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:inherit}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:#085041;text-decoration:none}
+.btn-outline{background:transparent;color:var(--teal);border:1.5px solid var(--teal)}.btn-outline:hover{background:var(--teal-light);text-decoration:none}
+.btn-ghost{background:#f9fafb;color:#444;border:0.5px solid #e5e7eb}.btn-ghost:hover{background:#f3f4f6;text-decoration:none}
+section{padding:4rem 0}
+.section-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.75rem}
+h2.section-title{font-size:28px;font-weight:700;color:#1a1a1a;margin-bottom:1rem;line-height:1.3}
+.section-intro{font-size:17px;color:#555;max-width:680px;margin-bottom:2.5rem;line-height:1.7}
+hr.divider{border:none;border-top:1px solid #f0f0f0;margin:0}
+
+/* ── NAV ──────────────── */
+nav{background:#fff;border-bottom:1px solid #f0f0f0;padding:.875rem 0;position:sticky;top:0;z-index:100}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-weight:600;font-size:15px;color:var(--teal)}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-size:13px;color:#555;font-weight:400}.nav-links a:hover{color:var(--teal);text-decoration:none}
+
+/* ── HERO ──────────────── */
+#hero{padding:5rem 0 4rem;border-bottom:1px solid #f0f0f0}
+.hero-badge{display:inline-block;background:var(--teal-light);color:var(--teal);font-size:13px;font-weight:500;padding:4px 14px;border-radius:20px;margin-bottom:1.25rem}
+.hero-headline{font-size:42px;font-weight:700;color:#1a1a1a;line-height:1.2;margin-bottom:1rem;max-width:800px}
+.hero-headline span{color:var(--teal)}
+.hero-sub{font-size:19px;color:#555;max-width:640px;margin-bottom:2rem;line-height:1.65}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:3rem}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:720px}
+.stat-card{background:#f9fafb;border-radius:10px;padding:1.25rem;border-left:3px solid var(--teal)}
+.stat-n{font-size:32px;font-weight:700;color:var(--teal);display:block;line-height:1}
+.stat-l{font-size:13px;color:#555;margin-top:6px;line-height:1.4}
+
+/* ── PROBLEM ──────────────── */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.problem-card{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem}
+.problem-n{font-size:28px;font-weight:700;margin-bottom:4px}
+.problem-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.problem-desc{font-size:13px;color:#555;line-height:1.5;margin:0}
+
+/* ── DOMAINS ──────────────── */
+.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.domain-card{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #ccc;transition:box-shadow .15s;background:#fff}
+.domain-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.domain-status{font-size:11px;font-weight:500;padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:.5rem}
+.domain-title{font-size:16px;font-weight:600;margin-bottom:.375rem}
+.domain-metric{font-size:13px;color:#555;margin-bottom:.625rem;line-height:1.4}
+.domain-desc{font-size:12px;color:#777;margin:0 0 .75rem;line-height:1.5}
+.domain-link{font-size:12px;color:var(--teal);font-weight:500}
+
+/* ── BUILD ──────────────── */
+.build-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+.build-card{background:#f9fafb;border-radius:10px;padding:1.25rem}
+.build-icon{font-size:24px;margin-bottom:.625rem}
+.build-title{font-size:14px;font-weight:600;margin-bottom:.375rem}
+.build-desc{font-size:13px;color:#555;line-height:1.5;margin:0}
+
+/* ── GET INVOLVED ──────────────── */
+#involve{background:#f9fafb}
+.role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.role-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;transition:all .15s}
+.role-card:hover{border-color:var(--teal);background:#fff}
+.role-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.75rem}
+.role-title{font-size:14px;font-weight:600;margin-bottom:.375rem}
+.role-do{font-size:12px;color:#555;margin-bottom:.375rem;line-height:1.45}
+.role-get{font-size:12px;color:var(--teal);font-weight:500;margin-bottom:.5rem;line-height:1.4}
+.role-time{font-size:11px;color:#999}
+
+/* ── MENTORING ──────────────── */
+.mentoring-split{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.mentoring-side{border:1px solid #e5e7eb;border-radius:12px;padding:1.5rem}
+.mentoring-side h3{font-size:16px;font-weight:600;margin-bottom:1rem}
+.mentoring-list{list-style:none}
+.mentoring-list li{display:flex;gap:8px;padding:.5rem 0;border-bottom:.5px solid #f0f0f0;font-size:14px;color:#444;line-height:1.45}
+.mentoring-list li:last-child{border-bottom:none}
+.mentoring-list li::before{content:"→";color:var(--teal);flex-shrink:0;font-weight:600;margin-top:1px}
+.offer{border-color:#9FE1CB}
+.seeking{border-color:#CEB5F6}
+
+/* ── STATUS ──────────────── */
+.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.status-card{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem}
+.status-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.625rem}
+.status-items{font-size:13px;color:#555;line-height:1.6}
+.status-items li{list-style:none;padding:2px 0}
+
+/* ── CONTACT ──────────────── */
+#contact{background:var(--teal);color:#fff}
+#contact h2{color:#fff}
+#contact .section-label{color:#9FE1CB}
+#contact .section-intro{color:rgba(255,255,255,.8)}
+.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.contact-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:1.25rem;text-align:center}
+.contact-card h4{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:.375rem}
+.contact-card p{font-size:14px;color:#fff;font-weight:500;margin:0}
+.contact-card a{color:#9FE1CB}
+
+/* ── FOOTER ──────────────── */
+footer{padding:2rem 0;border-top:1px solid #f0f0f0;text-align:center;font-size:13px;color:#999}
+
+/* ── RESPONSIVE ──────────────── */
+@media(max-width:900px){
+  .hero-headline{font-size:30px}
+  .domain-grid,.build-grid,.role-grid,.problem-grid{grid-template-columns:1fr 1fr}
+  .stat-row,.mentoring-split,.status-grid,.contact-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero-headline{font-size:24px}.hero-sub{font-size:16px}
+  .domain-grid,.build-grid,.role-grid,.problem-grid,.stat-row,.mentoring-split,.status-grid,.contact-grid{grid-template-columns:1fr}
+  .nav-links{display:none}section{padding:2.5rem 0}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <span class="nav-brand">NDL PubSec MCP</span>
+    <div class="nav-links">
+      <a href="#problem">The problem</a>
+      <a href="#domains">Six domains</a>
+      <a href="#involve">Get involved</a>
+      <a href="#mentoring">Mentoring</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#involve" class="btn btn-primary" style="font-size:13px;padding:7px 18px">Get involved</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">DSIT Cross-Gov AI Engineering Lab · Experiment 01</div>
+    <h1 class="hero-headline">Building the citizen intelligence layer<br>for the <span>UK National Data Library</span></h1>
+    <p class="hero-sub">Government digital services are designed around institutions, not people — creating friction, duplication, and missed interventions for those who need help most. This is an attempt to fix that using AI, public APIs, and genuine community co-design.</p>
+    <div class="hero-cta">
+      <a href="#involve" class="btn btn-primary">Get involved</a>
+      <a href="#domains" class="btn btn-outline">Explore the six domains</a>
+      <a href="https://github.com" class="btn btn-ghost">View on GitHub ↗</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><span class="stat-n">6</span><span class="stat-l">NDL Kickstarter domains — energy, health, social care, legal, climate, early years</span></div>
+      <div class="stat-card"><span class="stat-n">36</span><span class="stat-l">MCP tools in scope, each serving a distinct citizen journey</span></div>
+      <div class="stat-card"><span class="stat-n">£319bn</span><span class="stat-l">Long-term social value potential from linked public data (ADR UK / Baringa, 2025)</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <p class="section-label">The problem in numbers</p>
+    <h2 class="section-title">The support exists. People just can't find it.</h2>
+    <p class="section-intro">Across six domains, the same structural failure repeats: services built around departments rather than people, information locked in silos, and the most vulnerable citizens least able to navigate the gap.</p>
+    <div class="problem-grid">
+      <div class="problem-card" style="border-top:3px solid #1D9E75">
+        <div class="problem-label" style="color:#0F6E56">Energy</div>
+        <div class="problem-n" style="color:#0F6E56">4.5m</div>
+        <p class="problem-desc">Fuel-poor households in England. ~10,000 cold-related deaths annually. Billions in support going unclaimed.</p>
+      </div>
+      <div class="problem-card" style="border-top:3px solid #533AB7">
+        <div class="problem-label" style="color:#533AB7">Long-term conditions</div>
+        <div class="problem-n" style="color:#533AB7">15m</div>
+        <p class="problem-desc">People with LTCs repeatedly prove the same condition to services that can't share data. PIP and ESA take-up gaps run to billions.</p>
+      </div>
+      <div class="problem-card" style="border-top:3px solid #0F6E56">
+        <div class="problem-label" style="color:#0F6E56">Social care</div>
+        <div class="problem-n" style="color:#0F6E56">400k+</div>
+        <p class="problem-desc">People waiting for care needs assessments. NHS Continuing Healthcare — worth £40-60k per year — systematically unclaimed.</p>
+      </div>
+      <div class="problem-card" style="border-top:3px solid #185FA5">
+        <div class="problem-label" style="color:#185FA5">Legal</div>
+        <div class="problem-n" style="color:#185FA5">37%</div>
+        <p class="problem-desc">Of legal problems go unresolved. 74% of benefit tribunal appeals succeed when properly argued. Most people give up before they get there.</p>
+      </div>
+      <div class="problem-card" style="border-top:3px solid #3B6D11">
+        <div class="problem-label" style="color:#3B6D11">Climate</div>
+        <div class="problem-n" style="color:#3B6D11">5.2m</div>
+        <p class="problem-desc">Properties at flood risk in England. Most haven't signed up for free EA alerts. Flood Re and adaptation grants largely unknown.</p>
+      </div>
+      <div class="problem-card" style="border-top:3px solid #A33500">
+        <div class="problem-label" style="color:#A33500">Early years</div>
+        <div class="problem-n" style="color:#A33500">48%</div>
+        <p class="problem-desc">Of FSM-eligible children start school without basic skills (32% nationally). Health visiting, education, and childcare operate in isolation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DOMAINS -->
+<section id="domains">
+  <div class="container">
+    <p class="section-label">The six domains</p>
+    <h2 class="section-title">Six scoped, evidence-based intervention areas</h2>
+    <p class="section-intro">Each domain has a full scope document: personas, six MCP tool specifications with TypeScript interfaces, data architecture, DEIA requirements, and recommended build order.</p>
+    <div class="domain-grid">
+
+      <div class="domain-card" style="border-top-color:#1D9E75">
+        <div class="domain-status" style="background:#E1F5EE;color:#085041">Building now</div>
+        <div class="domain-title">Energy bill support</div>
+        <div class="domain-metric">Linking earnings, benefits and energy usage to identify eligible households</div>
+        <div class="domain-desc">Six tools from eligibility checking to application guidance to rights protection. First build: energy_explain_scheme via GOV.UK Content API.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+      <div class="domain-card" style="border-top-color:#533AB7">
+        <div class="domain-status" style="background:#EEEDFE;color:#3C3489">In design</div>
+        <div class="domain-title">Long-term health conditions</div>
+        <div class="domain-metric">Reducing administrative burden by connecting health and benefits data</div>
+        <div class="domain-desc">Tools for mapping entitlements, reducing evidence duplication, preparing for assessments, and navigating appeals across DWP, NHS and local authority services.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+      <div class="domain-card" style="border-top-color:#0F6E56">
+        <div class="domain-status" style="background:#E1F5EE;color:#04342C">In design</div>
+        <div class="domain-title">Adult social care</div>
+        <div class="domain-metric">Improving access to fragmented care data across 152 councils</div>
+        <div class="domain-desc">Care Act rights explained, CQC-rated services found, NHS CHC pathway unlocked, needs assessments navigated. Built on the excellent CQC Provider API.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+      <div class="domain-card" style="border-top-color:#185FA5">
+        <div class="domain-status" style="background:#E6F1FB;color:#042C53">In design</div>
+        <div class="domain-title">AI-powered legal guidance</div>
+        <div class="domain-metric">Authoritative legal records powering AI-assisted guidance for citizens</div>
+        <div class="domain-desc">Legal rights explained with source citations, time limits surfaced before they expire, free help found, letters drafted. Built on legislation.gov.uk API.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+      <div class="domain-card" style="border-top-color:#3B6D11">
+        <div class="domain-status" style="background:#EAF3DE;color:#173404">In design</div>
+        <div class="domain-title">Weather and climate resilience</div>
+        <div class="domain-metric">Connecting weather data to severe weather planning for vulnerable communities</div>
+        <div class="domain-desc">Flood risk explained, Flood Re and adaptation grants surfaced, workplace heat rights explained. Built on the outstanding EA Flood Risk API.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+      <div class="domain-card" style="border-top-color:#A33500">
+        <div class="domain-status" style="background:#FAECE7;color:#4A1B0C">Just announced</div>
+        <div class="domain-title">Early years interventions</div>
+        <div class="domain-metric">Connecting health visiting, education and childcare data — NDL pilots in Leeds, Liverpool, Hammersmith</div>
+        <div class="domain-desc">Developmental milestones without diagnosis, SEND navigation, family hub finding. Serves both parents and early years professionals. Most emotionally sensitive domain.</div>
+        <a href="#" class="domain-link">View full scope →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- HOW WE BUILD -->
+<section id="how">
+  <div class="container">
+    <p class="section-label">How we're building it</p>
+    <h2 class="section-title">Open, responsible, co-designed</h2>
+    <p class="section-intro">The platform is built on a shared foundation of ten reusable modules, a TypeScript MCP server architecture, and a DEIA compliance layer that treats accessibility and plain language as technical invariants rather than optional features.</p>
+    <div class="build-grid">
+      <div class="build-card">
+        <div class="build-icon">⚙</div>
+        <div class="build-title">Model Context Protocol (MCP)</div>
+        <div class="build-desc">The industry-standard interface between AI assistants and external tools and data. Our 36 domain tools are MCP servers in TypeScript, built on @modelcontextprotocol/sdk. Compatible with any MCP-supporting AI assistant including GOV.UK Chat.</div>
+      </div>
+      <div class="build-card">
+        <div class="build-icon">🇬🇧</div>
+        <div class="build-title">Built on UK government public APIs</div>
+        <div class="build-desc">GOV.UK Content and Search APIs. EA Flood Risk API. CQC Provider API. legislation.gov.uk API. postcodes.io. All free, all public, all authoritative. Every tool output traces to a citable government source.</div>
+      </div>
+      <div class="build-card">
+        <div class="build-icon">♿</div>
+        <div class="build-title">DEIA compliance as a platform invariant</div>
+        <div class="build-desc">Flesch-Kincaid Grade ≤6 as a quality gate. WCAG 2.2 AA from the first build. Seven languages including Welsh (statutory). No login for guidance. Always a route to a human. These are not features — they are requirements that block deployment if unmet.</div>
+      </div>
+      <div class="build-card">
+        <div class="build-icon">👥</div>
+        <div class="build-title">Co-designed with communities</div>
+        <div class="build-desc">Not about communities — with them. Priority co-design partners: Disability Rights UK, Law Centres Network, Citizens Advice, SEND parent-carer forums, community flood groups, and energy advice charities. Research planned with proxies, carers, and people without digital access.</div>
+      </div>
+      <div class="build-card">
+        <div class="build-icon">📊</div>
+        <div class="build-title">Independently verifiable public value</div>
+        <div class="build-desc">Every outcome is measured against government-published statistics — ONS Excess Winter Deaths, DWP benefit take-up rates, DfE EYFS Profile, HMCTS tribunal statistics. The Theory of Change is built to be verifiable, not just credible.</div>
+      </div>
+      <div class="build-card">
+        <div class="build-icon">🔬</div>
+        <div class="build-title">Evidence-grounded in formal research</div>
+        <div class="build-desc">Perry Preschool (early years ROI). Heckman Equation. MOJ Legal Problem and Resolution Survey. National Energy Action Fuel Poverty Monitor. ADR UK impact evidence. The tools are built on — not instead of — the formal research in each domain.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- GET INVOLVED -->
+<section id="involve">
+  <div class="container">
+    <p class="section-label">Get involved</p>
+    <h2 class="section-title">This work needs people, not just code</h2>
+    <p class="section-intro">Every role here makes the programme better. Some need deep technical skills. Some need domain expertise. Some need lived experience. Some need just a few hours a month. All are equally valuable.</p>
+    <div class="role-grid">
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#E1F5EE">👩‍👧</div>
+        <div class="role-title">Community co-designer</div>
+        <div class="role-do">You have lived experience of energy poverty, benefit navigation, housing disrepair, social care, flood risk, or a child with developmental needs. You test our tools and tell us what we're getting wrong.</div>
+        <div class="role-get">Real say in how government AI tools are designed. Direct connection to DSIT.</div>
+        <div class="role-time">2–4 hours/month</div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#EEEDFE">🏛</div>
+        <div class="role-title">Domain expert</div>
+        <div class="role-do">You work in welfare rights, housing law, social care, early years, energy advice, climate policy, or legal aid. You review tool outputs for accuracy and advise on what practitioners actually need.</div>
+        <div class="role-get">Influence over tools with potential reach of millions. Research collaboration channel.</div>
+        <div class="role-time">1–2 hours/month</div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#E6F1FB">💻</div>
+        <div class="role-title">Technical contributor</div>
+        <div class="role-do">You write TypeScript (or want to learn it on a real project). You build MCP tools alongside us, contribute to foundation modules, and apply the pattern to new domains.</div>
+        <div class="role-get">Portfolio project in government AI. MCP experience. DSIT network. Mentoring.</div>
+        <div class="role-time">As much as you have</div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#EAF3DE">🔬</div>
+        <div class="role-title">Research collaborator</div>
+        <div class="role-do">You're in academia, a think tank, or a research body. You design studies using platform data, apply for ADR UK access, and co-author evidence papers on AI public services.</div>
+        <div class="role-get">Novel dataset. Co-authorship. Direct policy pipeline for your findings.</div>
+        <div class="role-time">Project-based</div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#FAEEDA">🏢</div>
+        <div class="role-title">Policy partner</div>
+        <div class="role-do">You work in DSIT, DWP, DHSC, DfE, MOJ, DEFRA or a partner organisation. You align the programme to your department's priorities and help navigate internal governance.</div>
+        <div class="role-get">First-mover positioning for your domain's NDL kickstarter. Evidence base for your policy work.</div>
+        <div class="role-time">1–2 hours/month</div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon" style="background:#FAECE7">🧪</div>
+        <div class="role-title">User researcher</div>
+        <div class="role-do">You apply GDS research standards to hard-to-reach participants. You co-facilitate discovery sessions and contribute UR methodology to a programme that takes research seriously.</div>
+        <div class="role-get">Portfolio UR work with vulnerable populations. Policy impact for your research.</div>
+        <div class="role-time">2–5 hours/month</div>
+      </div>
+
+      <div class="role-card" style="border-color:#0F6E56">
+        <div class="role-icon" style="background:#E1F5EE">🧭</div>
+        <div class="role-title">Mentor</div>
+        <div class="role-do">You've navigated senior government digital or AI roles, built things that shipped at scale, or managed the gap between technical vision and political delivery. You share that experience honestly.</div>
+        <div class="role-get">Current practitioner perspective from someone building at the frontier. Connection to a programme that may become significant.</div>
+        <div class="role-time">1 hour/month</div>
+      </div>
+
+      <div class="role-card" style="border-color:#533AB7">
+        <div class="role-icon" style="background:#EEEDFE">🌱</div>
+        <div class="role-title">Learning partner</div>
+        <div class="role-do">You're earlier in your career and want to learn product, policy or engineering by doing on a real programme with genuine public value. You take responsibility for a tool or a domain.</div>
+        <div class="role-get">Real portfolio project. Senior mentoring across product/policy/engineering. DSIT network. Career development evidence.</div>
+        <div class="role-time">2–5 hours/week</div>
+      </div>
+
+    </div>
+    <div style="margin-top:2rem;text-align:center">
+      <a href="#contact" class="btn btn-primary" style="font-size:15px;padding:12px 32px">Tell me how you'd like to get involved</a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MENTORING EXCHANGE -->
+<section id="mentoring">
+  <div class="container">
+    <p class="section-label">The mentoring exchange</p>
+    <h2 class="section-title">Mutual development, not one-way instruction</h2>
+    <p class="section-intro">This programme is explicitly designed to develop skills — in me and in everyone who participates. I can offer specific things, and I'm looking for specific things in return. Mentoring relationships here are genuine exchanges.</p>
+    <div class="mentoring-split">
+
+      <div class="mentoring-side offer">
+        <h3 style="color:#0F6E56">What I can offer you</h3>
+        <ul class="mentoring-list">
+          <li>The whole-programme perspective — product, policy, engineering, and research on a live public sector AI programme simultaneously</li>
+          <li>Navigation of the DSIT/GDS/NDL/Blueprint landscape from the inside — what's real, what's noise, what matters</li>
+          <li>Practical AI engineering skills being developed in real-time — MCP, TypeScript, GOV.UK APIs, Claude Code — shared as I learn them</li>
+          <li>A genuine stake in a programme that could reach millions of people in some of the hardest circumstances</li>
+          <li>Access to the networks being built — ADR UK, GOV.UK Chat, co-design community organisations, partner departments</li>
+          <li>Direct honest feedback on work, career strategy and positioning — not just encouragement</li>
+        </ul>
+      </div>
+
+      <div class="mentoring-side seeking">
+        <h3 style="color:#533AB7">What I'm looking for</h3>
+        <ul class="mentoring-list">
+          <li>Senior digital and AI leaders in government who've built things that shipped — and know what got left on the floor</li>
+          <li>Experienced TypeScript and MCP engineers who can accelerate the technical learning curve by reviewing code and spotting patterns</li>
+          <li>Community organisers and advocates who can connect the programme to communities with lived experience — as genuine partners, not consultees</li>
+          <li>Academics in adjacent research fields — public administration, AI ethics, health informatics, access to justice, early years — who want a policy delivery channel for their findings</li>
+          <li>People who've navigated NDL, ADR UK, or UKRI research partnerships and can help me avoid the wrong doors</li>
+          <li>Anyone who'll challenge the assumptions in this work with evidence and without ego</li>
+        </ul>
+      </div>
+
+    </div>
+    <div style="margin-top:1.5rem;padding:1.25rem;background:#f9fafb;border-radius:10px;font-size:14px;color:#555;line-height:1.6">
+      <strong style="color:#1a1a1a">For junior and mid-career colleagues:</strong> there is space here to take real ownership of a domain, a tool, or a research strand. This is not shadowing — it is doing. The learning curve is steep but the support is real and the work is meaningful. If you're looking for a portfolio project with genuine public value, reach out.
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STATUS -->
+<section id="status">
+  <div class="container">
+    <p class="section-label">Current status — June 2026</p>
+    <h2 class="section-title">Where we are</h2>
+    <div class="status-grid">
+      <div class="status-card" style="border-left:4px solid #0F6E56">
+        <div class="status-label" style="color:#0F6E56">In progress — Sprint 1</div>
+        <ul class="status-items">
+          <li>Setting up Claude Code environment</li>
+          <li>Building energy_explain_scheme (first tool)</li>
+          <li>UK Services API Client</li>
+          <li>GOV.UK Chat programme contact</li>
+          <li>DSIT + DWP ARI response drafts</li>
+        </ul>
+      </div>
+      <div class="status-card" style="border-left:4px solid #533AB7">
+        <div class="status-label" style="color:#533AB7">Scoped and documented</div>
+        <ul class="status-items">
+          <li>All six domain scope documents</li>
+          <li>Cross-cutting analysis</li>
+          <li>User research bundle</li>
+          <li>Theory of Change</li>
+          <li>Project backlog (59 items)</li>
+          <li>Personal development plan</li>
+        </ul>
+      </div>
+      <div class="status-card" style="border-left:4px solid #BA7517">
+        <div class="status-label" style="color:#BA7517">Coming in Sprint 2–4</div>
+        <ul class="status-items">
+          <li>energy_check_eligibility</li>
+          <li>Platform foundation modules</li>
+          <li>LTC + legal first builds</li>
+          <li>First user research sessions</li>
+          <li>ADR UK partnership proposal</li>
+          <li>Co-design partner recruitment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <p class="section-label">Contact and connect</p>
+    <h2 class="section-title">Let's work on this together</h2>
+    <p class="section-intro">Whether you want to co-design, contribute code, challenge the theory of change, share domain expertise, or just talk about what AI in government could and can't do — I want to hear from you.</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h4>DSIT</h4>
+        <p>Cross-Gov AI Engineering Lab</p>
+      </div>
+      <div class="contact-card">
+        <h4>LinkedIn</h4>
+        <p><a href="#">Find me on LinkedIn</a></p>
+      </div>
+      <div class="contact-card">
+        <h4>GitHub</h4>
+        <p><a href="#">github.com/[username]</a></p>
+      </div>
+      <div class="contact-card">
+        <h4>UK Gov Slack</h4>
+        <p><a href="#">#ai channel</a></p>
+      </div>
+    </div>
+    <div style="margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px">
+      <p style="font-size:15px;color:rgba(255,255,255,.9);margin:0;line-height:1.6"><strong style="color:#fff">Not sure which role fits?</strong> That's fine. Tell me what you're working on, what you're trying to learn, or what you're frustrated about in your domain. We'll find the overlap.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>NDL PubSec MCP Platform · DSIT Cross-Gov AI Engineering Lab · Built with Claude · June 2026</p>
+    <p style="margin-top:4px">All scope documents, architecture, theory of change and user research bundle available on request. Open to academic citations and policy evidence submissions.</p>
+  </div>
+</footer>
+
+</body>
+</html>

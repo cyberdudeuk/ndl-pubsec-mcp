@@ -1,0 +1,41 @@
+{
+  "name": "ndl-pubsec-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for citizen-facing UK National Data Library public services — energy, LTC, social care, legal, climate, early years",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "test": "jest",
+    "inspector": "npx @modelcontextprotocol/inspector",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "mcp",
+    "government",
+    "public-services",
+    "ndl",
+    "citizen-facing",
+    "ai",
+    "typescript"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Library — NDL PubSec MCP Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff}
+.container{max-width:1040px;margin:0 auto;padding:0 2rem}
+a{color:#0F6E56;text-decoration:none}a:hover{text-decoration:underline}
+nav{background:#fff;border-bottom:1px solid #f0f0f0;padding:.875rem 0}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-weight:600;font-size:14px;color:#0F6E56}
+.section-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#0F6E56;margin-bottom:.625rem}
+h2{font-size:22px;font-weight:700;margin-bottom:.5rem}
+section{padding:3.5rem 0}
+hr{border:none;border-top:1px solid #f0f0f0}
+
+/* Hero */
+#hero{padding:3rem 0 2.5rem;background:#f9fafb;border-bottom:1px solid #f0f0f0}
+.hero-badge{display:inline-block;background:#E1F5EE;color:#0F6E56;font-size:13px;font-weight:500;padding:4px 14px;border-radius:20px;margin-bottom:.875rem}
+.hero-headline{font-size:32px;font-weight:700;line-height:1.25;margin-bottom:.875rem;max-width:680px}
+.hero-sub{font-size:16px;color:#555;max-width:640px;line-height:1.65}
+
+/* Stats */
+.stat-bar{display:flex;gap:2rem;margin:1.5rem 0 0;flex-wrap:wrap}
+.stat-item{text-align:left}
+.stat-n{font-size:24px;font-weight:700;color:#0F6E56}
+.stat-l{font-size:12px;color:#777}
+
+/* Search */
+.search-bar{display:flex;gap:.75rem;margin:1.5rem 0 2.5rem;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:8px 14px;border:1px solid #e5e7eb;border-radius:6px;font-size:14px;font-family:inherit;outline:none}
+.search-bar input:focus{border-color:#0F6E56}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{padding:6px 14px;border:1px solid #e5e7eb;border-radius:20px;font-size:12px;cursor:pointer;background:#fff;font-family:inherit;transition:all .15s}
+.fbtn.active{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.fbtn:hover:not(.active){border-color:#0F6E56;color:#0F6E56}
+
+/* Category section */
+.cat-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:2px solid #E1F5EE}
+.cat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cat-title{font-size:18px;font-weight:600;margin:0}
+.cat-sub{font-size:13px;color:#777;margin:2px 0 0}
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem}
+
+/* Doc card */
+.doc-card{border:1px solid #e5e7eb;border-radius:10px;padding:1.25rem;background:#fff;transition:border-color .15s}
+.doc-card:hover{border-color:#0F6E56}
+.doc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.625rem}
+.doc-title{font-size:15px;font-weight:600;color:#1a1a1a;flex:1}
+.doc-badges{display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;white-space:nowrap}
+.badge-pub{background:#E1F5EE;color:#085041}
+.badge-gov{background:#E6F1FB;color:#0C447C}
+.badge-team{background:#EEEDFE;color:#3C3489}
+.badge-html{background:#F1EFE8;color:#444441}
+.badge-interactive{background:#FAEEDA;color:#633806}
+.doc-desc{font-size:13px;color:#555;margin-bottom:.875rem;line-height:1.5}
+.doc-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.doc-produced{font-size:11px;color:#aaa}
+.doc-actions{display:flex;gap:.5rem}
+.doc-link{font-size:12px;font-weight:500;color:#0F6E56;padding:4px 12px;border:1px solid #0F6E56;border-radius:4px}
+.doc-link:hover{background:#0F6E56;color:#fff;text-decoration:none}
+
+/* Access legend */
+.access-legend{display:flex;gap:1rem;flex-wrap:wrap;padding:1rem 1.25rem;background:#f9fafb;border-radius:8px;font-size:13px;margin-bottom:2.5rem}
+.al-item{display:flex;align-items:center;gap:6px}
+
+/* Table of contents */
+.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0 3rem}
+.toc-item{padding:.75rem 1rem;border:1px solid #e5e7eb;border-radius:8px;font-size:13px}
+.toc-count{font-size:20px;font-weight:700;color:#0F6E56;display:block;margin-bottom:2px}
+.toc-label{color:#555}
+
+@media(max-width:700px){.doc-grid{grid-template-columns:1fr}.toc{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="portfolio_landing.html" class="nav-brand">← NDL PubSec MCP</a>
+    <span style="font-size:13px;color:#999">Document library · 13 artefacts</span>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">Document library</div>
+    <h1 class="hero-headline">All programme artefacts in one place</h1>
+    <p class="hero-sub">Every document produced in the course of designing this programme — from domain scope specifications to the theory of change, UR bundle, backlog, and PDP. All produced in a single development session, June 2026.</p>
+    <div class="stat-bar">
+      <div class="stat-item"><span class="stat-n">13</span><br><span class="stat-l">documents total</span></div>
+      <div class="stat-item"><span class="stat-n">6</span><br><span class="stat-l">domain scopes</span></div>
+      <div class="stat-item"><span class="stat-n">36</span><br><span class="stat-l">TypeScript tool interfaces specified</span></div>
+      <div class="stat-item"><span class="stat-n">1</span><br><span class="stat-l">interactive backlog with persistent storage</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <!-- Access legend -->
+    <div class="access-legend">
+      <span style="font-weight:600;color:#555;font-size:12px;align-self:center">ACCESS LEVELS:</span>
+      <div class="al-item"><span class="badge badge-pub">Public</span> <span>Open — share freely</span></div>
+      <div class="al-item"><span class="badge badge-gov">Government</span> <span>@gov.uk email recommended</span></div>
+      <div class="al-item"><span class="badge badge-team">Team</span> <span>Lab internal only</span></div>
+    </div>
+
+    <!-- Search + filter -->
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search documents..." oninput="filterDocs()">
+      <div class="filter-btns">
+        <button class="fbtn active" onclick="filterCat('all',this)">All</button>
+        <button class="fbtn" onclick="filterCat('foundations',this)">Foundations</button>
+        <button class="fbtn" onclick="filterCat('domains',this)">Domain scopes</button>
+        <button class="fbtn" onclick="filterCat('delivery',this)">Delivery</button>
+        <button class="fbtn" onclick="filterCat('portfolio',this)">Portfolio</button>
+      </div>
+    </div>
+
+    <!-- Summary TOC -->
+    <div class="toc" id="toc">
+      <div class="toc-item"><span class="toc-count" id="c-all">13</span><span class="toc-label">Total documents</span></div>
+      <div class="toc-item"><span class="toc-count" id="c-pub" style="color:#085041">10</span><span class="toc-label">Publicly shareable</span></div>
+      <div class="toc-item"><span class="toc-count" id="c-int" style="color:#3C3489">3</span><span class="toc-label">Internal / restricted</span></div>
+    </div>
+
+    <!-- FOUNDATIONS -->
+    <div data-cat="foundations">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#E1F5EE">🔬</div>
+        <div><div class="cat-title">Programme foundations</div><div class="cat-sub">Theory of change, cross-cutting analysis and user research strategy</div></div>
+      </div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Theory of Change</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Causal chain from inputs through activities and outputs to outcomes and long-term impact. Evidence base for each link. Assumptions, risks, and measurement framework using government-published statistics. Aligned to Blueprint and Labour missions.</div>
+          <div class="doc-meta"><span class="doc-produced">Produced June 2026</span><div class="doc-actions"><a href="theory_of_change.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Cross-Cutting Analysis</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Shared technical foundation (10 modules), shared knowledge bases, evidence-based priority ranking across all 6 domains, 5 DSIT frontier opportunities including GOV.UK Chat alignment, and ARI mapping to 8 government research questions.</div>
+          <div class="doc-meta"><span class="doc-produced">Produced June 2026</span><div class="doc-actions"><a href="cross_cutting_analysis.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">User Research Bundle</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Platform-wide UR strategy, target participant profiles, research methods and phases, ethical considerations, 15 structural blindspot analyses with design responses, formal research evidence base by domain, and discussion guide outlines.</div>
+          <div class="doc-meta"><span class="doc-produced">Produced June 2026</span><div class="doc-actions"><a href="user_research_bundle.html" class="doc-link">Open →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOMAIN SCOPES -->
+    <div data-cat="domains">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#EEEDFE">⚙</div>
+        <div><div class="cat-title">Domain scope documents</div><div class="cat-sub">Six full scope specifications with personas, TypeScript tool interfaces, data architecture, DEIA requirements and build orders</div></div>
+      </div>
+      <div class="doc-grid">
+        <div class="doc-card" style="border-top:3px solid #1D9E75">
+          <div class="doc-top">
+            <div class="doc-title">Energy Support MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Marjorie, Daniel, Amara). 6 tools with full TypeScript interfaces. 7 v1 schemes. GOV.UK Content API integration. Build order and first implementation spec. 12 DEIA requirements. Questions for the lab.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 1 · Built first</span><div class="doc-actions"><a href="energy_support_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card" style="border-top:3px solid #533AB7">
+          <div class="doc-top">
+            <div class="doc-title">Long-Term Conditions MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Sarah, Kwame, Aisha). 6 tools from entitlement mapping to appeal navigation. ltc_reduce_duplication flagged as NDL-core tool to build last. DWP assessment criteria encoded as structured TypeScript.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 2 · Priority 2</span><div class="doc-actions"><a href="ltc_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card" style="border-top:3px solid #0F6E56">
+          <div class="doc-top">
+            <div class="doc-title">Adult Social Care MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Dorothy, Leon, Meera). CQC Provider API highlighted as best public API in UK public sector. NHS CHC pathway detailed. Care Act rights as first build. 152-council data fragmentation addressed.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 3 · Priority 4</span><div class="doc-actions"><a href="social_care_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card" style="border-top:3px solid #185FA5">
+          <div class="doc-top">
+            <div class="doc-title">Legal Guidance MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Asha, Ryan, Blessing). legislation.gov.uk API as primary data source. legal_check_deadlines flagged as most time-critical tool (irreversible harm). Legal advice/information boundary designed in from the start.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 4 · Priority 1</span><div class="doc-actions"><a href="legal_guidance_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card" style="border-top:3px solid #3B6D11">
+          <div class="doc-top">
+            <div class="doc-title">Climate Resilience MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Vera, Hassan, Catrin). Environment Agency Flood Risk API as outstanding free public API. climate_check_flood_risk as first build. Outdoor worker heat rights legal ambiguity addressed. Welsh language parity for agricultural use case.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 5 · Priority 6</span><div class="doc-actions"><a href="climate_resilience_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card" style="border-top:3px solid #A33500">
+          <div class="doc-top">
+            <div class="doc-title">Early Years Interventions MCP — Scope</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">3 personas (Kezia, Ameer, Gloria). Announced 4 June 2026. NDL pilot areas: Leeds, Hammersmith & Fulham, Liverpool City Region. Dual user type (parents + professionals). Non-diagnostic tone as critical design requirement. 32%/48% school readiness data.</div>
+          <div class="doc-meta"><span class="doc-produced">Domain 6 · Most recent</span><div class="doc-actions"><a href="early_years_mcp_scope.html" class="doc-link">Open →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERY -->
+    <div data-cat="delivery">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#FAEEDA">📋</div>
+        <div><div class="cat-title">Delivery and management</div><div class="cat-sub">Backlog, personal development plan and personal development log</div></div>
+      </div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Project Backlog</div>
+            <div class="doc-badges"><span class="badge badge-team">Team</span><span class="badge badge-interactive">Interactive</span></div>
+          </div>
+          <div class="doc-desc">59-item prioritised backlog across 11 epics. Three views: filterable table, personal objectives tracker, and dashboard. Status updates persist across sessions. Exports to Microsoft Planner CSV and Jira CSV. Linked to Blueprint pillars, Labour missions, and DSIT priorities.</div>
+          <div class="doc-meta"><span class="doc-produced">June 2026 · Self-updating</span><div class="doc-actions"><a href="ndl_backlog.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Personal Development Plan</div>
+            <div class="doc-badges"><span class="badge badge-team">Team</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">MoSCoW priority reassessment, five-phase trajectory with learning curve milestones, four quarterly performance objectives (Q3 2026–Q2 2027), L&D log entries formatted for DSIT HR system, career-defining achievement statements, and civil service behaviours evidence.</div>
+          <div class="doc-meta"><span class="doc-produced">June 2026 · Quarterly update</span><div class="doc-actions"><a href="personal_development_plan.html" class="doc-link">Open →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO -->
+    <div data-cat="portfolio">
+      <div class="cat-header">
+        <div class="cat-icon" style="background:#E6F1FB">🌐</div>
+        <div><div class="cat-title">Portfolio and communications</div><div class="cat-sub">Public-facing portfolio, showcase, and document library</div></div>
+      </div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Portfolio Landing Page</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Single-page portfolio hub. Problem in numbers, six domain showcase, get-involved section with eight roles, mentoring exchange, current status. Ready to deploy on GitHub Pages or Cloudflare Pages.</div>
+          <div class="doc-meta"><span class="doc-produced">June 2026</span><div class="doc-actions"><a href="portfolio_landing.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Showcase &amp; Case Studies</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Three persona case studies (Marjorie/energy, Ryan/legal, Kezia/early years). 18 use cases across four situational types. Representative tool output showing FK Grade scoring, source citation, and quality badges. Showcase roadmap.</div>
+          <div class="doc-meta"><span class="doc-produced">June 2026</span><div class="doc-actions"><a href="showcase_case_studies.html" class="doc-link">Open →</a></div></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-top">
+            <div class="doc-title">Document Library (this page)</div>
+            <div class="doc-badges"><span class="badge badge-pub">Public</span><span class="badge badge-html">HTML</span></div>
+          </div>
+          <div class="doc-desc">Searchable, filterable index of all programme artefacts. Categorised by foundations, domain scopes, delivery, and portfolio. Access level labelling for public/government/team content. Full search with category filters.</div>
+          <div class="doc-meta"><span class="doc-produced">June 2026 · Self-referential</span><div class="doc-actions"><span style="font-size:12px;color:#999">You are here</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GITHUB NOTE -->
+    <div style="padding:1.5rem;background:#1a1a2e;border-radius:12px;color:#e5e7eb;font-size:14px;line-height:1.65">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem">
+        <span style="font-size:20px">🐙</span>
+        <strong style="color:#fff;font-size:15px">GitHub repository</strong>
+      </div>
+      <p style="color:#9ca3af;margin-bottom:.75rem">All these documents belong in a public GitHub repository alongside the actual MCP server code. The repo is the technical credibility layer; this document library is the narrative layer. Both are needed.</p>
+      <div style="font-family:monospace;font-size:13px;color:#34d399;background:rgba(0,0,0,.3);padding:.75rem 1rem;border-radius:6px">
+        git clone https://github.com/[username]/ndl-pubsec-mcp<br>
+        <span style="color:#60a5fa">├── docs/</span>         ← all HTML documents from this library<br>
+        <span style="color:#60a5fa">├── src/</span>          ← TypeScript MCP server source<br>
+        <span style="color:#60a5fa">├── src/foundation/</span>← shared platform modules<br>
+        <span style="color:#60a5fa">├── src/tools/</span>    ← domain-specific tools<br>
+        <span style="color:#60a5fa">└── README.md</span>     ← mirrors the portfolio landing page
+      </div>
+      <div style="margin-top:.875rem"><a href="https://github.com" style="color:#34d399;font-weight:500">View on GitHub (placeholder) →</a></div>
+    </div>
+
+  </div>
+</section>
+
+<div style="padding:2rem 0;border-top:1px solid #f0f0f0;text-align:center;font-size:13px;color:#999">
+  <div class="container">
+    NDL PubSec MCP Platform · Document Library · 13 artefacts · June 2026 · <a href="portfolio_landing.html">← Back to portfolio</a>
+  </div>
+</div>
+
+<script>
+function filterDocs(){
+  const q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.doc-card').forEach(c=>{
+    const text=c.textContent.toLowerCase();
+    c.style.display=text.includes(q)?'':'none';
+  });
+}
+function filterCat(cat,btn){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[data-cat]').forEach(section=>{
+    section.style.display=(cat==='all'||section.dataset.cat===cat)?'':'none';
+  });
+}
+</script>
+</body>
+</html>

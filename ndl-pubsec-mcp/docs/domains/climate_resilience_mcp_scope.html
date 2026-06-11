@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Resilience MCP — Scope & Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#fff;max-width:900px;margin:0 auto;padding:2.5rem 2rem}
+h1{font-size:26px;font-weight:700;color:#3B6D11;margin-bottom:4px}
+.subtitle{font-size:16px;font-weight:400;color:#666;margin-bottom:1.25rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin:2.5rem 0 .75rem;padding-bottom:.5rem;border-bottom:2px solid #EAF3DE}
+h3{font-size:15px;font-weight:600;color:#1a1a1a;margin:1.25rem 0 .5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.25rem}
+code{font-family:'SF Mono','Cascadia Code',monospace;font-size:13px;background:#EAF3DE;padding:1px 5px;border-radius:4px;color:#27500A}
+hr{border:none;border-top:1px solid #e5e7eb;margin:2rem 0}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tag{font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500}
+.tg{background:#EAF3DE;color:#27500A}.ta{background:#FAEEDA;color:#633806}.tgr{background:#f3f4f6;color:#555}
+.callout{background:#F2F8EC;border-left:4px solid #3B6D11;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border-radius:0 8px 8px 0}
+.callout p{margin:0;font-size:14px}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.pc{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;border-top:4px solid #3B6D11}
+.pn{font-weight:700;font-size:15px;margin-bottom:2px}.ps{font-size:12px;color:#888;margin-bottom:8px}
+.pb{font-size:13px;color:#444;line-height:1.5;margin-bottom:10px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tc{font-family:'SF Mono','Cascadia Code',monospace;font-size:14px;font-weight:600;color:#27500A;background:#EAF3DE;padding:4px 12px;border-radius:6px;display:inline-block}
+.th{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tool{border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.tool.hl{border-left:4px solid #3B6D11}
+.td{font-size:14px;color:#444;margin-bottom:1rem;line-height:1.5}
+.cb{background:#F2F8EC;border:1px solid #c5dcab;border-radius:8px;padding:1rem 1.25rem;font-family:'SF Mono','Cascadia Code',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;white-space:pre}
+.kw{color:#166534}.ty{color:#1d4ed8}.st{color:#047857}.cm{color:#9ca3af;font-style:italic}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0 1.5rem}
+.dc{border:1px solid #e5e7eb;border-radius:8px;padding:1rem;font-size:13px}
+.dc.main{border-left:4px solid #3B6D11}.dc.fut{border-left:4px dashed #3B6D11}
+.dc h3{font-size:14px;margin-bottom:6px}.dc p{margin:0;color:#555;line-height:1.5}
+.deia{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0 1.5rem}
+.di{display:flex;align-items:flex-start;gap:8px;background:#f9fafb;border-radius:6px;padding:8px 12px;font-size:13px}
+.di::before{content:"✓";color:#3B6D11;font-weight:700;flex-shrink:0;margin-top:1px}
+.bl{list-style:none;margin:1rem 0 1.5rem}
+.bl li{display:flex;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.bl li:last-child{border-bottom:none}
+.sn{background:#3B6D11;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.sb h3{margin:0 0 2px;font-size:14px}.sb p{margin:0;font-size:13px;color:#666}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-size:12px;color:#aaa;text-align:center}
+@media(max-width:600px){body{padding:1.25rem 1rem}.deia{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>Climate Resilience MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 5</p>
+<div class="meta">
+  <span class="tag tgr">Draft v0.1</span>
+  <span class="tag tg">Cross-Gov AI Engineering Lab</span>
+  <span class="tag ta">June 2026</span>
+  <span class="tag tgr">For review and comment</span>
+</div>
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP server enabling AI assistants to help citizens — particularly those least able to adapt to climate risks — understand their flood, heat and cold risks, know their rights, access adaptation grants, and connect to local preparedness resources. It aligns with the NDL Kickstarter on expanding the use of weather and climate data to help organisations and individuals plan for severe weather and long-term climate change.</p>
+</div>
+
+<h2>Problem statement</h2>
+<p>Climate risk is regressive: it falls hardest on those with the least capacity to adapt. Elderly people in flood-risk areas who haven't signed up to alerts. Outdoor workers facing extreme heat with no knowledge of their employer's legal obligations. Rural communities and small farmers facing existential agricultural risk with no access to professional climate advice.</p>
+<p>At the same time, significant support exists — Flood Re, local authority adaptation schemes, agricultural grants, EA alerts — that goes unclaimed because the right information never reaches the right people. The NDL Kickstarter creates the data infrastructure; this MCP creates the citizen-facing access layer.</p>
+
+<h2>Target users</h2>
+<div class="pg">
+  <div class="pc">
+    <div class="pn">Vera, 73</div><div class="ps">Worcester (flood zone)</div>
+    <div class="pb">Lives 200m from a flood-risk watercourse. Has never signed up for EA flood alerts. Doesn't know Flood Re exists or that her council runs a free home flood adaptation scheme. When flooding occurs, she doesn't know her rights around insurance, emergency accommodation, or compensation.</div>
+    <div class="tags"><span class="tag tg">Elderly</span><span class="tag tg">Flood risk</span><span class="tag ta">Entitlement unaware</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Hassan, 49</div><div class="ps">Outdoor worker · Birmingham</div>
+    <div class="pb">Construction worker who spent three days in 38°C heat last summer and suffered heat exhaustion. Doesn't know his employer has legal obligations during dangerous temperatures, or that he can request shade, water and rest breaks as a legal right. Is also at higher risk due to darker skin tone and high exertion.</div>
+    <div class="tags"><span class="tag tg">Outdoor worker</span><span class="tag tg">Heat health</span><span class="tag ta">Employment rights unknown</span></div>
+  </div>
+  <div class="pc">
+    <div class="pn">Catrin, 43</div><div class="ps">Small farm · rural Wales</div>
+    <div class="pb">Her family farm has seen a 30% reduction in viable growing days over 10 years. She wants to understand the climate risk to her land and livelihood but can't afford professional consultancy. Doesn't know about Farming in a Changing Climate guidance or agricultural adaptation grants.</div>
+    <div class="tags"><span class="tag tg">Rural</span><span class="tag tg">Agricultural risk</span><span class="tag ta">Grant-unaware</span></div>
+  </div>
+</div>
+
+<h2>MCP tool specifications</h2>
+
+<div class="tool hl">
+  <div class="th"><span class="tc">climate_check_flood_risk</span><span class="tag tg">Build first</span></div>
+  <div class="td">Uses the Environment Agency's free, public Flood Risk API to return a plain English explanation of flood risk for any postcode. One of the best public APIs available — returns flood zone classification, probability, and risk type (river/sea/surface water). Foundational to all flood-related tools.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateCheckFloodRiskInput</span> {
+  postcode:          <span class="ty">string</span>;
+  include_future?:   <span class="ty">boolean</span>;      <span class="cm">// include projected 2050/2080 risk under climate scenarios</span>
+  reading_level?:    <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:         <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateCheckFloodRiskOutput</span> {
+  risk_level:        <span class="st">'high'</span> | <span class="st">'medium'</span> | <span class="st">'low'</span> | <span class="st">'very_low'</span>;
+  risk_type:         <span class="ty">string</span>[];       <span class="cm">// ["river","surface_water","sea"]</span>
+  plain_explanation: <span class="ty">string</span>;
+  future_risk?:      <span class="ty">FutureRisk</span>;    <span class="cm">// 2050/2080 projections if requested</span>
+  probability_1_in:  <span class="ty">number</span>;        <span class="cm">// e.g. 100 = 1-in-100-year flood</span>
+  recommended_actions: <span class="ty">string</span>[];
+  ea_alert_url:      <span class="ty">string</span>;        <span class="cm">// link to sign up for EA flood alerts for this area</span>
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">climate_find_flood_support</span></div>
+  <div class="td">Finds financial and practical support for flood risk — Flood Re (subsidised insurance), council property adaptation schemes, EA-funded flood defences, and emergency support if flooding has occurred. Connects the risk information to actionable help.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateFindFloodSupportInput</span> {
+  postcode:          <span class="ty">string</span>;
+  situation:         <span class="st">'at_risk'</span> | <span class="st">'flooded_now'</span> | <span class="st">'recently_flooded'</span>;
+  property_type?:    <span class="st">'owned'</span> | <span class="st">'rented'</span> | <span class="st">'social_housing'</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateFindFloodSupportOutput</span> {
+  flood_re_eligible: <span class="ty">boolean</span>;
+  local_schemes:     <span class="ty">FloodScheme</span>[];
+  emergency_contacts: <span class="ty">ContactInfo</span>[];    <span class="cm">// EA, council emergency team, insurance</span>
+  adaptation_grants: <span class="ty">Grant</span>[];
+  insurance_guidance: <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">climate_explain_weather_rights</span></div>
+  <div class="td">Returns legal rights and employer obligations for extreme weather situations — workplace temperature, outdoor working in heat, cold housing standards, and tenant rights during extreme cold. Many workers and tenants don't know these rights exist.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateExplainWeatherRightsInput</span> {
+  situation_type:    <span class="ty">string</span>;        <span class="cm">// "outdoor_heat"|"indoor_heat"|"cold_housing"|"flooding_tenant"</span>
+  employment_type?:  <span class="ty">string</span>;        <span class="cm">// "employee"|"worker"|"self_employed" — affects rights</span>
+  sector?:           <span class="ty">string</span>;        <span class="cm">// "construction"|"agriculture"|"logistics" — sector-specific guidance</span>
+  reading_level?:    <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateExplainWeatherRightsOutput</span> {
+  rights:            <span class="ty">WeatherRight</span>[];
+  employer_duties:   <span class="ty">string</span>[];
+  what_you_can_do:   <span class="ty">string</span>[];
+  if_rights_denied:  <span class="ty">string</span>;
+  regulatory_body:   <span class="ty">string</span>;       <span class="cm">// HSE, MHCLG etc.</span>
+  legal_sources:     <span class="ty">string</span>[];
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">climate_find_resilience_grants</span></div>
+  <div class="td">Finds available grants for home, business, or agricultural climate adaptation by location and property type. Covers Boiler Upgrade Scheme, Energy Efficiency schemes, Countryside Stewardship, and local authority climate adaptation funds.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateFindResilienceGrantsInput</span> {
+  postcode:          <span class="ty">string</span>;
+  applicant_type:    <span class="st">'homeowner'</span> | <span class="st">'private_renter'</span> | <span class="st">'business'</span> | <span class="st">'farmer'</span>;
+  grant_type?:       <span class="st">'flood'</span> | <span class="st">'energy'</span> | <span class="st">'heat'</span> | <span class="st">'agricultural'</span> | <span class="st">'all'</span>;
+  property_type?:    <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateResilienceGrant</span> {
+  name:              <span class="ty">string</span>;
+  description:       <span class="ty">string</span>;
+  max_value:         <span class="ty">string</span>;
+  eligibility:       <span class="ty">string</span>;
+  deadline?:         <span class="ty">string</span>;
+  application_url:   <span class="ty">string</span>;
+  administering_body: <span class="ty">string</span>;
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">climate_find_local_preparedness</span></div>
+  <div class="td">Finds local emergency plans, community flood action groups, volunteer resilience networks, and how to sign up for EA flood warnings for a specific location. Connects citizens to their local preparedness infrastructure.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateFindLocalPreparednessInput</span> {
+  postcode:          <span class="ty">string</span>;
+  risk_type?:        <span class="st">'flood'</span> | <span class="st">'heat'</span> | <span class="st">'cold'</span> | <span class="st">'all'</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateFindLocalPreparednessOutput</span> {
+  local_resilience_forum: <span class="ty">string</span>;
+  community_groups:       <span class="ty">Organisation</span>[];
+  ea_alert_signup_url:    <span class="ty">string</span>;
+  council_emergency_plan: <span class="ty">string</span>;
+  volunteer_opportunities: <span class="ty">string</span>[];
+}</div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tc">climate_assess_vulnerability</span></div>
+  <div class="td">Assesses personal vulnerability to climate hazards based on age, health conditions, housing type, location and employment. Returns tailored next steps and priority actions. Bridges from general risk information to personalised action.</div>
+  <div class="cb"><span class="kw">interface</span> <span class="ty">ClimateAssessVulnerabilityInput</span> {
+  postcode:           <span class="ty">string</span>;
+  age_band?:          <span class="ty">string</span>;       <span class="cm">// "under_5"|"5_to_64"|"65_to_74"|"75_plus"</span>
+  health_conditions?: <span class="ty">string</span>[];    <span class="cm">// affects heat/cold vulnerability scoring</span>
+  housing_type?:      <span class="ty">string</span>;       <span class="cm">// "top_floor_flat"|"detached"|"semi"|"terraced"</span>
+  employment_type?:   <span class="ty">string</span>;
+}
+<span class="kw">interface</span> <span class="ty">ClimateAssessVulnerabilityOutput</span> {
+  vulnerability_profile: <span class="ty">VulnerabilityScore</span>[];  <span class="cm">// by hazard type</span>
+  priority_risks:        <span class="ty">string</span>[];
+  recommended_actions:   <span class="ty">PrioritisedAction</span>[];
+  local_support:         <span class="ty">Organisation</span>[];
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+<div class="dg">
+  <div class="dc main"><h3 style="color:#3B6D11">EA Flood Risk API <span class="tag tg" style="font-size:10px">Outstanding</span></h3><p>Free, public, excellent REST API. Returns flood zone, risk probability, risk type by postcode. Base: <code>environment.data.gov.uk/flood-monitoring</code>. Build first tool on this API.</p></div>
+  <div class="dc main"><h3 style="color:#3B6D11">Met Office APIs</h3><p>Weather observation and forecast data. Some free tiers. Heat-health alert data. Useful for heat/cold risk tools and real-time severe weather guidance.</p></div>
+  <div class="dc main"><h3 style="color:#3B6D11">GOV.UK guidance</h3><p>Heat-health alert guidance, flooding advice, HSE outdoor working guidance, agricultural climate advice. Free, public, Content API accessible.</p></div>
+  <div class="dc main"><h3 style="color:#3B6D11">Flood Re data</h3><p>Public information on Flood Re scheme — insurance availability for high-risk properties. No API but structured guidance on eligibility and how to access.</p></div>
+  <div class="dc fut"><h3 style="color:#3B6D11">NDL weather & climate data <span class="tag tg" style="font-size:10px">Phase 2+</span></h3><p>The NDL kickstarter expands access to Met Office and other climate datasets for planning. Will enable richer, combined risk assessments linking property, demographic and climate data.</p></div>
+</div>
+
+<h2>DEIA requirements</h2>
+<div class="deia">
+  <div class="di">Multi-language — climate impacts on migrant communities, Welsh bilingual required</div>
+  <div class="di">WCAG 2.2 AA — elderly users are a primary cohort; large text, simple navigation</div>
+  <div class="di">Rural accessibility — works on poor mobile connectivity; low-bandwidth design</div>
+  <div class="di">Plain English — no climate science jargon; "1-in-100-year flood" explained clearly</div>
+  <div class="di">Mobile-first — emergency use case; must work during a flood event on a phone</div>
+  <div class="di">Offline resilience — key safety information cached where possible</div>
+  <div class="di">No login for risk information — consent-first for location-based personalisation</div>
+  <div class="di">Alert sign-up as a core journey — EA flood alerts are the highest-value single action</div>
+  <div class="di">Agricultural communities — guidance available in Welsh; rural internet limitations considered</div>
+  <div class="di">GDS service standard compliant — built for real emergencies, not just informational use</div>
+  <div class="di">BAME health impact — darker skin tone increases heat risk; guidance appropriately tailored</div>
+  <div class="di">Co-designed with communities — local resilience forums, NFU, flood action groups from alpha</div>
+</div>
+
+<h2>Recommended build order</h2>
+<ol class="bl">
+  <li><div class="sn">1</div><div class="sb"><h3><code>climate_check_flood_risk</code></h3><p>Best public API in the government space. Environment Agency Flood Risk API is free, well-documented, and returns rich data. Build this first — it's the gateway to all flood tools and demonstrates tangible value immediately.</p></div></li>
+  <li><div class="sn">2</div><div class="sb"><h3><code>climate_find_flood_support</code></h3><p>Builds directly on the risk tool. Adding Flood Re eligibility and local scheme information converts risk awareness into action. High immediate impact.</p></div></li>
+  <li><div class="sn">3</div><div class="sb"><h3><code>climate_explain_weather_rights</code></h3><p>Uses GOV.UK + HSE guidance. Outdoor heat rights are a pressing issue and currently underserved. Build after flood tools are working.</p></div></li>
+  <li><div class="sn">4</div><div class="sb"><h3><code>climate_find_resilience_grants</code></h3><p>Requires curating grant data from multiple sources. High financial value for recipients. Build after core risk and rights tools.</p></div></li>
+  <li><div class="sn">5</div><div class="sb"><h3><code>climate_find_local_preparedness</code></h3><p>Requires local resilience forum data — currently scattered across council websites. Web search integration needed.</p></div></li>
+  <li><div class="sn">6</div><div class="sb"><h3><code>climate_assess_vulnerability</code></h3><p>Most complex — requires integrating risk, demographic, health and housing data. Build last but highest long-term value for targeted support.</p></div></li>
+</ol>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>Is the NDL climate kickstarter primarily about Met Office data access, or is it also connecting demographic/vulnerability data to climate risk? This changes scope significantly.</li>
+  <li>The EA Flood Risk API is excellent — are there equivalent quality APIs for heat or cold risk we should be aware of?</li>
+  <li>Outdoor worker heat rights are legally ambiguous (no specific temperature threshold in UK law unlike some EU countries) — how do we communicate this accurately without misleading users?</li>
+  <li>Agricultural climate guidance overlaps with DEFRA's Countryside Stewardship and Farming in Protected Landscapes — are there DEFRA colleagues we should collaborate with?</li>
+  <li>Co-design recommendation: Environment Agency, Met Office, Flood Re, NFU, local resilience forums, and community flood action groups.</li>
+</ol>
+
+<footer>Climate Resilience MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment</footer>
+</body></html>

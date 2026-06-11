@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Support MCP — Scope & Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.7; color: #1a1a1a; background: #fff; max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; }
+h1 { font-size: 26px; font-weight: 700; color: #0F6E56; margin-bottom: 4px; }
+.subtitle { font-size: 16px; font-weight: 400; color: #666; margin-bottom: 1.25rem; }
+h2 { font-size: 18px; font-weight: 600; color: #1a1a1a; margin: 2.5rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E1F5EE; }
+h3 { font-size: 15px; font-weight: 600; color: #1a1a1a; margin: 1.25rem 0 0.5rem; }
+p { margin-bottom: 0.75rem; }
+ul, ol { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+li { margin-bottom: 0.25rem; }
+code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 13px; background: #f3f0ff; padding: 1px 5px; border-radius: 4px; color: #533AB7; }
+hr { border: none; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+
+.meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tag { font-size: 12px; padding: 3px 12px; border-radius: 20px; font-weight: 500; }
+.tag-teal { background: #E1F5EE; color: #085041; }
+.tag-purple { background: #EEEDFE; color: #3C3489; }
+.tag-amber { background: #FAEEDA; color: #633806; }
+.tag-gray { background: #f3f4f6; color: #555; }
+
+.callout { background: #f0fdf8; border-left: 4px solid #0F6E56; padding: 1rem 1.25rem; margin: 1rem 0 1.5rem; border-radius: 0 8px 8px 0; }
+.callout p { margin: 0; font-size: 14px; }
+
+.persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
+.persona-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+.persona-card.teal { border-top: 4px solid #1D9E75; }
+.persona-card.purple { border-top: 4px solid #533AB7; }
+.persona-card.amber { border-top: 4px solid #BA7517; }
+.pname { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+.psub { font-size: 12px; color: #888; margin-bottom: 8px; }
+.pbody { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.tool-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+.tool-card.highlight { border-left: 4px solid #0F6E56; }
+.tool-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+.tool-name { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 14px; font-weight: 600; color: #533AB7; background: #EEEDFE; padding: 4px 12px; border-radius: 6px; display: inline-block; }
+.tool-desc { font-size: 14px; color: #444; margin-bottom: 1rem; line-height: 1.5; }
+.code-block { background: #fafafa; border: 1px solid #e8e4f7; border-radius: 8px; padding: 1rem 1.25rem; font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: 12.5px; line-height: 1.9; overflow-x: auto; white-space: pre; }
+.kw { color: #7c3aed; }
+.ty { color: #1d4ed8; }
+.st { color: #047857; }
+.cm { color: #9ca3af; font-style: italic; }
+
+.data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
+.data-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; font-size: 13px; }
+.data-card.main { border-left: 4px solid #185FA5; }
+.data-card.future { border-left: 4px dashed #1D9E75; }
+.data-card h3 { font-size: 14px; margin-bottom: 6px; }
+.data-card p { margin: 0; color: #555; line-height: 1.5; }
+
+.deia-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 1rem 0 1.5rem; }
+.deia-item { display: flex; align-items: flex-start; gap: 8px; background: #f9fafb; border-radius: 6px; padding: 8px 12px; font-size: 13px; }
+.deia-item::before { content: "✓"; color: #0F6E56; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.build-list { list-style: none; margin: 1rem 0 1.5rem; }
+.build-list li { display: flex; gap: 1rem; padding: 0.875rem 0; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
+.build-list li:last-child { border-bottom: none; }
+.step-num { background: #0F6E56; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.step-body h3 { margin: 0 0 2px; font-size: 14px; }
+.step-body p { margin: 0; font-size: 13px; color: #666; }
+
+.scheme-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0.75rem 0 1.25rem; }
+.scheme-list li { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.scheme-list li::before { content: "⚡"; font-size: 11px; }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 12px; color: #aaa; text-align: center; }
+
+@media (max-width: 600px) {
+  body { padding: 1.25rem 1rem; }
+  .deia-grid { grid-template-columns: 1fr; }
+  .scheme-list { grid-template-columns: 1fr; }
+}
+@media print {
+  body { font-size: 13px; padding: 1rem; }
+  .code-block { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<h1>Energy Support MCP</h1>
+<p class="subtitle">Scope & Architecture · NDL Kickstarter Domain 1</p>
+
+<div class="meta">
+  <span class="tag tag-gray">Draft v0.1</span>
+  <span class="tag tag-purple">Cross-Gov AI Engineering Lab</span>
+  <span class="tag tag-teal">June 2026</span>
+  <span class="tag tag-amber">For review and comment</span>
+</div>
+
+<div class="callout">
+  <p><strong>Purpose.</strong> This document scopes an MCP (Model Context Protocol) server enabling AI assistants to help citizens — particularly vulnerable and underrepresented groups — navigate UK energy support schemes, understand their rights, and access what they're entitled to. It is designed to align with DSIT's NDL Kickstarter project on energy bill support and the wider cross-government commitment to DEIA-compliant, citizen-centred digital services.</p>
+</div>
+
+<h2>Problem statement</h2>
+
+<p>Billions of pounds of energy support go unclaimed every year in the UK because the people who most need it don't know it exists, can't navigate application processes, or face language and accessibility barriers that government digital services don't adequately address.</p>
+
+<p>Services are built around departments and programmes rather than around the people they serve. The NDL Kickstarter on energy bill support is tackling the data linkage problem — connecting earnings, benefits and energy usage data to identify households in need faster. This MCP addresses the citizen-facing layer: once support exists, people need to actually find, understand and access it.</p>
+
+<h2>Target users</h2>
+
+<div class="persona-grid">
+
+  <div class="persona-card teal">
+    <div class="pname">Marjorie, 71</div>
+    <div class="psub">Retired · Manchester</div>
+    <div class="pbody">On Pension Credit with electric storage heaters. Qualifies for the Warm Home Discount Core Group (automatic, no application needed) but has received no communication confirming it. Finds GOV.UK guidance confusing and relies on her daughter for anything online.</div>
+    <div class="tags">
+      <span class="tag tag-amber">Elderly</span>
+      <span class="tag tag-teal">Pension Credit</span>
+      <span class="tag tag-gray">Digital assistance needed</span>
+    </div>
+  </div>
+
+  <div class="persona-card purple">
+    <div class="pname">Daniel, 38</div>
+    <div class="psub">Unpaid carer · Cardiff</div>
+    <div class="pbody">Full-time carer for his disabled mother. Claims Carer's Allowance and Universal Credit. Running a pre-payment meter that went into debt last winter. Knows "something exists" for energy bills but hits a wall of acronyms, eligibility criteria and supplier redirects every time he investigates.</div>
+    <div class="tags">
+      <span class="tag tag-purple">Unpaid carer</span>
+      <span class="tag tag-amber">Pre-payment debt</span>
+      <span class="tag tag-teal">UC + CA</span>
+    </div>
+  </div>
+
+  <div class="persona-card amber">
+    <div class="pname">Amara, 26</div>
+    <div class="psub">Single parent · Birmingham</div>
+    <div class="pbody">Two children under 5, renting privately, Somali as first language, uses only her phone to access the internet. Cold, poorly insulated flat. Has never heard of ECO4 (the government's insulation grant scheme) and has no one to help her navigate the process in English.</div>
+    <div class="tags">
+      <span class="tag tag-amber">Somali first language</span>
+      <span class="tag tag-gray">Mobile-only</span>
+      <span class="tag tag-gray">Private renter</span>
+    </div>
+  </div>
+
+</div>
+
+<h2>MCP tool specifications</h2>
+
+<p>The server exposes six composable tools. An AI assistant can chain them for complex citizen journeys, or call each independently for point queries. TypeScript interfaces below represent the input/output contracts.</p>
+
+<div class="tool-card highlight">
+  <div class="tool-header">
+    <span class="tool-name">energy_explain_scheme</span>
+    <span class="tag tag-teal">Build first</span>
+  </div>
+  <div class="tool-desc">Returns a plain-language explanation of any named energy support scheme — what it is, how much, who qualifies, and how to apply — adapted to the requested reading level and language. This is the foundational tool: simplest to implement, immediately useful to all three personas, and the one all other tools can link to for scheme detail.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyExplainSchemeInput</span> {
+  scheme_name:       <span class="ty">string</span>;                          <span class="cm">// e.g. "Warm Home Discount", "ECO4"</span>
+  reading_level?:    <span class="st">'simple'</span> | <span class="st">'standard'</span>;             <span class="cm">// default: 'standard'. 'simple' = FK Grade ≤ 6</span>
+  language?:         <span class="ty">string</span>;                          <span class="cm">// ISO 639-1. default: 'en'. Also: 'cy','ur','so','pl'</span>
+  household_context?: <span class="ty">HouseholdContext</span>;               <span class="cm">// optional — personalises the explanation</span>
+}
+
+<span class="kw">interface</span> <span class="ty">EnergyExplainSchemeOutput</span> {
+  scheme_name:        <span class="ty">string</span>;
+  plain_description:  <span class="ty">string</span>;                         <span class="cm">// FK Grade ≤ 6 when reading_level = 'simple'</span>
+  amount:             <span class="ty">string</span>;                         <span class="cm">// e.g. "£150 off your electricity or gas bill"</span>
+  who_qualifies:      <span class="ty">string</span>;                         <span class="cm">// plain English eligibility summary</span>
+  is_automatic:       <span class="ty">boolean</span>;                        <span class="cm">// true = no application needed (e.g. WHD Core Group)</span>
+  application_steps:  <span class="ty">ApplicationStep</span>[];
+  deadline?:          <span class="ty">string</span>;                         <span class="cm">// if applicable</span>
+  further_info_url:   <span class="ty">string</span>;                         <span class="cm">// GOV.UK canonical link</span>
+}</div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-header">
+    <span class="tool-name">energy_check_eligibility</span>
+    <span class="tag tag-gray">Build second</span>
+  </div>
+  <div class="tool-desc">Given a household profile, returns all energy support schemes the user is eligible for, possibly eligible for (pending verification of one more thing), and not eligible for — with urgency flags and a plain English recommended next action.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyCheckEligibilityInput</span> {
+  postcode:            <span class="ty">string</span>;
+  benefits_claimed:    <span class="ty">BenefitType</span>[];                  <span class="cm">// "UC"|"PIP"|"ESA"|"PC"|"JSA"|"CA"|"DLA"|...</span>
+  household_type:      <span class="st">'single'</span> | <span class="st">'couple'</span> | <span class="st">'family'</span> | <span class="st">'single_parent'</span>;
+  property_type?:      <span class="st">'owner'</span> | <span class="st">'private_renter'</span> | <span class="st">'social_renter'</span>;
+  heating_type?:       <span class="st">'gas'</span> | <span class="st">'electric'</span> | <span class="st">'oil'</span> | <span class="st">'solid_fuel'</span>;
+  vulnerability_flags?: <span class="ty">VulnerabilityFlag</span>[];            <span class="cm">// "elderly"|"disabled"|"carer"|"child_u5"|...</span>
+}
+
+<span class="kw">interface</span> <span class="ty">EnergyCheckEligibilityOutput</span> {
+  eligible_schemes:    <span class="ty">EligibleScheme</span>[];              <span class="cm">// confirmed eligible</span>
+  possibly_eligible:   <span class="ty">EligibleScheme</span>[];              <span class="cm">// one more check needed</span>
+  urgency_flags:       <span class="ty">UrgencyFlag</span>[];                 <span class="cm">// "disconnection_risk"|"winter_deadline"|...</span>
+  recommended_next_step: <span class="ty">string</span>;                      <span class="cm">// single plain English action</span>
+}</div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-header">
+    <span class="tool-name">energy_get_application_guide</span>
+  </div>
+  <div class="tool-desc">Generates a step-by-step, personalised application guide for a specific scheme, adapted to the user's situation, property type, and preferred format. Includes documents needed and estimated time. Builds on energy_explain_scheme and energy_check_eligibility.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyGetApplicationGuideInput</span> {
+  scheme_name:          <span class="ty">string</span>;
+  household_profile:    <span class="ty">HouseholdProfile</span>;
+  format_preference?:   <span class="st">'numbered_steps'</span> | <span class="st">'conversational'</span> | <span class="st">'checklist'</span>;
+  reading_level?:       <span class="st">'simple'</span> | <span class="st">'standard'</span>;
+  language?:            <span class="ty">string</span>;
+}
+
+<span class="kw">interface</span> <span class="ty">EnergyGetApplicationGuideOutput</span> {
+  steps:                <span class="ty">ApplicationStep</span>[];
+  documents_needed:     <span class="ty">DocumentRequired</span>[];
+  estimated_time:       <span class="ty">string</span>;                      <span class="cm">// e.g. "about 20 minutes"</span>
+  tips:                 <span class="ty">string</span>[];                     <span class="cm">// common pitfalls to avoid</span>
+  success_indicators:   <span class="ty">string</span>[];                    <span class="cm">// how to know the application worked</span>
+}</div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-header">
+    <span class="tool-name">energy_find_local_support</span>
+  </div>
+  <div class="tool-desc">Finds local council schemes, warm banks, community energy charities, and advice services by postcode. Returns contact information and opening hours. Relies on real-time web search since local authority provision is highly variable and changes frequently — no static directory is sufficient.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyFindLocalSupportInput</span> {
+  postcode:              <span class="ty">string</span>;
+  support_type?:         <span class="st">'financial'</span> | <span class="st">'warm_space'</span> | <span class="st">'advice'</span> | <span class="st">'all'</span>;
+  urgency?:              <span class="st">'immediate'</span> | <span class="st">'standard'</span>;           <span class="cm">// affects what's surfaced first</span>
+  accessibility_needs?:  <span class="ty">string</span>[];                       <span class="cm">// "wheelchair"|"bsl"|"home_visit"</span>
+}
+
+<span class="kw">interface</span> <span class="ty">LocalSupportResult</span> {
+  name:          <span class="ty">string</span>;
+  type:          <span class="ty">SupportType</span>;
+  description:   <span class="ty">string</span>;
+  address?:      <span class="ty">string</span>;
+  phone?:        <span class="ty">string</span>;
+  website?:      <span class="ty">string</span>;
+  opening_hours?: <span class="ty">string</span>;
+  distance_km?:  <span class="ty">number</span>;
+}</div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-header">
+    <span class="tool-name">energy_check_rights</span>
+  </div>
+  <div class="tool-desc">Returns consumer rights and supplier obligations for a given situation. Critical for vulnerable customers facing disconnection threats, pre-payment meter problems, or energy debt. Data drawn from Ofgem's Standard Conditions of Licence, vulnerable customer obligations, and the Priority Services Register framework.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyCheckRightsInput</span> {
+  situation_type:     <span class="ty">SituationType</span>;                  <span class="cm">// "disconnection_threat"|"debt"|"prepayment"|"billing_dispute"</span>
+  supplier?:          <span class="ty">string</span>;                          <span class="cm">// supplier name, for supplier-specific obligations</span>
+  vulnerability_flags?: <span class="ty">VulnerabilityFlag</span>[];
+}
+
+<span class="kw">interface</span> <span class="ty">EnergyCheckRightsOutput</span> {
+  rights:                       <span class="ty">Right</span>[];              <span class="cm">// plain English rights descriptions</span>
+  supplier_obligations:         <span class="ty">string</span>[];            <span class="cm">// what your supplier must do by law</span>
+  escalation_path:              <span class="ty">EscalationStep</span>[];    <span class="cm">// ordered: supplier → Ombudsman → Ofgem</span>
+  priority_services_eligible:   <span class="ty">boolean</span>;
+}</div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-header">
+    <span class="tool-name">energy_find_advocacy</span>
+  </div>
+  <div class="tool-desc">Routes the citizen to the most appropriate advocacy or advice service for their need, location and language. Always includes a fallback pointer to Citizens Advice even when more specific services aren't available. Covers Citizens Advice, local energy advice services, disability organisations, and Ofgem's Extra Help Unit.</div>
+  <div class="code-block"><span class="kw">interface</span> <span class="ty">EnergyFindAdvocacyInput</span> {
+  postcode:             <span class="ty">string</span>;
+  need_type:            <span class="ty">NeedType</span>;                    <span class="cm">// "debt_advice"|"application_help"|"complaint"|"rights"</span>
+  language?:            <span class="ty">string</span>;                      <span class="cm">// ISO 639-1</span>
+  disability_flags?:    <span class="ty">string</span>[];
+  contact_preference?:  <span class="st">'phone'</span> | <span class="st">'online'</span> | <span class="st">'in_person'</span>;
+}
+
+<span class="kw">interface</span> <span class="ty">AdvocacyService</span> {
+  name:                 <span class="ty">string</span>;
+  description:          <span class="ty">string</span>;
+  contact_methods:      <span class="ty">ContactMethod</span>[];
+  languages_supported:  <span class="ty">string</span>[];
+  wait_time_estimate?:  <span class="ty">string</span>;
+  referral_text?:       <span class="ty">string</span>;                      <span class="cm">// what to say when contacting</span>
+}</div>
+</div>
+
+<h2>Data architecture</h2>
+
+<div class="data-grid">
+
+  <div class="data-card main">
+    <h3 style="color:#185FA5;">GOV.UK APIs</h3>
+    <p>Content API (<code>gov.uk/api/content/{path}</code>) and Search API — free, public, no authentication. Primary source for all scheme information, eligibility criteria and application guidance. <strong>Start here.</strong></p>
+  </div>
+
+  <div class="data-card main">
+    <h3 style="color:#185FA5;">Ofgem guidance</h3>
+    <p>Public-facing guidance on consumer rights, Priority Services Register, and Standard Conditions of Licence. Covers supplier obligations and disconnection protections. Fetched/scraped — no official API.</p>
+  </div>
+
+  <div class="data-card main">
+    <h3 style="color:#185FA5;">Web search (local layer)</h3>
+    <p>Council warm home discount top-ups, local warm spaces, community energy charities. Highly variable by area — requires real-time search. Cannot rely on a static directory.</p>
+  </div>
+
+  <div class="data-card future">
+    <h3 style="color:#0F6E56;">NDL linked data <span class="tag tag-teal" style="font-size:10px; vertical-align:middle; margin-left:4px;">phase 2+</span></h3>
+    <p>Earnings + benefits + energy usage linkage as the NDL matures. Enables proactive identification of eligible households rather than requiring self-initiation. Requires consent framework and data sharing agreements.</p>
+  </div>
+
+</div>
+
+<h3>Schemes to cover in v1</h3>
+<ul class="scheme-list">
+  <li>Warm Home Discount (Core + Broader Group)</li>
+  <li>Cold Weather Payment</li>
+  <li>Winter Fuel Payment</li>
+  <li>ECO4 — insulation and heating upgrades</li>
+  <li>Great British Insulation Scheme</li>
+  <li>Household Support Fund (via councils)</li>
+  <li>Priority Services Register</li>
+</ul>
+
+<h2>DEIA requirements</h2>
+
+<div class="deia-grid">
+  <div class="deia-item">Multi-language — Welsh (statutory), Urdu, Somali, Polish, Bengali, Punjabi as minimum viable set</div>
+  <div class="deia-item">WCAG 2.2 AA throughout — screen reader compatible at every interaction</div>
+  <div class="deia-item">Mobile-first — optimised for low-end Android handsets on variable connectivity</div>
+  <div class="deia-item">Low-bandwidth tolerance — core functionality on 2G; no heavy assets in citizen flow</div>
+  <div class="deia-item">Plain English — Flesch-Kincaid Grade 6 or below for all citizen-facing output at 'simple' level</div>
+  <div class="deia-item">No login required for initial guidance — authentication only if accessing personal NDL data</div>
+  <div class="deia-item">Consent-first — explicit, informed consent before any personal data use or retention</div>
+  <div class="deia-item">GDS service standard compliant — all 14 points assessed at each tool</div>
+  <div class="deia-item">No assumption of digital confidence — guidance assumes first-time use at every touchpoint</div>
+  <div class="deia-item">Intersectional vulnerability — tools are aware of compound disadvantage, not single flags</div>
+  <div class="deia-item">Always routes to a human — every flow surfaces a route to a person, not just self-service</div>
+  <div class="deia-item">Co-designed with communities — not about communities. Target groups involved from alpha.</div>
+</div>
+
+<h2>Recommended build order</h2>
+
+<ul class="build-list">
+  <li>
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <h3><code>energy_explain_scheme</code></h3>
+      <p>Simplest to build. Uses GOV.UK Content API — free, public, no auth. No eligibility logic needed. Tests the core GOV.UK integration pattern all other tools will use. Delivers immediate value to all three personas. Build and test this first.</p>
+    </div>
+  </li>
+  <li>
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <h3><code>energy_check_eligibility</code></h3>
+      <p>Core value tool. Implement benefit-to-scheme eligibility logic as a structured TypeScript knowledge base. Build after step 1 so eligible scheme outputs can link straight to step 1 explanations.</p>
+    </div>
+  </li>
+  <li>
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <h3><code>energy_get_application_guide</code></h3>
+      <p>Builds on steps 1 and 2. Takes confirmed eligibility + scheme explanation and generates a personalised step-by-step guide via LLM synthesis. Good exercise in prompt engineering for DEIA output.</p>
+    </div>
+  </li>
+  <li>
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <h3><code>energy_find_local_support</code></h3>
+      <p>Requires web search integration. More complex infrastructure but high impact for acute need situations (e.g. Daniel's immediate debt problem). Build once the core scheme tools are working.</p>
+    </div>
+  </li>
+  <li>
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <h3><code>energy_check_rights</code></h3>
+      <p>Requires an Ofgem knowledge base (fetched and structured). Critical for disconnection situations. Build after the core eligibility and explanation tools are stable.</p>
+    </div>
+  </li>
+  <li>
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <h3><code>energy_find_advocacy</code></h3>
+      <p>Most complex to keep current (service directories change). Build last but always include a hardcoded fallback to Citizens Advice (0800 144 8848) from day one as a safety net.</p>
+    </div>
+  </li>
+</ul>
+
+<h2>First implementation: <code>energy_explain_scheme</code></h2>
+
+<div class="callout">
+  <p><strong>What it does:</strong> Fetches the relevant GOV.UK page(s) via the Content API, extracts key information, and returns it structured and plain — adapted to reading level and language. If household context is provided, it personalises: "As someone on Universal Credit, this applies to you because..."</p>
+</div>
+
+<h3>GOV.UK Content API</h3>
+<p>Base: <code>https://www.gov.uk/api/content/{path}</code> — no authentication, returns structured JSON with title, description, body HTML, related links, and metadata. No rate limits published but reasonable use is expected.</p>
+
+<h3>TypeScript implementation sketch</h3>
+<div class="code-block"><span class="cm">// MCP Server — energy_explain_scheme (TypeScript + @modelcontextprotocol/sdk)</span>
+
+<span class="kw">import</span> { McpServer } <span class="kw">from</span> <span class="st">"@modelcontextprotocol/sdk/server/mcp.js"</span>;
+<span class="kw">import</span> { z }         <span class="kw">from</span> <span class="st">"zod"</span>;
+
+<span class="cm">// Scheme name → GOV.UK content path mapping</span>
+<span class="kw">const</span> SCHEME_PATHS: Record&lt;<span class="ty">string</span>, <span class="ty">string</span>&gt; = {
+  <span class="st">"warm home discount"</span>:          <span class="st">"/the-warm-home-discount-scheme"</span>,
+  <span class="st">"eco4"</span>:                         <span class="st">"/apply-great-british-insulation-scheme"</span>,
+  <span class="st">"cold weather payment"</span>:         <span class="st">"/cold-weather-payment"</span>,
+  <span class="st">"winter fuel payment"</span>:          <span class="st">"/winter-fuel-payment"</span>,
+  <span class="st">"priority services register"</span>:   <span class="st">"/priority-services-register"</span>,
+  <span class="st">"household support fund"</span>:       <span class="st">"/household-support-fund"</span>,
+  <span class="st">"great british insulation scheme"</span>: <span class="st">"/apply-great-british-insulation-scheme"</span>,
+};
+
+server.tool(
+  <span class="st">"energy_explain_scheme"</span>,
+  <span class="st">"Plain-language explanation of a UK energy support scheme including eligibility, amount and how to apply"</span>,
+  {
+    scheme_name:    z.string().describe(<span class="st">"Scheme name, e.g. 'Warm Home Discount', 'ECO4'"</span>),
+    reading_level:  z.enum([<span class="st">'simple'</span>, <span class="st">'standard'</span>]).optional().default(<span class="st">'standard'</span>),
+    language:       z.string().optional().default(<span class="st">'en'</span>).describe(<span class="st">"ISO 639-1 code"</span>),
+  },
+  <span class="kw">async</span> ({ scheme_name, reading_level, language }) => {
+    <span class="cm">// 1. Normalise scheme name and look up GOV.UK path</span>
+    <span class="kw">const</span> path = SCHEME_PATHS[scheme_name.toLowerCase().trim()];
+    <span class="kw">if</span> (!path) <span class="kw">throw new</span> <span class="ty">Error</span>(`Unknown scheme: ${scheme_name}. Try: ${Object.keys(SCHEME_PATHS).join(', ')}`);
+
+    <span class="cm">// 2. Fetch from GOV.UK Content API</span>
+    <span class="kw">const</span> res  = <span class="kw">await</span> fetch(`https://www.gov.uk/api/content${path}`);
+    <span class="kw">const</span> data = <span class="kw">await</span> res.json();
+
+    <span class="cm">// 3. Extract title + description + body (strip HTML tags)</span>
+    <span class="cm">// 4. Call Claude to synthesise into EnergyExplainSchemeOutput</span>
+    <span class="cm">//    at the correct reading_level. If language !== 'en', translate</span>
+    <span class="cm">//    plain_description + application_steps into target language.</span>
+    <span class="cm">// 5. Return structured JSON response</span>
+  }
+);</div>
+
+<h3>Testing approach</h3>
+<p>Use the MCP Inspector (<code>npx @modelcontextprotocol/inspector</code>) to call the tool directly and verify responses against the GOV.UK source pages manually. Test all seven v1 schemes at both reading levels, and spot-check Welsh (<code>cy</code>) and Somali (<code>so</code>) language output. Edge cases to test: scheme with automatic award (Warm Home Discount Core Group), scheme with tight deadline, scheme where private renters are excluded.</p>
+
+<hr>
+
+<h2>Questions for the lab</h2>
+<ol>
+  <li>Which energy support schemes have the highest unclaimed rates among our target cohorts? This should drive v1 scheme prioritisation.</li>
+  <li>Are there existing GOV.UK API consumers in the lab we can learn from, or NDL contacts who can advise on the data linkage roadmap?</li>
+  <li>Who owns the DEIA co-design process — is there a user research lead we should loop in from the start?</li>
+  <li>What's the right hosting/deployment model for an MCP server in a government context? (Streamable HTTP via departmental cloud, or stdio for initial local testing?)</li>
+  <li>Should we consider aligning tool naming conventions with any emerging cross-gov MCP standards?</li>
+</ol>
+
+<footer>
+  Energy Support MCP · Scope v0.1 · Cross-Gov AI Engineering Lab · June 2026 · For review and comment
+</footer>
+
+</body>
+</html>
