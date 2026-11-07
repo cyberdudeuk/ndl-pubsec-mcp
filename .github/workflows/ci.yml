@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Every workflow file is one GitHub will run
+        # Defect of 7 November 2026: this workflow was saved as .github/workflows/CI (no extension), so GitHub never
+        # ran it, the required checks build-and-test (20) and (22) never reported, and every pull request was blocked.
+        run: |
+          check() { bad=$(find "$1" -maxdepth 1 -type f ! -name '*.yml' ! -name '*.yaml'); [ -z "$bad" ] || { echo "Not run by GitHub: $bad"; return 1; }; }
+          t=$(mktemp -d); touch "$t/CI"; if check "$t"; then echo "self-test failed: a file with no extension passed"; exit 1; fi
+          check .github/workflows
+
+      - name: Find TypeScript sources
+        id: src
+        working-directory: ndl-pubsec-mcp
+        run: |
+          n=$(find src -name '*.ts' -not -name '*.test.ts' | wc -l)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          if [ "$n" -eq 0 ]; then echo "No TypeScript sources yet (Sprint 1 is still building): install, typecheck, lint, build and test are skipped and reported as such."; fi
+
+      - name: Install dependencies
+        if: steps.src.outputs.count != '0'
+        working-directory: ndl-pubsec-mcp
+        run: npm install
+
+      - name: Typecheck
+        if: steps.src.outputs.count != '0'
+        working-directory: ndl-pubsec-mcp
+        run: npm run typecheck
+
+      - name: Lint
+        if: steps.src.outputs.count != '0'
+        working-directory: ndl-pubsec-mcp
+        run: npm run lint
+
+      - name: Build
+        if: steps.src.outputs.count != '0'
+        working-directory: ndl-pubsec-mcp
+        run: npm run build
+
+      - name: Test
+        if: steps.src.outputs.count != '0'
+        working-directory: ndl-pubsec-mcp
+        run: npm test
