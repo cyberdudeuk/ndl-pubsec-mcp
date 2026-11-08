@@ -11,10 +11,10 @@ Items design cannot close on its own. Each names who must act.
 | O-05 | Agreement on real catalogue records is unmeasured. Sample 50 data.gov.uk entries and compare with LinkML | Developer |
 | O-06 | Possible move to a government GitHub organisation (for example `gds-dtx`) alongside the co-cddo migration | Owner, with the organisation's admins |
 | O-07 | A hosted streamable HTTP mode, if users need it (needs hosting, authentication and a security review) | Team decision |
-| O-08 | Raise with xGov MEM maintainers: allow a contact form URL as a contact point | Owner (as xGov MEM author) |
+| O-08 | Raise with the xGov MEM maintainers: allow a contact form URL as a contact point. Comment drafted for upstream issue #71 (contactPoint definition) | Owner (post) |
 | O-09 | Confirm the DPIA and ATRS screening outcomes | Data protection lead |
 | O-10 | Manual accessibility check of the documentation page with assistive technology | Accessibility specialist |
-| O-11 | Repository settings: enable private vulnerability reporting, branch protection on `main` (review required), and Pages from Actions | Owner (settings cannot be changed from code) |
-| O-12 | Report D-001 upstream: model.yaml line 348 is not strictly valid YAML | Owner |
+| O-11 | Repository settings, checked 8 November 2026: **done:** private vulnerability reporting (already on) and Pages switched to the GitHub Actions source. **Branch protection:** the existing ruleset requires the build-and-test and CodeQL checks. Required reviews are deliberately not added: with a single maintainer they would block every merge | Owner, if a second maintainer joins |
+| O-12 | Report D-001 upstream: the issue is written and pre-filled on co-cddo/ukgov-metadata-exchange-model and needs the owner's click to post. Text kept in the private repository's drafts | Owner (post) |
 | O-13 | Next tools: `repo_find` (GitHub Repos Asset Catalogue, public edition) and `cda_lookup` (open edition of the critical data assets register) | Owner, once open editions are confirmed |
-| O-14 | The repository ruleset requires `Analyze (javascript-typescript)`, but CodeQL default setup only analyses Actions, so that check never reports. Add JavaScript/TypeScript to the default setup, or switch to the committed advanced workflow, or remove the requirement | Owner (settings) |
+| O-14 | The ruleset requires `Analyze (javascript-typescript)`, but CodeQL default setup only analyses Actions, because `main` has no TypeScript yet. This blocks pull request #6. **Owner action:** Settings, then Advanced Security, then CodeQL analysis, then Switch to advanced. The committed `codeql.yml` then produces the check. Automation was not allowed to switch a security control off, even briefly | Owner (settings) |
