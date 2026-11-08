@@ -10,7 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  # The job id must stay build-and-test: the repository ruleset requires the checks
+  # 'build-and-test (20)' and 'build-and-test (22)' (defect D-015, check C-10).
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:

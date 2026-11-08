@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+4113376b626d",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+d27c8044d213",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -509,6 +509,14 @@
       "schema:name": "D-014",
       "schema:description": "Dates on the page mixed 8 November 2026 and 2026-11-08",
       "ndl:check": "T-site: all visible dates go through `longDate`; reviewed in a screenshot",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-015",
+      "@type": "schema:Thing",
+      "schema:name": "D-015",
+      "schema:description": "Pull request #6 could not merge: the repository ruleset requires checks named `build-and-test (20)` and `build-and-test (22)`, but the CI job was renamed `verify`",
+      "ndl:check": "C-10",
       "ndl:status": "Fixed"
     }
   ]

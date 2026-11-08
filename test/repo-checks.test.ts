@@ -96,6 +96,16 @@ describe("site build identifier", () => {
   });
 });
 
+describe("required status checks", () => {
+  it("C-10 catches a CI job renamed away from the required check name", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, ".github", "workflows", "ci.yml");
+      writeFileSync(p, readFileSync(p, "utf8").replace("  build-and-test:\n", "  verify:\n"));
+    });
+    expect(out.join()).toMatch(/C-10/);
+  });
+});
+
 describe("standards register", () => {
   it("every entry has a provenance label, a check date and an https link", () => {
     for (const s of standards.standards) {

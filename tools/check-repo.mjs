@@ -101,6 +101,9 @@ export function checkRepo(root) {
     if (!tf || !tf[1].includes(`"${f}"`)) problems.push(`C-09 tools/build-site.mjs: build id does not hash ${f}`);
   }
   if (!/template: TEMPLATE_FILES\.map\(read\)/.test(gen)) problems.push("C-09 tools/build-site.mjs: TEMPLATE_FILES is not part of the hashed inputs");
+  // C-10 (defect D-015): the CI job id matches the status check names the repository ruleset requires
+  const ci = existsSync(join(root, ".github", "workflows", "ci.yml")) ? readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8") : "";
+  if (!/^jobs:\n(?:\s*#.*\n)* {2}build-and-test:\n/m.test(ci)) problems.push("C-10 .github/workflows/ci.yml: job must be named build-and-test to match the required checks");
   return problems;
 }
 
@@ -113,5 +116,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-09)");
+  console.log("repository checks passed (C-01 to C-10)");
 }

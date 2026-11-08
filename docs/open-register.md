@@ -17,3 +17,4 @@ Items design cannot close on its own. Each names who must act.
 | O-11 | Repository settings: enable private vulnerability reporting, branch protection on `main` (review required), and Pages from Actions | Owner (settings cannot be changed from code) |
 | O-12 | Report D-001 upstream: model.yaml line 348 is not strictly valid YAML | Owner |
 | O-13 | Next tools: `repo_find` (GitHub Repos Asset Catalogue, public edition) and `cda_lookup` (open edition of the critical data assets register) | Owner, once open editions are confirmed |
+| O-14 | The repository ruleset requires `Analyze (javascript-typescript)`, but CodeQL default setup only analyses Actions, so that check never reports. Add JavaScript/TypeScript to the default setup, or switch to the committed advanced workflow, or remove the requirement | Owner (settings) |
