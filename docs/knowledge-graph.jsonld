@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+cd68874d3266",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+7aad91e3cd81",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -525,6 +525,22 @@
       "schema:name": "D-016",
       "schema:description": "Dependencies pinned to versions with known advisories: zod 3.25.76 (high, run time), vitest 3.2.7 and tinypool (critical, test only), minimatch under typescript-eslint (moderate, lint only)",
       "ndl:check": "C-11: CI runs `npm audit --audit-level=low`; zod 4.6.7, vitest 5.1.0 and a minimatch 11.0.5 override give 0 vulnerabilities",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-017",
+      "@type": "schema:Thing",
+      "schema:name": "D-017",
+      "schema:description": "A blank licence from the live catalogue would show as an empty string, and a missing licence was not reported in the notes",
+      "ndl:check": "T-crosswalk-live: tests built from live record shapes; mutant \"blank strings no longer treated as absent\"",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-018",
+      "@type": "schema:Thing",
+      "schema:name": "D-018",
+      "schema:description": "The crosswalk said version and update frequency are never held, but harvested records carry them (`version`, `frequency-of-update`), and publisher DCAT dates were ignored",
+      "ndl:check": "T-crosswalk-live: tests for exact GEMINI mapping, DCAT dates and version; mutants for each",
       "ndl:status": "Fixed"
     }
   ]

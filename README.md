@@ -63,6 +63,8 @@ Two further steps also run in CI:
 - **Conformance** needs a checkout of the xGov MEM repository: `python3 tools/conformance.py <path-to-checkout>`.
 - **Mutation** (`npm run mutation`) breaks each safeguard in turn and fails if any break goes unnoticed by the tests.
 
+A **live smoke test** against the real data.gov.uk API runs weekly and on demand (`npm run live`).
+
 ## Documents
 
 - [Product requirements (PRD)](docs/prd.md)

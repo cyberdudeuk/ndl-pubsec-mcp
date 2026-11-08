@@ -16,9 +16,13 @@ mutants = [
  ("src/lib/mem.ts", "validateObject(value as Record<string, unknown>, range, path, out);", "", "nested class validation removed"),
  ("src/lib/ckan.ts", "    publisher: p.organization?.title ?? null,", "    publisher: p.organization?.title ?? null, maintainerEmail: (p as unknown as Record<string, unknown>).maintainer_email,", "privacy: maintainer email leaked"),
  ("src/lib/ckan.ts", 'if (!/^https:\\/\\//.test(this.baseUrl))', "if (false)", "https enforcement removed"),
- ("src/lib/ckan.ts", "  if (p.metadata_modified) record.modified", "  record.securityClassification = \"OFFICIAL\";\n  if (p.metadata_modified) record.modified", "crosswalk guesses a classification"),
+ ("src/lib/ckan.ts", "  if (modified) record.modified", "  record.securityClassification = \"OFFICIAL\";\n  if (modified) record.modified", "crosswalk guesses a classification"),
  ("src/lib/ckan.ts", "const timer = setTimeout(() => ctrl.abort(), this.timeoutMs);", "const timer = setTimeout(() => {}, this.timeoutMs);", "timeout removed"),
  ("src/server.ts", ".max(20)", ".max(2000)", "limit cap raised"),
+ ("src/lib/ckan.ts", "  return t ? t : null;", "  return t;", "blank strings no longer treated as absent"),
+ ("src/lib/ckan.ts", '  asNeeded: "freq:irregular",', '  asNeeded: "freq:asNeeded",', "frequency mapped to a term xGov MEM does not permit"),
+ ("src/lib/ckan.ts", 'isoDate(extra(p, "dcat_modified")) ?? ', "", "publisher DCAT dates ignored"),
+ ("src/lib/ckan.ts", "  if (version) record.version = version;", "", "catalogue version not drafted"),
  ("src/server.ts", '.regex(/^[A-Za-z0-9_-]{2,100}$/)', "", "id restriction removed"),
 ]
 killed = 0

@@ -30,7 +30,7 @@ Version 0.2, 8 November 2026. Review by 8 February 2027.
 |---|---|---|
 | Server | Registers the tools and resources; turns results into text plus structured content; turns catalogue failures into tool errors with hints | ADR 0003 |
 | Catalogue client | Builds the CKAN action API calls; enforces https and a 15-second timeout; maps failures to typed errors; never reads maintainer or author fields | Privacy by design |
-| Crosswalk | Drafts an xGov MEM Dataset record from a catalogue entry. It fills only fields the entry holds and lists the rest as missing | Never guess (ADR 0004) |
+| Crosswalk | Drafts an xGov MEM Dataset record from a catalogue entry. It fills only fields the entry holds: licence URL, the publisher's DCAT dates where harvested, version, and update frequency where an exact GEMINI-to-Dublin Core mapping exists. It lists the rest as missing | Never guess (ADR 0004). Built from live record shapes (D-017, D-018) |
 | Validator | Interprets the compiled rule set: required, recommended, unknown attributes, ranges, enums, patterns, dates, type designators, nested classes, single and multi-valued | The model is the source of truth (ADR 0004) |
 | Rule compiler | Turns the LinkML model into JSON. CI fails if the committed JSON drifts from the vendored model | Python, because the upstream YAML is not strictly valid (D-001) |
 | Standards register | Static JSON with provenance labels and check dates | Re-verify on a cadence (O-04) |
@@ -57,5 +57,10 @@ Version 0.2, 8 November 2026. Review by 8 February 2027.
 - A single value given for a multi-valued slot is accepted with a warning. The upstream LinkML behaviour for this case is not confirmed.
 
 **Error handling:** catalogue errors become `isError` tool results with a message and, for network failures, a hint. Unexpected exceptions are left to the SDK, which reports them as tool errors.
+
+**Live API facts (checked 8 November 2026):**
+- `www.data.gov.uk/api/action` redirects to `ckan.publishing.service.gov.uk/api/action`. `fetch` follows the redirect.
+- Licence fields may be `null`, empty, or given only as free text in `extras`.
+- Harvested records carry `frequency-of-update`, `dcat_issued` and `dcat_modified` in `extras`.
 
 **Output limits:** descriptions are cut at 4,000 characters, and at most 50 distributions are listed.

@@ -21,6 +21,7 @@
     "test": "vitest run",
     "conformance": "python3 tools/conformance.py",
     "mutation": "python3 tools/mutation.py",
+    "live": "node tools/live-smoke.mjs",
     "check:repo": "node tools/check-repo.mjs",
     "site": "node tools/build-site.mjs",
     "verify": "npm run compile:mem && npm run typecheck && npm run lint && npm run test && npm run build && npm run check:repo && npm run site",

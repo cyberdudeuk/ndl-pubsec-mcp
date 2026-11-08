@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { CatalogueError, CkanClient, crosswalkToMem, summarise } from "../src/lib/ckan.js";
+import { CatalogueError, CkanClient, crosswalkToMem, GEMINI_FREQUENCY, summarise } from "../src/lib/ckan.js";
 import { ckanPackage, jsonResponse } from "./fixtures.js";
 
 describe("CkanClient", () => {
@@ -75,3 +75,50 @@ describe("summarise and crosswalkToMem", () => {
     expect(m.notes.join(" ")).toMatch(/expects a URI/);
   });
 });
+
+// Shapes observed in the live data.gov.uk API on 8 November 2026 (defects D-017, D-018). Values are synthetic.
+describe("crosswalk against live record shapes", () => {
+  it("treats null and blank licences as absent, never as an empty string", () => {
+    for (const blank of [null, "", "  "]) {
+      const p = ckanPackage({ license_id: blank, license_title: blank, license_url: blank });
+      expect(summarise(p).licence).toBeNull();
+      const m = crosswalkToMem(p);
+      expect(m.record).not.toHaveProperty("licence");
+      expect(m.notes.join(" ")).toMatch(/No licence is given/);
+    }
+  });
+
+  it("notes a licence given only as free text in harvested extras", () => {
+    const p = ckanPackage({ license_id: null, license_title: null, license_url: null, extras: [{ key: "licence", value: '["Open Government Licence"]' }] });
+    expect(crosswalkToMem(p).notes.join(" ")).toMatch(/only as free text/);
+  });
+
+  it("maps harvested GEMINI update frequencies exactly, and leaves unmappable ones out with a note", () => {
+    expect(crosswalkToMem(ckanPackage({ extras: [{ key: "frequency-of-update", value: "asNeeded" }] })).record.updateFrequency).toBe("freq:irregular");
+    expect(crosswalkToMem(ckanPackage({ extras: [{ key: "frequency-of-update", value: "fortnightly" }] })).record.updateFrequency).toBe("freq:biweekly");
+    const np = crosswalkToMem(ckanPackage({ extras: [{ key: "frequency-of-update", value: "notPlanned" }] }));
+    expect(np.record).not.toHaveProperty("updateFrequency");
+    expect(np.notes.join(" ")).toMatch(/"notPlanned" has no equivalent/);
+  });
+
+  it("only maps to frequency terms that xGov MEM permits", async () => {
+    const { rules } = await import("../src/lib/mem.js");
+    const allowed = new Set(rules.enums["FrequencyValues"]);
+    for (const v of Object.values(GEMINI_FREQUENCY)) expect(allowed.has(v)).toBe(true);
+  });
+
+  it("prefers the publisher's DCAT dates over the catalogue's record dates", () => {
+    const m = crosswalkToMem(ckanPackage({ extras: [{ key: "dcat_issued", value: "2019-08-07T12:56:58" }, { key: "dcat_modified", value: "2024-03-01" }] }));
+    expect(m.record.issued).toBe("2019-08-07");
+    expect(m.record.modified).toBe("2024-03-01");
+  });
+
+  it("drafts version when the catalogue holds one, and reports only what is truly absent", () => {
+    const m = crosswalkToMem(ckanPackage({ version: "2.1", extras: [{ key: "frequency-of-update", value: "monthly" }] }));
+    expect(m.record.version).toBe("2.1");
+    const missing = m.validation.findings.filter((f) => f.rule === "required").map((f) => f.path).sort();
+    expect(missing).toEqual(["accessRights", "contactPoint", "securityClassification"]);
+    expect(m.notes.join(" ")).toMatch(/not drafted: accessRights, securityClassification, contactPoint\./);
+  });
+});
+
