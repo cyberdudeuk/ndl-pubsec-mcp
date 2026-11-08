@@ -1,0 +1,58 @@
+{
+  "name": "ndl-pubsec-mcp",
+  "version": "0.2.0",
+  "description": "Discoverability MCP server for UK public sector data: search data.gov.uk, describe datasets, validate metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM) and explain endorsed open data standards.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "ndl-pubsec-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "LICENCE",
+    "LICENCE-OGL",
+    "README.md"
+  ],
+  "scripts": {
+    "compile:mem": "python3 tools/compile_mem.py",
+    "build": "npm run compile:mem && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "conformance": "python3 tools/conformance.py",
+    "mutation": "python3 tools/mutation.py",
+    "check:repo": "node tools/check-repo.mjs",
+    "site": "node tools/build-site.mjs",
+    "verify": "npm run compile:mem && npm run typecheck && npm run lint && npm run test && npm run build && npm run check:repo && npm run site",
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "metadata",
+    "dcat",
+    "data-gov-uk",
+    "uk-government",
+    "data-discoverability"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "22.20.5",
+    "bwip-js": "4.11.4",
+    "eslint": "9.39.5",
+    "govuk-frontend": "6.6.0",
+    "qrcode": "1.5.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "3.2.7"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

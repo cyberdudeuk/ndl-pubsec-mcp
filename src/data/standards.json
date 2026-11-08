@@ -1,0 +1,96 @@
+{
+  "asOf": "2026-11-08",
+  "note": "Each entry carries its provenance. S means located through search results this session and not yet re-read at the primary page; re-verify before relying on status or version. The DSA Standards Catalogue page was last updated 25 October 2023 when checked.",
+  "catalogue": "https://www.gov.uk/government/publications/data-standards-authority-standards-catalogue/standards-catalogue",
+  "standards": [
+    {
+      "id": "xgov-mem",
+      "name": "UK Cross-Government Metadata Exchange Model (xGov MEM)",
+      "purpose": "A common model for describing datasets, data services and distributions so catalogues across government can exchange metadata.",
+      "status": "Endorsed for implementation by the Data Standards Authority Steering Board",
+      "licence": "Open Government Licence v3.0",
+      "link": "https://co-cddo.github.io/ukgov-metadata-exchange-model/",
+      "useWith": [
+        "metadata_validate",
+        "dataset_describe"
+      ],
+      "provenance": "S",
+      "checked": "2026-11-08",
+      "evidence": "Model content verified: vendored from co-cddo/ukgov-metadata-exchange-model at commit d6d9a24. Endorsement wording is from the published model page as recorded by the owner; page not re-read this session."
+    },
+    {
+      "id": "dcat",
+      "name": "Data Catalog Vocabulary (DCAT)",
+      "purpose": "W3C vocabulary for describing datasets and data services in catalogues; the base vocabulary xGov MEM builds on.",
+      "status": "Base standard of xGov MEM",
+      "licence": "W3C",
+      "link": "https://www.w3.org/TR/vocab-dcat-3/",
+      "useWith": [
+        "metadata_validate"
+      ],
+      "provenance": "V",
+      "checked": "2026-11-08",
+      "evidence": "xGov MEM classes map to dcat:Dataset, dcat:DataService and dcat:Distribution (read from the vendored model)"
+    },
+    {
+      "id": "atrs",
+      "name": "Algorithmic Transparency Recording Standard (ATRS)",
+      "purpose": "A standard way for public sector bodies to publish information about the algorithmic tools they use.",
+      "status": "Endorsed",
+      "licence": "Open Government Licence v3.0",
+      "link": "https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub",
+      "useWith": [],
+      "provenance": "S",
+      "checked": "2026-11-08",
+      "evidence": "Listed as Endorsed, OGL v3.0, in the DSA Standards Catalogue (search result)"
+    },
+    {
+      "id": "bods",
+      "name": "Beneficial Ownership Data Standard (BODS) v0.2",
+      "purpose": "Collect, use, exchange and publish information about who owns and controls companies and other legal entities.",
+      "status": "Endorsed",
+      "licence": "Apache License 2.0",
+      "link": "https://standard.openownership.org/",
+      "useWith": [],
+      "provenance": "S",
+      "checked": "2026-11-08",
+      "evidence": "Listed as Endorsed, Apache 2.0, in the DSA Standards Catalogue (search result)"
+    },
+    {
+      "id": "csv-rfc4180",
+      "name": "Common Format and MIME Type for Comma-Separated Values (CSV) Files (RFC 4180)",
+      "purpose": "The common format for publishing tabular data as CSV.",
+      "status": "In the DSA Standards Catalogue",
+      "licence": "IETF",
+      "link": "https://www.rfc-editor.org/rfc/rfc4180",
+      "useWith": [],
+      "provenance": "S",
+      "checked": "2026-11-08",
+      "evidence": "Named in the DSA Standards Catalogue (search result); status not re-read"
+    },
+    {
+      "id": "openapi-3",
+      "name": "OpenAPI 3 (describing RESTful APIs)",
+      "purpose": "A machine-readable way to describe RESTful APIs.",
+      "status": "Recommended open standard for government",
+      "licence": "Apache License 2.0",
+      "link": "https://www.gov.uk/government/publications/recommended-open-standards-for-government",
+      "useWith": [],
+      "provenance": "S",
+      "checked": "2026-11-08",
+      "evidence": "'Describing RESTful APIs with OpenAPI 3' listed under Recommended open standards for government (search result)"
+    },
+    {
+      "id": "open-referral-uk",
+      "name": "Open Referral UK",
+      "purpose": "Describe local services (who provides what, where and when) so directories can share the information.",
+      "status": "Unconfirmed: re-verify in the DSA Standards Catalogue",
+      "licence": "Unconfirmed",
+      "link": "https://openreferraluk.org/",
+      "useWith": [],
+      "provenance": "U",
+      "checked": "2026-11-08",
+      "evidence": "Owner records working on its endorsement; catalogue entry not checked this session"
+    }
+  ]
+}

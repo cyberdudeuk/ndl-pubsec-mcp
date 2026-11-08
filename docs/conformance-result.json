@@ -1,0 +1,42 @@
+{
+  "model": {
+    "repository": "https://github.com/co-cddo/ukgov-metadata-exchange-model",
+    "commit": "d6d9a24b7b617e7a9e211a58694f8ff9be887515",
+    "commitDate": "2026-06-01",
+    "files": [
+      "src/model/uk_cross_government_metadata_exchange_model.yaml",
+      "src/model/uk-gov-orgs.yaml"
+    ],
+    "licence": "Open Government Licence v3.0",
+    "vendoredOn": "2026-11-08",
+    "provenance": "V"
+  },
+  "cases": 32,
+  "agree": 32,
+  "byClass": {
+    "ContactPoint": {
+      "valid": 1,
+      "validAgree": 1,
+      "invalid": 2,
+      "invalidAgree": 2
+    },
+    "DataService": {
+      "valid": 5,
+      "validAgree": 5,
+      "invalid": 9,
+      "invalidAgree": 9
+    },
+    "Dataset": {
+      "valid": 2,
+      "validAgree": 2,
+      "invalid": 5,
+      "invalidAgree": 5
+    },
+    "Distribution": {
+      "valid": 4,
+      "validAgree": 4,
+      "invalid": 4,
+      "invalidAgree": 4
+    }
+  }
+}
