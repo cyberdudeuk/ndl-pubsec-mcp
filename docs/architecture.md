@@ -22,7 +22,7 @@ Version 0.2, 8 November 2026. Review by 8 February 2027.
 
 - **Hosting:** none. Users run it locally, or in their own environment, as an MCP server process.
 - **Trust boundary:** tool inputs come from an AI model and are untrusted. Every input is schema-checked with Zod before use, and catalogue responses are treated as untrusted data.
-- **Dependencies:** `@modelcontextprotocol/sdk` and `zod` at run time, pinned to exact versions.
+- **Dependencies:** `@modelcontextprotocol/sdk` 1.32.2 and `zod` 4.6.7 at run time, pinned to exact versions. CI fails on any known vulnerability (`npm audit`).
 
 ## High-level design (HLD)
 

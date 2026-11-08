@@ -104,6 +104,8 @@ export function checkRepo(root) {
   // C-10 (defect D-015): the CI job id matches the status check names the repository ruleset requires
   const ci = existsSync(join(root, ".github", "workflows", "ci.yml")) ? readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8") : "";
   if (!/^jobs:\n(?:\s*#.*\n)* {2}build-and-test:\n/m.test(ci)) problems.push("C-10 .github/workflows/ci.yml: job must be named build-and-test to match the required checks");
+  // C-11 (defect D-016): CI must fail on any known dependency vulnerability
+  if (!/npm audit --audit-level=low/.test(ci)) problems.push("C-11 .github/workflows/ci.yml: no npm audit gate");
   return problems;
 }
 
@@ -116,5 +118,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-10)");
+  console.log("repository checks passed (C-01 to C-11)");
 }

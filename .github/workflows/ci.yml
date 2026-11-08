@@ -30,6 +30,8 @@ jobs:
         run: |
           npm ci
           pip install pyyaml==6.0.3
+      - name: No known vulnerabilities in dependencies (defect D-016)
+        run: npm audit --audit-level=low
       - name: Rule set matches the vendored xGov MEM model
         run: python3 tools/compile_mem.py --check
       - name: Typecheck

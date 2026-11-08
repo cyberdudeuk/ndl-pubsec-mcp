@@ -106,6 +106,16 @@ describe("required status checks", () => {
   });
 });
 
+describe("dependency audit gate", () => {
+  it("C-11 catches CI without the npm audit gate", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, ".github", "workflows", "ci.yml");
+      writeFileSync(p, readFileSync(p, "utf8").replace("npm audit --audit-level=low", "echo skipped"));
+    });
+    expect(out.join()).toMatch(/C-11/);
+  });
+});
+
 describe("standards register", () => {
   it("every entry has a provenance label, a check date and an https link", () => {
     for (const s of standards.standards) {
