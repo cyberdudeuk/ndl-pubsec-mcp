@@ -137,7 +137,8 @@ function validateObject(record: Record<string, unknown>, className: string, base
       values = raw;
     } else {
       if (slot.multivalued) {
-        out.push({ severity: "warning", path: at(slot.name), rule: "multivalued", message: `${slot.name} takes a list; give the value as a one-item list` });
+        // linkml-validate rejects a bare value here (checked against 1.12.1, defect D-019), so this is an error.
+        out.push({ severity: "error", path: at(slot.name), rule: "multivalued", message: `${slot.name} takes a list; give the value as a one-item list` });
       }
       values = [raw];
     }

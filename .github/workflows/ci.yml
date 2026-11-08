@@ -52,6 +52,11 @@ jobs:
           git clone https://github.com/co-cddo/ukgov-metadata-exchange-model /tmp/mem
           git -C /tmp/mem checkout "$(python3 -c "import json;print(json.load(open('vendor/xgov-mem/source.json'))['commit'])")"
           python3 tools/conformance.py /tmp/mem
+      - name: Agreement with the official LinkML validator (O-02, defect D-019)
+        if: matrix.node-version == 22
+        run: |
+          python3 -m pip install --quiet "linkml==1.12.1" pyyaml
+          python3 tools/linkml_parity.py /tmp/mem
       - name: Site builds and is up to date
         run: |
           npm run site

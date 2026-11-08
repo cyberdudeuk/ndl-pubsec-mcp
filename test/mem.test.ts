@@ -60,12 +60,14 @@ describe("validateRecord", () => {
     expect(rulesOf(validateRecord({ ...validDataset, licence: 42 }))).toEqual(["range at licence"]);
   });
 
-  it("warns, but does not fail, on missing recommended attributes and scalar lists", () => {
-    const r = validateRecord({ ...validDataset, creator: "government-digital-service" });
+  it("rejects a bare value where a list is required, as linkml-validate does (D-019)", () => {
+    expect(rulesOf(validateRecord({ ...validDataset, creator: "government-digital-service" }))).toEqual(["multivalued at creator"]);
+  });
+
+  it("warns, but does not fail, on missing recommended attributes", () => {
+    const r = validateRecord(validDataset);
     expect(r.valid).toBe(true);
-    const warnings = r.findings.filter((f) => f.severity === "warning").map((f) => f.rule);
-    expect(warnings).toContain("multivalued");
-    expect(warnings).toContain("recommended");
+    expect(r.findings.filter((f) => f.severity === "warning").map((f) => f.rule)).toContain("recommended");
   });
 
   it("checks Distribution media types against the model's pattern", () => {

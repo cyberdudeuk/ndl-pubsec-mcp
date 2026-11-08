@@ -42,7 +42,7 @@ Version 0.2, 8 November 2026. Review by 8 February 2027.
 2. For each slot:
    - a missing or empty value is an error if the slot is required, or a warning if recommended
    - a list given for a single-valued slot is an error
-   - a single value given for a multi-valued slot is a warning
+   - a single value given for a multi-valued slot is an error, as in `linkml-validate` (D-019)
 3. Each value is checked against the slot's ranges (any one of them may match):
    - class ranges recurse into the nested object
    - enums must match a permitted value
@@ -52,9 +52,10 @@ Version 0.2, 8 November 2026. Review by 8 February 2027.
 4. A type-designator slot (`type`) must equal the class URI, for example `dcat:Dataset`.
 5. Each finding gives a severity, a path (for example `contactPoint.email`), a rule id and a plain-English message.
 
-**Known simplifications** (open item O-02):
-- `uriorcurie` is not syntax-checked, matching the upstream corpus, which accepts bare identifiers.
-- A single value given for a multi-valued slot is accepted with a warning. The upstream LinkML behaviour for this case is not confirmed.
+**Checked against `linkml-validate` 1.12.1 (O-02, closed 8 November 2026):**
+- `uriorcurie` is not syntax-checked. LinkML does not check it either (it accepts a plain-text identifier), so the two agree.
+- A single value given for a multi-valued slot: LinkML rejects it, so this validator now does too (it previously warned; defect D-019).
+- `tools/linkml_parity.py` runs both validators over a set of varied records, and CI fails if their verdicts differ.
 
 **Error handling:** catalogue errors become `isError` tool results with a message and, for network failures, a hint. Unexpected exceptions are left to the SDK, which reports them as tool errors.
 

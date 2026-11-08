@@ -1,0 +1,26 @@
+{
+  "Dataset": {
+    "identifier": "https://example.org/dataset/1",
+    "type": "dcat:Dataset",
+    "title": "Example dataset",
+    "description": "Synthetic.",
+    "licence": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+    "version": "1.0",
+    "accessRights": "OPEN",
+    "securityClassification": "OFFICIAL",
+    "contactPoint": {
+      "contactName": "Data team",
+      "email": "data-team@example.org"
+    },
+    "modified": "2026-11-01",
+    "creator": [
+      "government-digital-service"
+    ],
+    "publisher": "government-digital-service",
+    "updateFrequency": "freq:monthly"
+  },
+  "ContactPoint": {
+    "contactName": "Data team",
+    "email": "data-team@example.org"
+  }
+}

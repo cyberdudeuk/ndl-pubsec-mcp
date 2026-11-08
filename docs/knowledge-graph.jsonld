@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+7aad91e3cd81",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+ca58f1df7eb3",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -96,11 +96,11 @@
     {
       "@id": "ndl:standard/atrs",
       "@type": "schema:CreativeWork",
-      "schema:name": "Algorithmic Transparency Recording Standard (ATRS)",
+      "schema:name": "Algorithmic Transparency Reporting Standard (ATRS)",
       "schema:url": "https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub",
       "schema:license": "Open Government Licence v3.0",
       "schema:creativeWorkStatus": "Endorsed",
-      "ndl:provenance": "S",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -110,7 +110,7 @@
       "schema:url": "https://standard.openownership.org/",
       "schema:license": "Apache License 2.0",
       "schema:creativeWorkStatus": "Endorsed",
-      "ndl:provenance": "S",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -118,9 +118,9 @@
       "@type": "schema:CreativeWork",
       "schema:name": "Common Format and MIME Type for Comma-Separated Values (CSV) Files (RFC 4180)",
       "schema:url": "https://www.rfc-editor.org/rfc/rfc4180",
-      "schema:license": "IETF",
-      "schema:creativeWorkStatus": "In the DSA Standards Catalogue",
-      "ndl:provenance": "S",
+      "schema:license": "Not stated in the catalogue",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -130,7 +130,7 @@
       "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government",
       "schema:license": "Apache License 2.0",
       "schema:creativeWorkStatus": "Recommended open standard for government",
-      "ndl:provenance": "S",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -138,9 +138,9 @@
       "@type": "schema:CreativeWork",
       "schema:name": "Open Referral UK",
       "schema:url": "https://openreferraluk.org/",
-      "schema:license": "Unconfirmed",
-      "schema:creativeWorkStatus": "Unconfirmed: re-verify in the DSA Standards Catalogue",
-      "ndl:provenance": "U",
+      "schema:license": "Creative Commons Attribution-ShareAlike 4.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -541,6 +541,14 @@
       "schema:name": "D-018",
       "schema:description": "The crosswalk said version and update frequency are never held, but harvested records carry them (`version`, `frequency-of-update`), and publisher DCAT dates were ignored",
       "ndl:check": "T-crosswalk-live: tests for exact GEMINI mapping, DCAT dates and version; mutants for each",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-019",
+      "@type": "schema:Thing",
+      "schema:name": "D-019",
+      "schema:description": "A bare value where the model wants a list was a warning here but an error in `linkml-validate` 1.12.1, so a record this server passed would fail the official validator",
+      "ndl:check": "T-linkml-parity: `tools/linkml_parity.py` runs 45 varied records through both validators in CI and fails on any disagreement; mutant \"bare value for a list downgraded to a warning\"",
       "ndl:status": "Fixed"
     }
   ]

@@ -5,9 +5,9 @@ Items design cannot close on its own. Each names who must act.
 | Id | Item | Who acts |
 |---|---|---|
 | O-01 | **Closed 8 November 2026.** Live API checked through a browser: `www.data.gov.uk/api/action` redirects to `ckan.publishing.service.gov.uk/api/action`; the envelope, `package_search`, `package_show` and 404 Not Found responses match the client. Findings fixed as D-017 and D-018. A weekly live smoke workflow now guards against API drift | Done |
-| O-02 | Two validator simplifications: `uriorcurie` is not syntax-checked, and a single value for a multi-valued slot is a warning. Confirm both against `linkml-validate` | Developer |
+| O-02 | **Closed 8 November 2026.** Checked against `linkml-validate` 1.12.1. `uriorcurie` is not syntax-checked there either, so this server matches it. A bare value for a list is an error there, so it is now an error here (D-019). `tools/linkml_parity.py` runs in CI to catch any further drift: 45 of 45 variants agree | Done |
 | O-03 | User needs are assumed, not researched. Run 5 to 8 sessions with publishers and catalogue managers | User researcher with the Data Management Team |
-| O-04 | Standards register entries labelled S or U need re-reading at the primary pages; the DSA catalogue page was last updated 25 October 2023 | Owner, every 3 months |
+| O-04 | Re-verified 8 November 2026: ATRS, BODS, CSV, OpenAPI 3 and Open Referral UK are now V, read at the primary pages. xGov MEM endorsement wording is still S, because it is not in the catalogue page. The catalogue was last updated 25 October 2023, so re-read every 3 months | Owner, every 3 months |
 | O-05 | Agreement on real catalogue records is unmeasured. Sample 50 data.gov.uk entries and compare with LinkML | Developer |
 | O-06 | Possible move to a government GitHub organisation (for example `gds-dtx`) alongside the co-cddo migration | Owner, with the organisation's admins |
 | O-07 | A hosted streamable HTTP mode, if users need it (needs hosting, authentication and a security review) | Team decision |

@@ -7,6 +7,7 @@ import subprocess, pathlib, sys
 root = pathlib.Path(__file__).resolve().parent.parent
 mutants = [
  ("src/lib/mem.ts", "if (slot.required) {", "if (false) {", "required check removed"),
+ ("src/lib/mem.ts", "        out.push({ severity: \"error\", path: at(slot.name), rule: \"multivalued\"", "        out.push({ severity: \"warning\", path: at(slot.name), rule: \"multivalued\"", "bare value for a list downgraded to a warning"),
  ("src/lib/mem.ts", "if (!cls.slots[key]) {", "if (false) {", "unknown-attribute check removed"),
  ("src/lib/mem.ts", "if (v !== expected) {", "if (false) {", "type designator check removed"),
  ("src/lib/mem.ts", "return typeof value === \"string\" && set.has(value) ? null", "return typeof value === \"string\" ? null", "enum check removed"),
