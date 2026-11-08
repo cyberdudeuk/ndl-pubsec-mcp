@@ -81,6 +81,21 @@ describe("repository checks", () => {
   });
 });
 
+describe("site build identifier", () => {
+  it("C-09 catches a build id that ignores the page template", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "tools", "build-site.mjs");
+      writeFileSync(p, readFileSync(p, "utf8").replace(', template: TEMPLATE_FILES.map(read)', ""));
+    });
+    expect(out.join()).toMatch(/C-09/);
+    const css = brokenCopy((d) => {
+      const p = join(d, "tools", "build-site.mjs");
+      writeFileSync(p, readFileSync(p, "utf8").replace('"tools/site/site.css", ', ""));
+    });
+    expect(css.join()).toMatch(/C-09 .*site\.css/);
+  });
+});
+
 describe("standards register", () => {
   it("every entry has a provenance label, a check date and an https link", () => {
     for (const s of standards.standards) {

@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+8ac7ea3e1e98",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+4113376b626d",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -493,6 +493,22 @@
       "schema:name": "D-012",
       "schema:description": "Raising the result limit from 20 to 2000 went undetected",
       "ndl:check": "T-mutation: `tools/mutation.py` in CI; the input test now sends one fault per call",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-013",
+      "@type": "schema:Thing",
+      "schema:name": "D-013",
+      "schema:description": "The site build id stayed the same when only the page template, styles or script changed, so two different pages could share an id",
+      "ndl:check": "C-09",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-014",
+      "@type": "schema:Thing",
+      "schema:name": "D-014",
+      "schema:description": "Dates on the page mixed 8 November 2026 and 2026-11-08",
+      "ndl:check": "T-site: all visible dates go through `longDate`; reviewed in a screenshot",
       "ndl:status": "Fixed"
     }
   ]

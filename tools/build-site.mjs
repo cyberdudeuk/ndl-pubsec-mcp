@@ -22,6 +22,7 @@ const REPO = "https://github.com/cyberdudeuk/ndl-pubsec-mcp";
 const CONTACT = `${REPO}/issues/new?template=contact.yml`;
 const AS_OF = standards.asOf;
 const REVIEW = "2027-02-08";
+const longDate = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
@@ -44,7 +45,9 @@ const glossary = read("docs/glossary.md")
 const adrs = readdirSync(join(root, "docs", "adr")).filter((f) => f.endsWith(".md")).sort().map((f) => ({ file: f, title: read(`docs/adr/${f}`).split("\n")[0].replace(/^# /, "") }));
 const defects = read("docs/defect-register.md").split("\n").filter((l) => /^\| D-\d{3}/.test(l)).map((l) => l.split("|").map((x) => x.trim())).map((c) => ({ id: c[1], defect: c[3], check: c[5], status: c[6] }));
 
-const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, model: rules.generatedFrom.commit, glossary, adrs, defects });
+// The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js"];
+const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, model: rules.generatedFrom.commit, glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
 const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs).digest("hex").slice(0, 12)}`;
 
 // --- assets ---
@@ -133,7 +136,7 @@ const html = `<!DOCTYPE html>
       </button>
     </div>
     <ol class="app-drawer__list" id="drawer-list">
-${sections.map((s) => `      <li><a class="govuk-link" href="#${s.id}">${esc(s.title)}${s.count ? ` <span class="app-count" aria-label="${s.count} items">${s.count}</span>` : ""}</a></li>`).join("\n")}
+${sections.map((s) => `      <li><a class="govuk-link" href="#${s.id}">${esc(s.title)}</a>${s.count ? ` <span class="app-count">${s.count}<span class="govuk-visually-hidden"> items</span></span>` : ""}</li>`).join("\n")}
     </ol>
   </nav>
   <main class="govuk-main-wrapper app-main" id="main-content" role="main">
@@ -154,7 +157,7 @@ ${tools.map((t) => `        <tr class="govuk-table__row"><th scope="row" class="
     </div>
 
     <h2 class="govuk-heading-l" id="conformance">How well it follows xGov MEM</h2>
-    <p class="govuk-body">The validator is generated from the xGov MEM model at commit <code>${esc(conf.model.commit.slice(0, 7))}</code> (${esc(conf.model.commitDate)}). It covers ${Object.keys(rules.classes).length} classes. It reaches the same verdict as the model's own tests on <strong>${conf.agree} of ${conf.cases} cases</strong>: ${totals.v} valid and ${totals.i} invalid examples.</p>
+    <p class="govuk-body">The validator is generated from the xGov MEM model at commit <code>${esc(conf.model.commit.slice(0, 7))}</code> (${esc(longDate(conf.model.commitDate))}). It covers ${Object.keys(rules.classes).length} classes. It reaches the same verdict as the model's own tests on <strong>${conf.agree} of ${conf.cases} cases</strong>: ${totals.v} valid and ${totals.i} invalid examples.</p>
     <div class="app-table-scroll" role="region" aria-labelledby="conf-caption" tabindex="0">
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--s" id="conf-caption">Agreement with the xGov MEM test corpus, by class</caption>
@@ -175,7 +178,7 @@ npm run build</code></pre>
     <p class="govuk-body">Then add <code>node /path/to/ndl-pubsec-mcp/dist/index.js</code> to your assistant's MCP servers. <a class="govuk-link" href="${gh("README.md")}">Full instructions</a>.</p>
 
     <h2 class="govuk-heading-l" id="standards">Standards it explains</h2>
-    <p class="govuk-body">Each entry shows how sure we are of it. Entries found through search must be re-read at the source before you rely on them. Checked ${esc(AS_OF)}.</p>
+    <p class="govuk-body">Each entry shows how sure we are of it. Entries found through search must be re-read at the source before you rely on them. Checked ${esc(longDate(AS_OF))}.</p>
     <div class="app-table-scroll" role="region" aria-labelledby="std-caption" tabindex="0">
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--s" id="std-caption">Open data standards, with provenance</caption>
@@ -211,8 +214,8 @@ ${glossary.map((g) => `      <div class="govuk-summary-list__row"><dt class="gov
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Owner</dt><dd class="govuk-summary-list__value">Data Management Team, Government Data directorate, GDS</dd></div>
       <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">First published</dt><dd class="govuk-summary-list__value">8 November 2026</dd></div>
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Last updated</dt><dd class="govuk-summary-list__value">${esc(AS_OF)}</dd></div>
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Review by</dt><dd class="govuk-summary-list__value">${REVIEW}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Last updated</dt><dd class="govuk-summary-list__value">${esc(longDate(AS_OF))}</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Review by</dt><dd class="govuk-summary-list__value">${esc(longDate(REVIEW))}</dd></div>
     </dl>
   </main>
 </div>
@@ -224,7 +227,7 @@ ${glossary.map((g) => `      <div class="govuk-summary-list__row"><dt class="gov
         <p class="govuk-body-s">An alpha prototype of the Government Digital Service. It is not a live service, has not had a service assessment, and gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code). Changes are reviewed by the owner before they are merged.</p>
         <p class="govuk-body-s"><a class="govuk-footer__link" href="${CONTACT}">Contact form</a> · <a class="govuk-footer__link" href="${REPO}">Source code</a> · <a class="govuk-footer__link" href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
         <p class="govuk-body-s">Code: <a class="govuk-footer__link" href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
-        <p class="govuk-body-s">Version ${esc(pkg.version)} · as of ${esc(AS_OF)} · build <code>${esc(buildId)}</code></p>
+        <p class="govuk-body-s">Version ${esc(pkg.version)} · as of ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
       </div>
       <div class="app-colophon__codes">
         ${qr}

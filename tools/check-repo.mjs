@@ -94,6 +94,13 @@ export function checkRepo(root) {
       for (const m of t.matchAll(/all (\d+) cases/gi)) if (Number(m[1]) !== res.cases) problems.push(`C-08 ${f}: states ${m[0]}, the recorded run has ${res.cases}`);
     }
   } else problems.push("C-08 docs/conformance-result.json missing: run tools/conformance.py <mem> --report");
+  // C-09 (defect D-013): the site build id hashes the template, styles and script, not only the data
+  const gen = existsSync(join(root, "tools", "build-site.mjs")) ? readFileSync(join(root, "tools", "build-site.mjs"), "utf8") : "";
+  const tf = gen.match(/TEMPLATE_FILES = \[([^\]]*)\]/);
+  for (const f of ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js"]) {
+    if (!tf || !tf[1].includes(`"${f}"`)) problems.push(`C-09 tools/build-site.mjs: build id does not hash ${f}`);
+  }
+  if (!/template: TEMPLATE_FILES\.map\(read\)/.test(gen)) problems.push("C-09 tools/build-site.mjs: TEMPLATE_FILES is not part of the hashed inputs");
   return problems;
 }
 
@@ -106,5 +113,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-08)");
+  console.log("repository checks passed (C-01 to C-09)");
 }
