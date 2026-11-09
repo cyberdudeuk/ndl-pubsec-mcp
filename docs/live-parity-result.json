@@ -1,0 +1,1118 @@
+{
+  "records": 50,
+  "agree": 50,
+  "agreeMeans": "same valid/invalid verdict and the same set of missing required attributes, with no other errors on either side",
+  "missingRequired": {
+    "accessRights": 50,
+    "contactPoint": 50,
+    "securityClassification": 50,
+    "version": 50,
+    "updateFrequency": 47,
+    "creator": 36,
+    "publisher": 36,
+    "licence": 27
+  },
+  "validHere": 0,
+  "validInLinkml": 0,
+  "errorRulesHere": {
+    "required": 346
+  },
+  "rows": [
+    {
+      "name": "0-1-annual-probability-extents-with-30-climate-change-adjustment15",
+      "publisher": "city-of-bradford-metropolitan-district-council",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "0-1-annual-probability-extents14",
+      "publisher": "city-of-bradford-metropolitan-district-council",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "0-1-annual-probability-outputs-with-30-climate-change-adjustment16",
+      "publisher": "city-of-bradford-metropolitan-district-council",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "0-1-annual-probability-outputs13",
+      "publisher": "city-of-bradford-metropolitan-district-council",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-apr-19",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-apr-20",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-apr-21",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-aug-20",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-aug-21",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "02p-expenditure-over-25k-dec-20",
+      "publisher": "nhs-barnsley-ccg",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008-shell-uk-ltd-ukcs-block-29-3a-29-3a-b-fram-site-survey-bgs-reference-number-sh08ss0004",
+      "publisher": "british-geological-survey",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008-shell-uk-ltd-ukcs-block-30-19-borehole-bh-cn-108-debris-clearance-survey-bgs-reference-num",
+      "publisher": "british-geological-survey",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008-shell-uk-ltd-ukcs-blocks-23-22-and-23-27-pipeline-cable-route-survey-bgs-reference-number-",
+      "publisher": "british-geological-survey",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008-the-environment-agency-ea-tamar-and-lynher-rivers-and-estuaries-shad-surveys-and-records",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008-the-marine-conservation-society-seasearch-various-locations-in-dorset-diver-observations-a",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2008_injury_road_traffic_collisions_in_northern_ireland",
+      "publisher": "police-service-of-northern-ireland",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2009-2009-centre-for-environment-fisheries-aquaculture-science-cefas-english-channel-co-05-2009",
+      "publisher": "centre-for-environment-fisheries-aquaculture-science",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2009-2009-centre-for-environment-fisheries-aquaculture-science-cefas-english-channel-whelk-biol",
+      "publisher": "centre-for-environment-fisheries-aquaculture-science",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2009-2009-centre-for-environment-fisheries-aquaculture-science-cefas-irish-sea-conducti-03-2009",
+      "publisher": "centre-for-environment-fisheries-aquaculture-science",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "2009-2009-centre-for-environment-fisheries-aquaculture-science-cefas-north-sea-conducti-09-2009",
+      "publisher": "centre-for-environment-fisheries-aquaculture-science",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl025971",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl025981",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl02690",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl026921",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl026931",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl026941",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl02696",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl026971",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl026981",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 6
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 6
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "agricultural-land-classification-detailed-post-1988-survey-alcl02790",
+      "publisher": "natural-england",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-daily-and-sub-daily-hydrometeorological-time-series-groundwater-level-time",
+      "publisher": "eidc",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-england-and-wales-based-on-existing-fish-health-inspectorate-fhi-catch",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-england-and-wales-based-on-existing-fish-health-inspectorate-fhi-catch1",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-england-scotland-and-wales-based-on-existing-fish-health-inspecto-2023",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-england-scotland-and-wales-based-on-existing-fish-health-inspecto-20232024",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-scotland-based-on-scottish-environment-protection-agency-sepa-cat-2023",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-boundaries-for-scotland-based-on-scottish-environment-protection-agency-sepa-cat-20232024",
+      "publisher": "marine-environmental-data-information-network",
+      "ours": {
+        "valid": false,
+        "errors": 8
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 8
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "licence",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-data-explorer-water-body-measures",
+      "publisher": "environment-agency",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-data-explorer-water-body-status-classification",
+      "publisher": "environment-agency",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "catchment-data-explorer-water-body-status-objectives",
+      "publisher": "environment-agency",
+      "ours": {
+        "valid": false,
+        "errors": 5
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 5
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "licence",
+        "securityClassification",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-provider-data-business-and-community-interaction",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-provider-data-estates-management",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-provider-data-finance",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-qualifications-administrative-geographies",
+      "publisher": "open-data-ni",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-data",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-statistics-uk-2016-17",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-statistics-uk-2017-18",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-statistics-uk-2018-19",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-statistics-uk-2019-20",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    },
+    {
+      "name": "higher-education-staff-statistics-uk-2020-21",
+      "publisher": "higher-education-statistics-agency",
+      "ours": {
+        "valid": false,
+        "errors": 7
+      },
+      "linkml": {
+        "valid": false,
+        "errors": 7
+      },
+      "missing": [
+        "accessRights",
+        "contactPoint",
+        "creator",
+        "publisher",
+        "securityClassification",
+        "updateFrequency",
+        "version"
+      ],
+      "agree": true
+    }
+  ]
+}

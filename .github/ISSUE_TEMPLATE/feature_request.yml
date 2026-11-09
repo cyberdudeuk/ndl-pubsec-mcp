@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest a new tool, data source or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: The user need
+      description: "As a [kind of user], I need [what], so that [why]."
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Data source or standard involved
+      description: Link to the official source if there is one.

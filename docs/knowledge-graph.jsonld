@@ -1,0 +1,563 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dct": "http://purl.org/dc/terms/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "ndl": "https://github.com/cyberdudeuk/ndl-pubsec-mcp#"
+  },
+  "@graph": [
+    {
+      "@id": "ndl:server",
+      "@type": "schema:SoftwareSourceCode",
+      "schema:name": "NDL PubSec MCP",
+      "schema:version": "0.2.0",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+fa3fdf52df6a",
+      "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
+      "dct:conformsTo": [
+        {
+          "@id": "ndl:standard/xgov-mem"
+        }
+      ],
+      "schema:hasPart": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/dataset_describe"
+        },
+        {
+          "@id": "ndl:tool/metadata_validate"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tool/catalogue_search",
+      "@type": "schema:EntryPoint",
+      "schema:name": "catalogue_search",
+      "schema:description": "Search the data.gov.uk catalogue of UK public sector datasets. Returns titles, publishers, licences, formats, last-modified dates and links. Read-only; no personal data is returned.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:tool/dataset_describe",
+      "@type": "schema:EntryPoint",
+      "schema:name": "dataset_describe",
+      "schema:description": "Get one data.gov.uk dataset: its description, publisher, licence and distributions, plus a draft UK Cross-Government Metadata Exchange Model (xGov MEM) record and what that record still lacks. Nothing is guessed: fields the catalogue does not hold are reported as missing.",
+      "dct:references": [
+        {
+          "@id": "ndl:standard/xgov-mem"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tool/metadata_validate",
+      "@type": "schema:EntryPoint",
+      "schema:name": "metadata_validate",
+      "schema:description": "Check a metadata record against the UK Cross-Government Metadata Exchange Model (xGov MEM, commit d6d9a24). Classes: ContactPoint, DataService, Dataset, Distribution, Organisation. Returns errors (must fix) and warnings (recommended), each with the attribute path.",
+      "dct:references": [
+        {
+          "@id": "ndl:standard/xgov-mem"
+        },
+        {
+          "@id": "ndl:standard/dcat"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tool/standard_explain",
+      "@type": "schema:EntryPoint",
+      "schema:name": "standard_explain",
+      "schema:description": "Explain open data standards used across UK government (xGov MEM, DCAT, ATRS, BODS, CSV, OpenAPI and others): purpose, status, licence and link, each with its provenance label and check date. Leave id out to list them all.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:standard/xgov-mem",
+      "@type": "schema:CreativeWork",
+      "schema:name": "UK Cross-Government Metadata Exchange Model (xGov MEM)",
+      "schema:url": "https://co-cddo.github.io/ukgov-metadata-exchange-model/",
+      "schema:license": "Open Government Licence v3.0",
+      "schema:creativeWorkStatus": "Endorsed for implementation by the Data Standards Authority Steering Board",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/dcat",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Data Catalog Vocabulary (DCAT)",
+      "schema:url": "https://www.w3.org/TR/vocab-dcat-3/",
+      "schema:license": "W3C",
+      "schema:creativeWorkStatus": "Base standard of xGov MEM",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/atrs",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Algorithmic Transparency Reporting Standard (ATRS)",
+      "schema:url": "https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub",
+      "schema:license": "Open Government Licence v3.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/bods",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Beneficial Ownership Data Standard (BODS) v0.2",
+      "schema:url": "https://standard.openownership.org/",
+      "schema:license": "Apache License 2.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/csv-rfc4180",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Common Format and MIME Type for Comma-Separated Values (CSV) Files (RFC 4180)",
+      "schema:url": "https://www.rfc-editor.org/rfc/rfc4180",
+      "schema:license": "Not stated in the catalogue",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/openapi-3",
+      "@type": "schema:CreativeWork",
+      "schema:name": "OpenAPI 3 (describing RESTful APIs)",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government",
+      "schema:license": "Apache License 2.0",
+      "schema:creativeWorkStatus": "Recommended open standard for government",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/open-referral-uk",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Open Referral UK",
+      "schema:url": "https://openreferraluk.org/",
+      "schema:license": "Creative Commons Attribution-ShareAlike 4.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:xgov-mem-classes",
+      "@type": "skos:ConceptScheme",
+      "skos:prefLabel": "xGov MEM classes",
+      "dct:source": "https://github.com/co-cddo/ukgov-metadata-exchange-model"
+    },
+    {
+      "@id": "ndl:class/ContactPoint",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "ContactPoint",
+      "skos:exactMatch": "vcard:Kind",
+      "skos:inScheme": {
+        "@id": "ndl:xgov-mem-classes"
+      },
+      "skos:note": "Required attributes: contactName, email"
+    },
+    {
+      "@id": "ndl:class/DataService",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "DataService",
+      "skos:exactMatch": "dcat:DataService",
+      "skos:inScheme": {
+        "@id": "ndl:xgov-mem-classes"
+      },
+      "skos:note": "Required attributes: accessRights, contactPoint, creator, description, identifier, licence, modified, publisher, securityClassification, title, type, version, endpointDescription, serviceStatus, serviceType"
+    },
+    {
+      "@id": "ndl:class/Dataset",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Dataset",
+      "skos:exactMatch": "dcat:Dataset",
+      "skos:inScheme": {
+        "@id": "ndl:xgov-mem-classes"
+      },
+      "skos:note": "Required attributes: accessRights, contactPoint, creator, description, identifier, licence, modified, publisher, securityClassification, title, type, version, updateFrequency"
+    },
+    {
+      "@id": "ndl:class/Distribution",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Distribution",
+      "skos:exactMatch": "dcat:Distribution",
+      "skos:inScheme": {
+        "@id": "ndl:xgov-mem-classes"
+      },
+      "skos:note": "Required attributes: identifier, licence, mediaType, title, type"
+    },
+    {
+      "@id": "ndl:class/Organisation",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Organisation",
+      "skos:exactMatch": "foaf:Organization",
+      "skos:inScheme": {
+        "@id": "ndl:xgov-mem-classes"
+      },
+      "skos:note": "Required attributes: identifier, title"
+    },
+    {
+      "@id": "ndl:glossary",
+      "@type": "skos:ConceptScheme",
+      "skos:prefLabel": "Glossary"
+    },
+    {
+      "@id": "ndl:term/ckan",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "CKAN",
+      "skos:definition": "The open-source catalogue software behind data.gov.uk. Its \"action API\" is what this server calls.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/class",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Class",
+      "skos:definition": "A kind of thing in xGov MEM, for example Dataset or DataService.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/curie",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "CURIE",
+      "skos:definition": "A short form of a web address, written prefix:name. For example, dcat:Dataset.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/crosswalk",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Crosswalk",
+      "skos:definition": "A mapping from one metadata format to another; here, from a data.gov.uk entry to xGov MEM.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/dam-policy",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "DAM policy",
+      "skos:definition": "The cross-government policy on critical data assets (the successor to the Essential Shared Data Asset policy), with returns to GDS from January 2027.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/data-gov-uk",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "data.gov.uk",
+      "skos:definition": "The UK's national catalogue of public sector data.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/dcat",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "DCAT",
+      "skos:definition": "Data Catalog Vocabulary, the W3C standard for describing datasets in catalogues. xGov MEM builds on it.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/distribution",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Distribution",
+      "skos:definition": "One available form of a dataset, such as a CSV file or an API.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/finding",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Finding",
+      "skos:definition": "One problem the validator reports, with a severity, a path and a message.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/linkml",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "LinkML",
+      "skos:definition": "The modelling language xGov MEM is written in.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/mcp",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "MCP",
+      "skos:definition": "Model Context Protocol: an open standard for connecting AI assistants to tools and data.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/mcp-server",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "MCP server",
+      "skos:definition": "A program that offers tools and resources to an AI assistant using MCP. This repository is one.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/provenance-label",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Provenance label",
+      "skos:definition": "How sure a stated fact is: V verified at the primary source, S found through search, K background knowledge, U unconfirmed.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/recommended-attribute",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Recommended attribute",
+      "skos:definition": "An attribute xGov MEM advises but does not require. Missing ones give warnings, not errors.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/required-attribute",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Required attribute",
+      "skos:definition": "An attribute a record must have to meet xGov MEM.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/slot",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Slot",
+      "skos:definition": "LinkML's word for an attribute.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/tool",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Tool",
+      "skos:definition": "A single action an MCP server offers, such as metadata_validate.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/vaccination",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Vaccination",
+      "skos:definition": "Proving a check works by breaking the thing it guards and showing that the check fails.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/xgov-mem",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "xGov MEM",
+      "skos:definition": "The UK Cross-Government Metadata Exchange Model: the endorsed model for exchanging metadata about datasets and data services across government.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:adr/0001-rescope-to-discoverability",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0001: re-scope from citizen advice to data discoverability",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0001-rescope-to-discoverability.md"
+    },
+    {
+      "@id": "ndl:adr/0002-official-and-personal-repositories",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0002: one official repository, one personal experiment",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0002-official-and-personal-repositories.md"
+    },
+    {
+      "@id": "ndl:adr/0003-typescript-mcp-sdk-stdio",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0003: TypeScript, the official MCP SDK and stdio transport",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0003-typescript-mcp-sdk-stdio.md"
+    },
+    {
+      "@id": "ndl:adr/0004-model-is-source-of-truth",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0004: the xGov MEM model is the source of truth, and nothing is guessed",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0004-model-is-source-of-truth.md"
+    },
+    {
+      "@id": "ndl:defect/D-001",
+      "@type": "schema:Thing",
+      "schema:name": "D-001",
+      "schema:description": "The upstream xGov MEM model fails strict YAML 1.2 parsing (model.yaml line 348)",
+      "ndl:check": "Compiled with PyYAML, as LinkML does. T-compile drift gate in CI (`compile_mem.py --check`). Reported upstream as O-12",
+      "ndl:status": "Worked around; upstream fix open"
+    },
+    {
+      "@id": "ndl:defect/D-002",
+      "@type": "schema:Thing",
+      "schema:name": "D-002",
+      "schema:description": "The CI workflow never ran",
+      "ndl:check": "C-03",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-003",
+      "@type": "schema:Thing",
+      "schema:name": "D-003",
+      "schema:description": "An email placeholder in README and SECURITY broke the contact-by-form rule",
+      "ndl:check": "C-01",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-004",
+      "@type": "schema:Thing",
+      "schema:name": "D-004",
+      "schema:description": "Unfilled user-name placeholders in the README and set-up script",
+      "ndl:check": "C-04",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-005",
+      "@type": "schema:Thing",
+      "schema:name": "D-005",
+      "schema:description": "Tools specified in documents had no code or tests (version 0.1)",
+      "ndl:check": "C-05",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-006",
+      "@type": "schema:Thing",
+      "schema:name": "D-006",
+      "schema:description": "Defects could be recorded without a check",
+      "ndl:check": "C-06",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-007",
+      "@type": "schema:Thing",
+      "schema:name": "D-007",
+      "schema:description": "The licence statement contradicted itself (personal project and Crown copyright \"as a DSIT officer\"), and the department was out of date",
+      "ndl:check": "C-07, ADR 0002",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-008",
+      "@type": "schema:Thing",
+      "schema:name": "D-008",
+      "schema:description": "The conformance page stated 13 valid and 19 invalid cases; the run had 12 and 20",
+      "ndl:check": "C-08",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-009",
+      "@type": "schema:Thing",
+      "schema:name": "D-009",
+      "schema:description": "Pages published the repository root (the README) instead of the documentation",
+      "ndl:check": "T-site: CI rebuilds the site and diffs `docs/index.html`; the Pages workflow uploads `docs/`",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-010",
+      "@type": "schema:Thing",
+      "schema:name": "D-010",
+      "schema:description": "Check C-05 could be fooled: a tool counted as tested if its name appeared anywhere in a test file, including the break test's own source",
+      "ndl:check": "C-05 now needs `name: \"<tool>\"` in a call; vaccination test in `test/repo-checks.test.ts`",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-011",
+      "@type": "schema:Thing",
+      "schema:name": "D-011",
+      "schema:description": "Test labels that joined a rule name and a path ending in `.email` with an at sign looked like email addresses to C-01 (`.email` is a real top-level domain)",
+      "ndl:check": "C-01 left strict; test labels now use \"at\"",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-012",
+      "@type": "schema:Thing",
+      "schema:name": "D-012",
+      "schema:description": "Raising the result limit from 20 to 2000 went undetected",
+      "ndl:check": "T-mutation: `tools/mutation.py` in CI; the input test now sends one fault per call",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-013",
+      "@type": "schema:Thing",
+      "schema:name": "D-013",
+      "schema:description": "The site build id stayed the same when only the page template, styles or script changed, so two different pages could share an id",
+      "ndl:check": "C-09",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-014",
+      "@type": "schema:Thing",
+      "schema:name": "D-014",
+      "schema:description": "Dates on the page mixed 8 November 2026 and 2026-11-08",
+      "ndl:check": "T-site: all visible dates go through `longDate`; reviewed in a screenshot",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-015",
+      "@type": "schema:Thing",
+      "schema:name": "D-015",
+      "schema:description": "Pull request #6 could not merge: the repository ruleset requires checks named `build-and-test (20)` and `build-and-test (22)`, but the CI job was renamed `verify`",
+      "ndl:check": "C-10",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-016",
+      "@type": "schema:Thing",
+      "schema:name": "D-016",
+      "schema:description": "Dependencies pinned to versions with known advisories: zod 3.25.76 (high, run time), vitest 3.2.7 and tinypool (critical, test only), minimatch under typescript-eslint (moderate, lint only)",
+      "ndl:check": "C-11: CI runs `npm audit --audit-level=low`; zod 4.6.7, vitest 5.1.0 and a minimatch 11.0.5 override give 0 vulnerabilities",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-017",
+      "@type": "schema:Thing",
+      "schema:name": "D-017",
+      "schema:description": "A blank licence from the live catalogue would show as an empty string, and a missing licence was not reported in the notes",
+      "ndl:check": "T-crosswalk-live: tests built from live record shapes; mutant \"blank strings no longer treated as absent\"",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-018",
+      "@type": "schema:Thing",
+      "schema:name": "D-018",
+      "schema:description": "The crosswalk said version and update frequency are never held, but harvested records carry them (`version`, `frequency-of-update`), and publisher DCAT dates were ignored",
+      "ndl:check": "T-crosswalk-live: tests for exact GEMINI mapping, DCAT dates and version; mutants for each",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-019",
+      "@type": "schema:Thing",
+      "schema:name": "D-019",
+      "schema:description": "A bare value where the model wants a list was a warning here but an error in `linkml-validate` 1.12.1, so a record this server passed would fail the official validator",
+      "ndl:check": "T-linkml-parity: `tools/linkml_parity.py` runs 45 varied records through both validators in CI and fails on any disagreement; mutant \"bare value for a list downgraded to a warning\"",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-020",
+      "@type": "schema:Thing",
+      "schema:name": "D-020",
+      "schema:description": "`metadata_validate` returned one finding per bad list element or unknown key with no cap: 200,000 bad `creator` values gave a 25 MB reply. Same class of weakness as zod advisory GHSA-mrhx-c7xc-m3w5 (Dependabot alert 1 on `main`)",
+      "ndl:check": "T-findings-cap: test with 5,000 bad values asserts at most 100 findings, exact counts and an `omitted` total; mutant \"findings cap removed\"",
+      "ndl:status": "Fixed"
+    }
+  ]
+}

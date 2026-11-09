@@ -1,0 +1,45 @@
+/* Page layout on top of GOV.UK Frontend. Fonts fall back to the GOV.UK system stack. */
+body { font-family: arial, sans-serif; }
+.app-header { background: #0b0c0c; color: #fff; }
+.app-header__inner { border-bottom: 10px solid #1d70b8; }
+.app-header__inner { display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline; padding: 14px 0; }
+.app-header__name { font-weight: 700; font-size: 1.5rem; }
+.app-header__org { font-size: 1rem; }
+.app-phase { background: #fff; color: #0b0c0c; }
+.app-layout { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 30px; align-items: start; }
+.app-main { min-width: 0; padding-top: 20px; }
+.app-drawer { position: sticky; top: 0; padding-top: 30px; }
+.app-drawer__bar { display: flex; flex-direction: column; gap: 8px; }
+.app-drawer__heading { margin: 0; }
+.app-drawer__list { list-style: none; margin: 15px 0 0; padding: 0 0 0 10px; border-left: 4px solid #1d70b8; }
+.app-drawer__list li { margin: 0 0 10px; }
+.app-drawer.is-collapsed .app-drawer__list { display: none; }
+.app-count { display: inline-block; min-width: 1.6em; padding: 0 6px; margin-left: 4px; border-radius: 10px; background: #f3f2f1; color: #0b0c0c; font-size: 0.85rem; text-align: center; text-decoration: none; }
+.app-switch { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 8px 4px 0; background: none; border: 0; cursor: pointer; font: inherit; color: #0b0c0c; }
+.app-switch:focus-visible { outline: 3px solid #ffdd00; box-shadow: 0 0 0 6px #0b0c0c; }
+.app-switch__track { position: relative; width: 44px; height: 24px; border-radius: 12px; background: #505a5f; border: 2px solid #0b0c0c; transition: background 0.15s; }
+.app-switch__thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 0.15s; }
+.app-switch[aria-checked="true"] .app-switch__track { background: #00703c; }
+.app-switch[aria-checked="true"] .app-switch__thumb { left: 22px; }
+.app-table-scroll { overflow-x: auto; margin-bottom: 20px; }
+.app-table-scroll:focus-visible { outline: 3px solid #ffdd00; }
+.app-code { overflow-x: auto; padding: 15px; background: #f3f2f1; border-left: 5px solid #b1b4b6; margin: 0 0 20px; }
+.app-code:focus-visible { outline: 3px solid #ffdd00; }
+.app-prov { min-width: 1.5em; text-align: center; }
+.app-prov--V { background: #cce2d8; color: #005a30; }
+.app-prov--S { background: #fff7bf; color: #594d00; }
+.app-prov--K { background: #d2e2f1; color: #0c2d4a; }
+.app-prov--U { background: #f4cdc6; color: #2a0b06; }
+.app-colophon { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px; align-items: start; }
+.app-colophon__codes { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.app-colophon__codes svg { background: #fff; }
+.app-barcode { width: 240px; height: auto; }
+dfn { font-style: normal; }
+@media (max-width: 40em) {
+  .app-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .app-drawer { position: static; padding-top: 15px; }
+  .app-colophon { grid-template-columns: minmax(0, 1fr); }
+  .app-colophon__codes { align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .app-switch__track, .app-switch__thumb { transition: none; } }
+@media print { .app-drawer, .govuk-skip-link { display: none; } .app-layout { display: block; } }

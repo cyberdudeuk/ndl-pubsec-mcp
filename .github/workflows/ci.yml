@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # The job id must stay build-and-test: the repository ruleset requires the checks
+  # 'build-and-test (20)' and 'build-and-test (22)' (defect D-015, check C-10).
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          npm ci
+          pip install pyyaml==6.0.3
+      - name: No known vulnerabilities in dependencies (defect D-016)
+        run: npm audit --audit-level=low
+      - name: Rule set matches the vendored xGov MEM model
+        run: python3 tools/compile_mem.py --check
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Mutation run (every safeguard's test must fail when it is broken)
+        if: matrix.node-version == 22
+        run: npm run mutation
+      - name: Build
+        run: npm run build
+      - name: Repository checks
+        run: npm run check:repo
+      - name: Conformance with the xGov MEM test corpus
+        run: |
+          git clone https://github.com/co-cddo/ukgov-metadata-exchange-model /tmp/mem
+          git -C /tmp/mem checkout "$(python3 -c "import json;print(json.load(open('vendor/xgov-mem/source.json'))['commit'])")"
+          python3 tools/conformance.py /tmp/mem
+      - name: Agreement with the official LinkML validator (O-02, defect D-019)
+        if: matrix.node-version == 22
+        run: |
+          python3 -m pip install --quiet "linkml==1.12.1" pyyaml
+          python3 tools/linkml_parity.py /tmp/mem
+      - name: Site builds and is up to date
+        run: |
+          npm run site
+          git diff --exit-code -- docs/index.html || (echo "docs/index.html is out of date: run npm run site" && exit 1)

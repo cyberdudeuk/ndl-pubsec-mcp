@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/co-cddo/ukgov-metadata-exchange-model",
+  "commit": "d6d9a24b7b617e7a9e211a58694f8ff9be887515",
+  "commitDate": "2026-06-01",
+  "files": ["src/model/uk_cross_government_metadata_exchange_model.yaml", "src/model/uk-gov-orgs.yaml"],
+  "licence": "Open Government Licence v3.0",
+  "vendoredOn": "2026-11-08",
+  "provenance": "V"
+}

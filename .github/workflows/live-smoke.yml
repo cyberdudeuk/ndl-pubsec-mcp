@@ -1,0 +1,35 @@
+name: Live smoke test
+
+# Checks the real data.gov.uk API still behaves as the server expects (open item O-01), and that
+# real records crosswalked here get the same result from linkml-validate (open item O-05).
+# Weekly and on demand, not on pull requests, so an outage elsewhere never blocks a merge.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node tools/live-smoke.mjs
+      - name: Real records agree with linkml-validate (O-05)
+        run: |
+          python3 -m pip install --quiet "linkml==1.12.1" pyyaml
+          git clone --quiet https://github.com/co-cddo/ukgov-metadata-exchange-model /tmp/mem
+          git -C /tmp/mem checkout --quiet "$(python3 -c "import json;print(json.load(open('vendor/xgov-mem/source.json'))['commit'])")"
+          for s in 0 1000 5000 12000 25000; do
+            curl -fsS "https://ckan.publishing.service.gov.uk/api/action/package_search?rows=10&start=$s&sort=name%20asc" -o "/tmp/p$s.json"
+          done
+          python3 -c "import json,glob;json.dump([r for f in sorted(glob.glob('/tmp/p*.json')) for r in json.load(open(f))['result']['results']],open('/tmp/records.json','w'))"
+          python3 tools/live_parity.py /tmp/records.json /tmp/mem
