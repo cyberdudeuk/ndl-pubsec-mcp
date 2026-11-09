@@ -94,6 +94,15 @@ export function checkRepo(root) {
       for (const m of t.matchAll(/all (\d+) cases/gi)) if (Number(m[1]) !== res.cases) problems.push(`C-08 ${f}: states ${m[0]}, the recorded run has ${res.cases}`);
     }
   } else problems.push("C-08 docs/conformance-result.json missing: run tools/conformance.py <mem> --report");
+  // C-08 also covers the real-record sample (open item O-05): figures come from live-parity-result.json
+  const livePath = join(root, "docs", "live-parity-result.json");
+  if (existsSync(livePath)) {
+    const live = JSON.parse(readFileSync(livePath, "utf8"));
+    const doc = existsSync(join(root, "docs", "conformance.md")) ? readFileSync(join(root, "docs", "conformance.md"), "utf8") : "";
+    const want = [`${live.agree} of ${live.records} real records agree`];
+    for (const [attr, n] of Object.entries(live.missingRequired)) want.push(`| ${attr} | ${n} of ${live.records} |`);
+    for (const w of want) if (!doc.includes(w)) problems.push(`C-08 docs/conformance.md: does not state "${w}" from live-parity-result.json`);
+  }
   // C-09 (defect D-013): the site build id hashes the template, styles and script, not only the data
   const gen = existsSync(join(root, "tools", "build-site.mjs")) ? readFileSync(join(root, "tools", "build-site.mjs"), "utf8") : "";
   const tf = gen.match(/TEMPLATE_FILES = \[([^\]]*)\]/);

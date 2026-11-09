@@ -12,6 +12,15 @@ The repository is re-scoped from a citizen-advice experiment to an official data
 - The usual document set at G3: PRD, architecture, data dictionary, glossary, knowledge graph, ADRs, governance screening, and defect, open and case-against registers.
 - A contact issue form, and private vulnerability reporting in place of an email address.
 
+### Checked against the official validator
+- `tools/linkml_parity.py`: 45 varied records give the same verdict here as in `linkml-validate` 1.12.1; runs in CI (O-02).
+- `tools/live_parity.py`: 50 real data.gov.uk records, crosswalked, get the same verdict and missing attributes in both; repeated weekly (O-05).
+- Standards register re-read at primary pages: five entries are now verified (O-04).
+
+### Fixed
+- A bare value for a list is now an error, as in LinkML (D-019).
+- `metadata_validate` returns at most 100 findings, with exact counts and an `omitted` total, so a hostile record cannot inflate the reply (D-020).
+
 ### Changed
 - Flattened the layout: the nested `ndl-pubsec-mcp/` folder is gone.
 - Licence holder corrected to Crown copyright (Government Digital Service). The earlier "as a DSIT officer" and personal-project statements contradicted each other (defect D-007).

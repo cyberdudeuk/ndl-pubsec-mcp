@@ -9,7 +9,7 @@ It is a prototype that produces evidence for that decision, not a rival platform
 True for many departments today. The validator and crosswalk are plain TypeScript functions, usable without MCP, and could back a web form or a CI check for catalogue owners. *Action: test with users who have licences, and keep the core usable without them.*
 
 **3. "A validator that agrees with 32 examples is not proven."**
-Agreed. The corpus is small, and several invalid examples break more than one rule. Each rule is unit-tested on its own, and real-record agreement is open (O-05). The README claims only what was measured.
+Agreed. The corpus is small, and several invalid examples break more than one rule. Each rule is unit-tested on its own. A differential test of 45 varied records and a sample of 50 real catalogue records both agree fully with `linkml-validate` (O-02, O-05), though the real sample is not random. The README claims only what was measured.
 
 **4. "data.gov.uk is not where most government metadata lives."**
 Base rate: much departmental data is held in internal catalogues, not data.gov.uk. The catalogue client is configurable, and departmental DCAT catalogues are on the roadmap. The value at alpha is the validator, not catalogue coverage.

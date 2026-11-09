@@ -79,6 +79,14 @@ describe("repository checks", () => {
     });
     expect(readme.join()).toMatch(/C-08 README.md/);
   });
+
+  it("C-08 catches real-record figures that do not match live-parity-result.json (O-05)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "docs", "conformance.md");
+      writeFileSync(p, readFileSync(p, "utf8").replace("| contactPoint | 50 of 50 |", "| contactPoint | 49 of 50 |"));
+    });
+    expect(out.join()).toMatch(/C-08 docs\/conformance.md.*live-parity-result/);
+  });
 });
 
 describe("site build identifier", () => {
