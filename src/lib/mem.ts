@@ -18,7 +18,30 @@ export interface ValidationResult {
   errors: number;
   warnings: number;
   findings: Finding[];
+  /** Findings left out of `findings` because of the cap (defect D-020). Counts above are exact. */
+  omitted: number;
   model: { repository: string; commit: string; commitDate: string };
+}
+
+/** At most this many findings are returned, so a hostile record cannot inflate the reply (defect D-020). */
+export const MAX_FINDINGS = 100;
+
+/** Somewhere findings go: a plain array, or the capped collector used at the top level. */
+interface Sink {
+  push(...f: Finding[]): unknown;
+}
+
+class CappedFindings implements Sink {
+  readonly kept: Finding[] = [];
+  errors = 0;
+  warnings = 0;
+  push(...fs: Finding[]): void {
+    for (const f of fs) {
+      if (f.severity === "error") this.errors++;
+      else this.warnings++;
+      if (this.kept.length < MAX_FINDINGS) this.kept.push(f);
+    }
+  }
 }
 
 interface Range {
@@ -63,7 +86,7 @@ function isRealDate(value: string): boolean {
 }
 
 /** Returns null when the value fits the range, otherwise a short reason. */
-function checkRange(value: unknown, r: Range, path: string, out: Finding[]): string | null {
+function checkRange(value: unknown, r: Range, path: string, out: Sink): string | null {
   const { range, pattern } = r;
   if (rules.classes[range]) {
     if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -97,7 +120,7 @@ function checkRange(value: unknown, r: Range, path: string, out: Finding[]): str
   }
 }
 
-function validateObject(record: Record<string, unknown>, className: string, base: string, out: Finding[]): void {
+function validateObject(record: Record<string, unknown>, className: string, base: string, out: Sink): void {
   const cls = rules.classes[className];
   if (!cls) {
     out.push({ severity: "error", path: base || "$", rule: "class", message: `Unknown class ${className}` });
@@ -172,7 +195,7 @@ export function inferClass(record: Record<string, unknown>): string | null {
 }
 
 export function validateRecord(record: unknown, className?: string): ValidationResult {
-  const findings: Finding[] = [];
+  const findings = new CappedFindings();
   let target = className ?? null;
   if (typeof record !== "object" || record === null || Array.isArray(record)) {
     findings.push({ severity: "error", path: "$", rule: "shape", message: "The record must be a single JSON object" });
@@ -193,13 +216,13 @@ export function validateRecord(record: unknown, className?: string): ValidationR
       validateObject(record as Record<string, unknown>, target, "", findings);
     }
   }
-  const errors = findings.filter((f) => f.severity === "error").length;
   return {
     className: target,
-    valid: errors === 0,
-    errors,
-    warnings: findings.length - errors,
-    findings,
+    valid: findings.errors === 0,
+    errors: findings.errors,
+    warnings: findings.warnings,
+    findings: findings.kept,
+    omitted: findings.errors + findings.warnings - findings.kept.length,
     model: rules.generatedFrom
   };
 }

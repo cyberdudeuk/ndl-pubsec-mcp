@@ -33,8 +33,9 @@ Inputs and outputs of every tool. Types are JSON types. Every output also carrie
 | className | in | enum, optional | ContactPoint, DataService, Dataset, Distribution, Organisation | Class to check against. Inferred from `type` if left out |
 | className | out | string | | Class checked |
 | valid | out | boolean | | True when there are no errors |
-| errors, warnings | out | integer | | Counts |
-| findings[] | out | Finding[] | | See Finding |
+| errors, warnings | out | integer | | Exact counts, including findings left out by the cap |
+| findings[] | out | Finding[] | at most 100 | See Finding. Capped so a hostile record cannot inflate the reply (D-020) |
+| omitted | out | integer | ≥ 0 | Findings left out of `findings[]` by the cap |
 | model | out | object | | `repository`, `commit`, `commitDate` of the xGov MEM version used |
 
 ## `standard_explain`

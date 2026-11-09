@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CLASS_NAMES, inferClass, rules, validateRecord } from "../src/lib/mem.js";
+import { CLASS_NAMES, MAX_FINDINGS, inferClass, rules, validateRecord } from "../src/lib/mem.js";
 import { validDataset } from "./fixtures.js";
 
 const rulesOf = (r: ReturnType<typeof validateRecord>) => r.findings.filter((f) => f.severity === "error").map((f) => `${f.rule} at ${f.path}`);
@@ -62,6 +62,19 @@ describe("validateRecord", () => {
 
   it("rejects a bare value where a list is required, as linkml-validate does (D-019)", () => {
     expect(rulesOf(validateRecord({ ...validDataset, creator: "government-digital-service" }))).toEqual(["multivalued at creator"]);
+  });
+
+  it("caps returned findings but keeps exact counts, so a hostile record cannot inflate the reply (D-020)", () => {
+    const r = validateRecord({ ...validDataset, creator: Array(5000).fill(12345) });
+    expect(r.valid).toBe(false);
+    expect(r.errors).toBe(5000);
+    expect(r.findings).toHaveLength(MAX_FINDINGS);
+    expect(r.omitted).toBe(5000 + r.warnings - MAX_FINDINGS);
+    expect(JSON.stringify(r).length).toBeLessThan(50_000);
+  });
+
+  it("reports nothing omitted for an ordinary record", () => {
+    expect(validateRecord(validDataset).omitted).toBe(0);
   });
 
   it("warns, but does not fail, on missing recommended attributes", () => {

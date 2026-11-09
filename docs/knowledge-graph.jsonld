@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+ca58f1df7eb3",
+      "schema:identifier": "ndl-pubsec-mcp@0.2.0+fa3fdf52df6a",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -549,6 +549,14 @@
       "schema:name": "D-019",
       "schema:description": "A bare value where the model wants a list was a warning here but an error in `linkml-validate` 1.12.1, so a record this server passed would fail the official validator",
       "ndl:check": "T-linkml-parity: `tools/linkml_parity.py` runs 45 varied records through both validators in CI and fails on any disagreement; mutant \"bare value for a list downgraded to a warning\"",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-020",
+      "@type": "schema:Thing",
+      "schema:name": "D-020",
+      "schema:description": "`metadata_validate` returned one finding per bad list element or unknown key with no cap: 200,000 bad `creator` values gave a 25 MB reply. Same class of weakness as zod advisory GHSA-mrhx-c7xc-m3w5 (Dependabot alert 1 on `main`)",
+      "ndl:check": "T-findings-cap: test with 5,000 bad values asserts at most 100 findings, exact counts and an `omitted` total; mutant \"findings cap removed\"",
       "ndl:status": "Fixed"
     }
   ]
