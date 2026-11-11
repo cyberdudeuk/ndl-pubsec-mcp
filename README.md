@@ -14,6 +14,10 @@ An open-source [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) 
 | `dataset_describe` | Describes one dataset and drafts an xGov MEM record from it, showing exactly what the record still lacks | data.gov.uk API and xGov MEM |
 | `metadata_validate` | Checks any metadata record against xGov MEM and lists errors and warnings with their paths | xGov MEM (vendored) |
 | `standard_explain` | Explains open data standards used in government, each with a provenance label | Register in `src/data/standards.json` |
+| `term_lookup` | Looks up business terms and reports, for each, who drafted it (person or AI), the review level it passed (H0 to H5) and whether that makes it certified | The vocabulary named in `NDL_MCP_VOCAB_PATH`, else this repository's own glossary |
+| `domain_list` | Lists the other MCP servers in the same estate, starting with the Public Sector Data Quality Commons, with their tools and safety statements | `src/data/federation.json` |
+
+A term counts as certified only when its register marks it endorsed after review at H2 (peer check) or above, using the review model in the [AI capability governance toolkit](https://github.com/cyberdudeuk/ai-capability-governance). Anything not recorded is reported as unknown. The bundled glossary was drafted with AI assistance and has not been reviewed, so nothing in it is certified ([ADR 0005](docs/adr/0005-term-layer-and-federation.md)).
 
 All tools are read-only. No personal data is read or returned.
 
@@ -48,6 +52,7 @@ Settings:
 | Variable | Default | Purpose |
 |---|---|---|
 | `NDL_MCP_CKAN_BASE` | `https://www.data.gov.uk/api/action` | The catalogue API base URL. Must use https. |
+| `NDL_MCP_VOCAB_PATH` | (bundled glossary) | A vocabulary JSON file in the R2 register shape (`terms[]` with `term_id`, `preferred_label`, `definition`, and optionally `status`, `drafted_by`, `review_level`, `semantic_bindings`). Read once at start; never copied into the repository. |
 
 ## Develop
 

@@ -46,6 +46,36 @@ Inputs and outputs of every tool. Types are JSON types. Every output also carrie
 | standard / standards[] | out | object(s) | | `id`, `name`, `purpose`, `status`, `licence`, `link`, `useWith`, `provenance` (V, S, K or U), `checked` (date), `evidence` |
 | asOf, note, catalogue | out | string | | When the register was compiled, its caveat, and the DSA catalogue link |
 
+## `term_lookup`
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| query | in | string, optional | 2 to 100 characters | Words to look for in labels, alternative labels and definitions |
+| id | in | string, optional | letters, digits, `_` and `-`, 2 to 60 | An exact term id |
+| limit | in | integer | 1 to 25, default 10 | How many terms to return |
+| vocabulary | out | object | | `source`, `terms`, `certified`, `bound`, and counts `byStatus`, `byDraftedBy`, `byReviewLevel` |
+| term / terms[] | out | Term | | See Term |
+
+## `domain_list`
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| (none) | in | | | |
+| asOf, about | out | string | | When the register was checked, and what it is |
+| domains[] | out | object | | `domain`, `title`, `repository`, `manifest`, `self`, `description`, `tools[]`, `safety`, `provenance`, `checked`, and for other servers `vendoredFrom` (owner/repo@commit) and any `note` |
+
+## Term
+
+| Field | Type | Meaning |
+|---|---|---|
+| id, label | string | The term's id and preferred label |
+| altLabels[] | string | Alternative labels |
+| definition | string | The definition, as the register holds it |
+| certification | object | `status`, `draftedBy` (`human`, `ai-assisted`, `ai`, `unknown`), `reviewLevel` (`H0` to `H5`, `unknown`), `certified` (true only when endorsed after H2 or above), `reason` |
+| provenance | string or null | Where the definition came from |
+| bindings[] | string | Columns or SQL attributes the term maps to (empty when unbound) |
+| broader[], related[] | string | Links to other terms |
+
 ## Finding
 
 | Field | Type | Meaning |
@@ -61,3 +91,4 @@ Inputs and outputs of every tool. Types are JSON types. Every output also carrie
 |---|---|
 | `ndl-pubsec-mcp://xgov-mem/rules` | The compiled xGov MEM rule set (organisation list summarised as a count) |
 | `ndl-pubsec-mcp://standards` | The open standards register |
+| `ndl-pubsec-mcp://federation` | The MCP servers in the same estate (same as `domain_list`) |

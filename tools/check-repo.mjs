@@ -4,6 +4,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative, extname, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildVocabulary } from "./build-vocab.mjs";
 
 // Reserved example domains (RFC 2606/6761) are the only addresses allowed, and only in tests.
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -115,6 +116,25 @@ export function checkRepo(root) {
   if (!/^jobs:\n(?:\s*#.*\n)* {2}build-and-test:\n/m.test(ci)) problems.push("C-10 .github/workflows/ci.yml: job must be named build-and-test to match the required checks");
   // C-11 (defect D-016): CI must fail on any known dependency vulnerability
   if (!/npm audit --audit-level=low/.test(ci)) problems.push("C-11 .github/workflows/ci.yml: no npm audit gate");
+  // C-12 (rule: the public example vocabulary is generated, never hand-edited): src/data/vocabulary.json
+  // equals what tools/build-vocab.mjs makes from docs/glossary.md, and claims no certification it lacks
+  const vPath = join(root, "src", "data", "vocabulary.json");
+  if (existsSync(vPath) && existsSync(join(root, "docs", "glossary.md"))) {
+    const vocab = JSON.parse(readFileSync(vPath, "utf8"));
+    const want = buildVocabulary(readFileSync(join(root, "docs", "glossary.md"), "utf8"));
+    if (JSON.stringify(vocab.terms) !== JSON.stringify(want.terms)) problems.push("C-12 src/data/vocabulary.json: out of step with docs/glossary.md; run node tools/build-vocab.mjs");
+    for (const t of vocab.terms ?? []) if (t.status === "endorsed" || (t.review_level && t.review_level !== "unknown")) problems.push(`C-12 ${t.term_id}: the bundled glossary claims review it has not had`);
+  } else problems.push("C-12 src/data/vocabulary.json or docs/glossary.md missing");
+  // C-13 (defect D-021): every manifest in the estate lists exactly the tools its server registers
+  const own = existsSync(join(root, "integrations", "ndl-mcp-domain.json")) ? JSON.parse(readFileSync(join(root, "integrations", "ndl-mcp-domain.json"), "utf8")) : { tools: [] };
+  const ownTools = (own.tools ?? []).map((t) => t.name).sort().join();
+  if (ownTools !== [...tools].sort().join()) problems.push(`C-13 integrations/ndl-mcp-domain.json: lists ${ownTools || "no tools"}, server registers ${[...tools].sort().join()}`);
+  const fed = existsSync(join(root, "src", "data", "federation.json")) ? JSON.parse(readFileSync(join(root, "src", "data", "federation.json"), "utf8")) : { domains: [] };
+  const self = (fed.domains ?? []).find((d) => d.self);
+  if (!self || [...self.tools].sort().join() !== [...tools].sort().join()) problems.push("C-13 src/data/federation.json: this server's own entry does not list exactly its registered tools");
+  for (const d of (fed.domains ?? []).filter((x) => !x.self)) {
+    if (!/^[\w.-]+\/[\w.-]+@[0-9a-f]{7,40}$/.test(d.vendoredFrom ?? "") || !/^\d{4}-\d{2}-\d{2}$/.test(d.checked ?? "")) problems.push(`C-13 src/data/federation.json: ${d.domain} lacks vendoredFrom (owner/repo@commit) or a checked date`);
+  }
   return problems;
 }
 
@@ -127,5 +147,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-11)");
+  console.log("repository checks passed (C-01 to C-13)");
 }
