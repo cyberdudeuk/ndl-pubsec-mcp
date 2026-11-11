@@ -26,6 +26,11 @@ mutants = [
  ("src/lib/ckan.ts", 'isoDate(extra(p, "dcat_modified")) ?? ', "", "publisher DCAT dates ignored"),
  ("src/lib/ckan.ts", "  if (version) record.version = version;", "", "catalogue version not drafted"),
  ("src/server.ts", '.regex(/^[A-Za-z0-9_-]{2,100}$/)', "", "id restriction removed"),
+ ("src/lib/vocab.ts", "if (level < 2) return", "if (level < 0) return", "certification threshold lowered below H2"),
+ ("src/lib/vocab.ts", "if (level < 0) return { status, draftedBy, reviewLevel, certified: false", "if (false) return { status, draftedBy, reviewLevel, certified: false", "unrecorded review treated as certified"),
+ ("src/lib/vocab.ts", 'if (status !== "endorsed") return', 'if (false) return', "drafts certified"),
+ ("src/lib/vocab.ts", '(REVIEW_LEVELS as readonly string[]).includes(t.review_level ?? "")', 'true', "unrecognised review level trusted"),
+ ("src/server.ts", "if (!vocab) return failure(", "if (!vocab) return reply({ ok: true, vocabulary: { terms: 0 } }); if (!vocab) return failure(", "unreadable register reported as empty"),
 ]
 killed = 0
 for f, old, new, label in mutants:
@@ -33,7 +38,7 @@ for f, old, new, label in mutants:
     assert old in orig, (label, old)
     p.write_text(orig.replace(old, new, 1))
     try:
-        r = subprocess.run(["npx", "vitest", "run", "test/mem.test.ts", "test/ckan.test.ts", "test/server.test.ts"], cwd=root, capture_output=True, text=True, timeout=300)
+        r = subprocess.run(["npx", "vitest", "run", "test/mem.test.ts", "test/ckan.test.ts", "test/server.test.ts", "test/vocab.test.ts"], cwd=root, capture_output=True, text=True, timeout=300)
         dead = r.returncode != 0
     finally:
         p.write_text(orig)
