@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.3.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.3.0+021670a1c738",
+      "schema:identifier": "ndl-pubsec-mcp@0.3.0+56cdcf9e2e8f",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -592,6 +592,14 @@
       "schema:description": "Two MCP servers in the same estate (`ndl-pubsec-mcp`, `dqkit` in dq-commons) did not reference each other, and the dq-commons manifest listed 12 of its 15 tools",
       "ndl:check": "C-13: this server's manifest and federation entry must list exactly its registered tools, and every other domain must carry `vendoredFrom` and a checked date; `domain_list` tests",
       "ndl:status": "Fixed here; dq-commons drift raised there"
+    },
+    {
+      "@id": "ndl:defect/D-022",
+      "@type": "schema:Thing",
+      "schema:name": "D-022",
+      "schema:description": "Every workflow stopped starting (`startup_failure`) from 08:54, on `main` and on every PR, because the account's Actions policy now requires actions pinned to a full commit SHA and the workflows used tags such as `@v4`",
+      "ndl:check": "C-14 in `tools/check-repo.mjs`: every `uses:` must end in a 40-character SHA; deliberate-break test in `test/repo-checks.test.ts`. All actions pinned, with the release as a comment so Dependabot keeps them current",
+      "ndl:status": "Fixed"
     }
   ]
 }

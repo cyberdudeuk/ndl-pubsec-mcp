@@ -124,6 +124,16 @@ describe("dependency audit gate", () => {
   });
 });
 
+describe("pinned actions", () => {
+  it("C-14 catches a workflow action referenced by tag instead of commit SHA (D-022)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, ".github", "workflows", "ci.yml");
+      writeFileSync(p, readFileSync(p, "utf8").replace(/actions\/checkout@[0-9a-f]{40}/, "actions/checkout@v7"));
+    });
+    expect(out.join()).toMatch(/C-14 .github\/workflows\/ci.yml:\d+: actions\/checkout@v7/);
+  });
+});
+
 describe("standards register", () => {
   it("every entry has a provenance label, a check date and an https link", () => {
     for (const s of standards.standards) {
