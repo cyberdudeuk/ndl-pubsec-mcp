@@ -153,5 +153,8 @@ describe("MCP server", () => {
     const dq = domains.find((d) => d.domain === "data-quality");
     expect(dq?.vendoredFrom).toMatch(/^cyberdudeuk\/dq-commons@[0-9a-f]{7}/);
     expect(dq?.tools).toContain("check_data");
+    // D-021: the vendored manifest once listed 12 of the 15 tools dq-commons serves (fixed in dq-commons#41)
+    expect(dq?.tools).toHaveLength(15);
+    expect(dq?.tools).toEqual(expect.arrayContaining(["playbook", "estimate_effort", "weave_rules"]));
   });
 });
