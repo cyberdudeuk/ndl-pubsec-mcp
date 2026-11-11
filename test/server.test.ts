@@ -1,6 +1,9 @@
 // End-to-end over the MCP protocol, using the SDK's in-memory transport and a stubbed catalogue.
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createServer, TOOL_NAMES } from "../src/server.js";
 import { ckanPackage, jsonResponse, validDataset } from "./fixtures.js";
@@ -27,7 +30,7 @@ beforeEach(async () => {
 });
 
 describe("MCP server", () => {
-  it("lists exactly the four read-only tools", async () => {
+  it("lists exactly the six read-only tools", async () => {
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([...TOOL_NAMES].sort());
     for (const t of tools) {
@@ -92,8 +95,63 @@ describe("MCP server", () => {
 
   it("exposes the rule set and standards register as resources", async () => {
     const { resources } = await client.listResources();
-    expect(resources.map((r) => r.uri).sort()).toEqual(["ndl-pubsec-mcp://standards", "ndl-pubsec-mcp://xgov-mem/rules"]);
+    expect(resources.map((r) => r.uri).sort()).toEqual(["ndl-pubsec-mcp://federation", "ndl-pubsec-mcp://standards", "ndl-pubsec-mcp://xgov-mem/rules"]);
     const r = await client.readResource({ uri: "ndl-pubsec-mcp://xgov-mem/rules" });
     expect((r.contents[0] as { text: string }).text).toContain("Dataset");
+  });
+
+  it("term_lookup summarises the bundled vocabulary and certifies nothing in it", async () => {
+    const r = data(await client.callTool({ name: "term_lookup", arguments: {} }));
+    const v = r.vocabulary as { certified: number; terms: number };
+    expect(r.ok).toBe(true);
+    expect(v.terms).toBeGreaterThan(10);
+    expect(v.certified).toBe(0);
+  });
+
+  it("term_lookup finds a term with its certification state", async () => {
+    const r = data(await client.callTool({ name: "term_lookup", arguments: { query: "DCAT" } }));
+    const t = (r.terms as { label: string; certification: { certified: boolean; reviewLevel: string } }[])[0];
+    expect(t.label).toBe("DCAT");
+    expect(t.certification).toMatchObject({ certified: false, reviewLevel: "unknown" });
+  });
+
+  it("term_lookup reads a configured register and reports a certified term", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "r2-"));
+    const path = join(dir, "glossary.json");
+    writeFileSync(path, JSON.stringify({ terms: [{ term_id: "EX-001", preferred_label: "Data owner", definition: "Accountable for a data domain.", status: "endorsed", drafted_by: "human", review_level: "H3", semantic_bindings: "dept.assets.owner" }] }));
+    const server = createServer({ vocabPath: path, fetcher: async () => jsonResponse({ success: true, result: {} }) });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    await server.connect(a);
+    const c = new Client({ name: "test", version: "0" });
+    await c.connect(b);
+    const r = data(await c.callTool({ name: "term_lookup", arguments: { id: "EX-001" } }));
+    expect(r.term).toMatchObject({ bindings: ["dept.assets.owner"], certification: { certified: true, reviewLevel: "H3" } });
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("term_lookup reports an unreadable register as an error, not as an empty vocabulary", async () => {
+    const server = createServer({ vocabPath: "/nonexistent/glossary.json", fetcher: async () => jsonResponse({ success: true, result: {} }) });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    await server.connect(a);
+    const c = new Client({ name: "test", version: "0" });
+    await c.connect(b);
+    const r = await c.callTool({ name: "term_lookup", arguments: { query: "owner" } });
+    expect(r.isError).toBe(true);
+  });
+
+  it("term_lookup rejects bad input before searching", async () => {
+    for (const args of [{ query: "x" }, { id: "bad id!" }, { query: "dcat", limit: 26 }]) {
+      const r = await client.callTool({ name: "term_lookup", arguments: args });
+      expect(r.isError, JSON.stringify(args)).toBe(true);
+    }
+  });
+
+  it("domain_list names the data quality commons with its provenance", async () => {
+    const r = data(await client.callTool({ name: "domain_list", arguments: {} }));
+    const domains = r.domains as { domain: string; self: boolean; vendoredFrom?: string; tools: string[] }[];
+    expect(domains.find((d) => d.self)?.tools.sort()).toEqual([...TOOL_NAMES].sort());
+    const dq = domains.find((d) => d.domain === "data-quality");
+    expect(dq?.vendoredFrom).toMatch(/^cyberdudeuk\/dq-commons@[0-9a-f]{7}/);
+    expect(dq?.tools).toContain("check_data");
   });
 });
