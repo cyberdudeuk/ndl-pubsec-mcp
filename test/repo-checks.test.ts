@@ -134,3 +134,14 @@ describe("standards register", () => {
     }
   });
 });
+
+describe("estate and vocabulary checks", () => {
+  it("C-12 catches a hand-edited vocabulary and a claimed review", () => {
+    expect(brokenCopy((d) => { const p = join(d, "src", "data", "vocabulary.json"); writeFileSync(p, readFileSync(p, "utf8").replace("Data Catalog Vocabulary", "Data Catalogue Vocabulary")); }).join()).toMatch(/C-12 .*out of step/);
+    expect(brokenCopy((d) => { const p = join(d, "src", "data", "vocabulary.json"); writeFileSync(p, readFileSync(p, "utf8").replace('"review_level": "unknown"', '"review_level": "H3"')); }).join()).toMatch(/C-12/);
+  });
+  it("C-13 catches a manifest that drifts from the server", () => {
+    expect(brokenCopy((d) => { const p = join(d, "integrations", "ndl-mcp-domain.json"); const m = JSON.parse(readFileSync(p, "utf8")); m.tools.pop(); writeFileSync(p, JSON.stringify(m)); }).join()).toMatch(/C-13 integrations/);
+    expect(brokenCopy((d) => { const p = join(d, "src", "data", "federation.json"); writeFileSync(p, readFileSync(p, "utf8").replace(/"vendoredFrom": "[^"]+"/, '"vendoredFrom": "somewhere"')); }).join()).toMatch(/C-13 .*vendoredFrom/);
+  });
+});

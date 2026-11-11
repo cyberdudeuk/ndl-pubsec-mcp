@@ -1,0 +1,61 @@
+{
+  "about": "MCP servers in the same estate that an agent can use alongside this one. Each entry records where its manifest came from and when. This server does not call them; it tells an agent they exist and what they are for, so the estate is one set of domains rather than unconnected servers.",
+  "asOf": "2026-11-11",
+  "domains": [
+    {
+      "domain": "discoverability",
+      "title": "NDL PubSec MCP",
+      "repository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
+      "manifest": "integrations/ndl-mcp-domain.json",
+      "self": true,
+      "description": "Find UK public sector data, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
+      "tools": [
+        "catalogue_search",
+        "dataset_describe",
+        "metadata_validate",
+        "standard_explain",
+        "term_lookup",
+        "domain_list"
+      ],
+      "safety": {
+        "read_only": true,
+        "personal_data": "none read or returned"
+      },
+      "provenance": "V",
+      "checked": "2026-11-11"
+    },
+    {
+      "domain": "data-quality",
+      "title": "Public Sector Data Quality Commons",
+      "repository": "https://github.com/cyberdudeuk/dq-commons",
+      "manifest": "integrations/ndl-mcp-domain.json",
+      "self": false,
+      "description": "Check data against quality rules, draft rules, assess against framework packs, translate results between frameworks and score issues with the UK government issues framework.",
+      "tools": [
+        "check_data",
+        "suggest_rules",
+        "validate_rules",
+        "assess_pack",
+        "crosswalk",
+        "score_issue",
+        "list_frameworks",
+        "list_packs",
+        "explore_knowledge",
+        "weave_metadata",
+        "check_contract",
+        "list_checks"
+      ],
+      "safety": {
+        "read_only": true,
+        "file_access": "limited to DQKIT_MCP_ROOT",
+        "personal_data": "results contain examples of failing rows; keep the root folder free of data the agent should not see",
+        "human_in_loop": "rules drafted by an agent must be reviewed before use"
+      },
+      "transport": "stdio",
+      "provenance": "V",
+      "checked": "2026-11-11",
+      "vendoredFrom": "cyberdudeuk/dq-commons@2252179",
+      "note": "The dq-commons manifest lists 12 tools; its server registers 15. Not in the manifest as of 2252179: estimate_effort, playbook, weave_rules. Raised with dq-commons."
+    }
+  ]
+}
