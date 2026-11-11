@@ -1,9 +1,12 @@
-// MCP server: four read-only discoverability tools and two reference resources.
+// MCP server: six read-only tools (discoverability, standards, terms, federation) and three reference resources.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import standards from "./data/standards.json" with { type: "json" };
+import federation from "./data/federation.json" with { type: "json" };
+import bundledVocabulary from "./data/vocabulary.json" with { type: "json" };
 import { CatalogueError, CkanClient, crosswalkToMem, summarise, VERSION, type CkanOptions } from "./lib/ckan.js";
 import { CLASS_NAMES, rules, validateRecord } from "./lib/mem.js";
+import { loadVocabulary, parseVocabulary, searchTerms, summariseVocabulary, type Vocabulary } from "./lib/vocab.js";
 
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true } as const;
 const MAX_TEXT = 4000;
@@ -25,9 +28,22 @@ function clip(text: string | undefined, n = MAX_TEXT): string | undefined {
 const catalogueHint = (e: CatalogueError) =>
   e.kind === "network" ? "Check the network, or set NDL_MCP_CKAN_BASE to a reachable data.gov.uk API base URL." : undefined;
 
-export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain"] as const;
+export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list"] as const;
 
-export function createServer(opts: CkanOptions = {}): McpServer {
+export interface ServerOptions extends CkanOptions {
+  /** A vocabulary file in the R2 register shape. Defaults to NDL_MCP_VOCAB_PATH, then the bundled example. */
+  vocabPath?: string;
+}
+
+function openVocabulary(path: string | undefined): { vocab?: Vocabulary; error?: string } {
+  try {
+    return { vocab: path ? loadVocabulary(path) : parseVocabulary(bundledVocabulary, "bundled example (docs/glossary.md)") };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+export function createServer(opts: ServerOptions = {}): McpServer {
   const server = new McpServer({ name: "ndl-pubsec-mcp", version: VERSION });
   const ckan = new CkanClient(opts);
 
@@ -147,6 +163,54 @@ export function createServer(opts: CkanOptions = {}): McpServer {
       if (!hit) return failure(`No standard matches "${id}"`, `Known ids: ${list.map((s) => s.id).join(", ")}`);
       return reply({ ok: true, asOf: standards.asOf, note: standards.note, standard: hit });
     }
+  );
+
+  const vocabPath = opts.vocabPath ?? process.env["NDL_MCP_VOCAB_PATH"];
+  const { vocab, error: vocabError } = openVocabulary(vocabPath);
+
+  server.registerTool(
+    "term_lookup",
+    {
+      title: "Look up a business term and whether it is certified",
+      description:
+        "Find business terms in the configured vocabulary and report, for each, its definition, its status, who drafted it (person or AI), the review level it passed (H0 to H5) and whether that makes it certified. A term counts as certified only when it is endorsed after H2 review or above; anything unrecorded is reported as unknown, never assumed. Leave query and id out for a summary of the vocabulary.",
+      inputSchema: {
+        query: z.string().trim().min(2).max(100).optional().describe("Words to look for in term labels, alternative labels and definitions"),
+        id: z.string().trim().regex(/^[A-Za-z0-9_-]{2,60}$/).optional().describe("An exact term id, for example 'NDL-GLO-007'"),
+        limit: z.number().int().min(1).max(25).default(10).describe("How many terms to return (1 to 25)")
+      },
+      annotations: { ...READ_ONLY, openWorldHint: false }
+    },
+    async ({ query, id, limit }) => {
+      if (!vocab) return failure(`The vocabulary could not be read: ${vocabError}`, "Check NDL_MCP_VOCAB_PATH points at a JSON file with a terms array in the R2 register shape.");
+      const summary = summariseVocabulary(vocab);
+      if (id) {
+        const t = vocab.terms.find((x) => x.id === id);
+        return t ? reply({ ok: true, vocabulary: summary, term: t }) : failure(`No term has id "${id}"`, "Search with query instead.");
+      }
+      if (!query) return reply({ ok: true, about: vocab.about, vocabulary: summary });
+      const hits = searchTerms(vocab, query);
+      return reply({ ok: true, vocabulary: summary, query, total: hits.length, returned: Math.min(hits.length, limit), terms: hits.slice(0, limit) });
+    }
+  );
+
+  server.registerTool(
+    "domain_list",
+    {
+      title: "List the MCP servers in this estate",
+      description:
+        "List the MCP servers that work alongside this one (for example the Public Sector Data Quality Commons), with what each is for, its tools, its safety statement and where its manifest came from. This server does not call them.",
+      inputSchema: {},
+      annotations: { ...READ_ONLY, openWorldHint: false }
+    },
+    async () => reply({ ok: true, ...federation })
+  );
+
+  server.registerResource(
+    "federation",
+    "ndl-pubsec-mcp://federation",
+    { title: "Estate MCP domains", description: "The MCP servers in the same estate and their manifests", mimeType: "application/json" },
+    async (uri) => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(federation, null, 2) }] })
   );
 
   server.registerResource(

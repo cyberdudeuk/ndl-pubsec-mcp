@@ -1,0 +1,56 @@
+{
+  "domain": "discoverability",
+  "title": "NDL PubSec MCP",
+  "description": "Find UK public sector data, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
+  "server": {
+    "command": "node",
+    "args": [
+      "dist/index.js"
+    ],
+    "env": {
+      "NDL_MCP_CKAN_BASE": "https://www.data.gov.uk/api/action",
+      "NDL_MCP_VOCAB_PATH": "<optional: a vocabulary file in the R2 register shape>"
+    },
+    "protocol": "2025-06-18",
+    "transport": "stdio"
+  },
+  "safety": {
+    "read_only": true,
+    "file_access": "only the vocabulary file named in NDL_MCP_VOCAB_PATH",
+    "personal_data": "none read or returned",
+    "human_in_loop": "term certification is reported, never granted: only a register marked endorsed at review level H2 or above counts as certified"
+  },
+  "licence": "MIT (code), OGL v3.0 (documentation)",
+  "tools": [
+    {
+      "name": "catalogue_search",
+      "title": "Search data.gov.uk",
+      "description": "Search the data.gov.uk catalogue and return titles, publishers, licences, formats and links."
+    },
+    {
+      "name": "dataset_describe",
+      "title": "Describe a dataset and check it against xGov MEM",
+      "description": "One dataset plus a draft xGov MEM record and what it still lacks."
+    },
+    {
+      "name": "metadata_validate",
+      "title": "Validate metadata against xGov MEM",
+      "description": "Errors and warnings for any metadata record, each with its attribute path."
+    },
+    {
+      "name": "standard_explain",
+      "title": "Explain an open data standard",
+      "description": "Purpose, status, licence and link for standards used across government, with provenance."
+    },
+    {
+      "name": "term_lookup",
+      "title": "Look up a business term and whether it is certified",
+      "description": "Definition, status, drafted-by, review level and certification for terms in the configured vocabulary."
+    },
+    {
+      "name": "domain_list",
+      "title": "List the MCP servers in this estate",
+      "description": "The other MCP servers in the estate, their tools and safety statements."
+    }
+  ]
+}
