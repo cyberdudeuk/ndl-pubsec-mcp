@@ -11,8 +11,8 @@
       "@id": "ndl:server",
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
-      "schema:version": "0.2.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.2.0+fa3fdf52df6a",
+      "schema:version": "0.3.0",
+      "schema:identifier": "ndl-pubsec-mcp@0.3.0+021670a1c738",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -31,6 +31,12 @@
         },
         {
           "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/term_lookup"
+        },
+        {
+          "@id": "ndl:tool/domain_list"
         }
       ]
     },
@@ -71,6 +77,20 @@
       "@type": "schema:EntryPoint",
       "schema:name": "standard_explain",
       "schema:description": "Explain open data standards used across UK government (xGov MEM, DCAT, ATRS, BODS, CSV, OpenAPI and others): purpose, status, licence and link, each with its provenance label and check date. Leave id out to list them all.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:tool/term_lookup",
+      "@type": "schema:EntryPoint",
+      "schema:name": "term_lookup",
+      "schema:description": "Find business terms in the configured vocabulary and report, for each, its definition, its status, who drafted it (person or AI), the review level it passed (H0 to H5) and whether that makes it certified. A term counts as certified only when it is endorsed after H2 review or above; anything unrecorded is reported as unknown, never assumed. Leave query and id out for a summary of the vocabulary.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:tool/domain_list",
+      "@type": "schema:EntryPoint",
+      "schema:name": "domain_list",
+      "schema:description": "List the MCP servers that work alongside this one (for example the Public Sector Data Quality Commons), with what each is for, its tools, its safety statement and where its manifest came from. This server does not call them.",
       "dct:references": []
     },
     {
@@ -400,6 +420,12 @@
       "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0004-model-is-source-of-truth.md"
     },
     {
+      "@id": "ndl:adr/0005-term-layer-and-federation",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0005: a term layer with reported certification, and an estate register of MCP servers",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0005-term-layer-and-federation.md"
+    },
+    {
       "@id": "ndl:defect/D-001",
       "@type": "schema:Thing",
       "schema:name": "D-001",
@@ -558,6 +584,14 @@
       "schema:description": "`metadata_validate` returned one finding per bad list element or unknown key with no cap: 200,000 bad `creator` values gave a 25 MB reply. Same class of weakness as zod advisory GHSA-mrhx-c7xc-m3w5 (Dependabot alert 1 on `main`)",
       "ndl:check": "T-findings-cap: test with 5,000 bad values asserts at most 100 findings, exact counts and an `omitted` total; mutant \"findings cap removed\"",
       "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-021",
+      "@type": "schema:Thing",
+      "schema:name": "D-021",
+      "schema:description": "Two MCP servers in the same estate (`ndl-pubsec-mcp`, `dqkit` in dq-commons) did not reference each other, and the dq-commons manifest listed 12 of its 15 tools",
+      "ndl:check": "C-13: this server's manifest and federation entry must list exactly its registered tools, and every other domain must carry `vendoredFrom` and a checked date; `domain_list` tests",
+      "ndl:status": "Fixed here; dq-commons drift raised there"
     }
   ]
 }

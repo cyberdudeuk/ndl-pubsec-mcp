@@ -1,6 +1,6 @@
 {
   "name": "ndl-pubsec-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Discoverability MCP server for UK public sector data: search data.gov.uk, describe datasets, validate metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM) and explain endorsed open data standards.",
   "type": "module",
   "main": "dist/index.js",

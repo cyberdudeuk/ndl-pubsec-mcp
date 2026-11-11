@@ -2,7 +2,7 @@
 // Base URL is configurable because the live endpoint is not verified from the build environment (open item O-01).
 import { CLASS_NAMES, rules, validateRecord, type ValidationResult } from "./mem.js";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.3.0";
 export const DEFAULT_BASE = "https://www.data.gov.uk/api/action";
 const USER_AGENT = `ndl-pubsec-mcp/${VERSION} (+https://github.com/cyberdudeuk/ndl-pubsec-mcp)`;
 
