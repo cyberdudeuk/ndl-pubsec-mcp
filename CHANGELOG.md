@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 (11 November 2026)
+
+### Added
+- `term_lookup`: business terms with their certification state (status, drafted by a person or AI, review level H0 to H5). Certified only when endorsed after H2 or above (ADR 0005).
+- `domain_list` and the `ndl-pubsec-mcp://federation` resource: the other MCP servers in the estate, starting with the Data Quality Commons (`dqkit`), with provenance.
+- `integrations/ndl-mcp-domain.json`: this server's own manifest, in the same shape as dq-commons'.
+- `tools/build-vocab.mjs`: generates the public example vocabulary from `docs/glossary.md`.
+- Checks C-12 (vocabulary generated, claims no review) and C-13 (manifests match the registered tools; vendored manifests carry provenance), each with deliberate-break tests.
+
+### Defects
+- D-021: the estate's two MCP servers did not reference each other, and the dq-commons manifest listed 12 of its 15 tools.
+
 ## 0.2.0 (8 November 2026)
 
 The repository is re-scoped from a citizen-advice experiment to an official data discoverability server (ADR 0001 and 0002).
