@@ -5,7 +5,24 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      # TypeScript, ESLint and typescript-eslint must move together: bumped one at a time they
+      # fail to install against each other's peer ranges (seen in Dependabot PRs #12, #13 and #14).
+      lint-and-types:
+        patterns:
+          - "typescript"
+          - "eslint"
+          - "@eslint/*"
+          - "typescript-eslint"
+    ignore:
+      # Node type definitions follow the Node major. CI tests Node 20 and 22, so types for a newer
+      # major would let code call APIs those runtimes lack (seen in Dependabot PR #15).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
