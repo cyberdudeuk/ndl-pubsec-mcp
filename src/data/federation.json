@@ -34,6 +34,7 @@
       "tools": [
         "check_data",
         "suggest_rules",
+        "weave_rules",
         "validate_rules",
         "assess_pack",
         "crosswalk",
@@ -43,6 +44,8 @@
         "explore_knowledge",
         "weave_metadata",
         "check_contract",
+        "playbook",
+        "estimate_effort",
         "list_checks"
       ],
       "safety": {
@@ -54,8 +57,7 @@
       "transport": "stdio",
       "provenance": "V",
       "checked": "2026-11-11",
-      "vendoredFrom": "cyberdudeuk/dq-commons@2252179",
-      "note": "The dq-commons manifest lists 12 tools; its server registers 15. Not in the manifest as of 2252179: estimate_effort, playbook, weave_rules. Raised with dq-commons."
+      "vendoredFrom": "cyberdudeuk/dq-commons@76386f8"
     }
   ]
 }

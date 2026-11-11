@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Re-vendored the Data Quality Commons manifest at `dq-commons@76386f8`: `domain_list` now reports all 15 of its tools (closes O-16; D-021 resolved upstream in dq-commons#41).
+
 ## 0.3.0 (11 November 2026)
 
 ### Added
