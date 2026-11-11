@@ -135,6 +135,16 @@ export function checkRepo(root) {
   for (const d of (fed.domains ?? []).filter((x) => !x.self)) {
     if (!/^[\w.-]+\/[\w.-]+@[0-9a-f]{7,40}$/.test(d.vendoredFrom ?? "") || !/^\d{4}-\d{2}-\d{2}$/.test(d.checked ?? "")) problems.push(`C-13 src/data/federation.json: ${d.domain} lacks vendoredFrom (owner/repo@commit) or a checked date`);
   }
+  // C-14 (defect D-022): every action a workflow uses is pinned to a full commit SHA. The account's
+  // Actions policy refuses to start any workflow with a tag reference such as @v4.
+  if (existsSync(wf)) {
+    for (const f of readdirSync(wf).filter((x) => /\.ya?ml$/.test(x))) {
+      for (const [i, line] of readFileSync(join(wf, f), "utf8").split("\n").entries()) {
+        const m = line.match(/^\s*-?\s*uses:\s*([^\s#]+)/);
+        if (m && !m[1].startsWith("./") && !/@[0-9a-f]{40}$/.test(m[1])) problems.push(`C-14 .github/workflows/${f}:${i + 1}: ${m[1]} is not pinned to a full commit SHA`);
+      }
+    }
+  }
   return problems;
 }
 
@@ -147,5 +157,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-13)");
+  console.log("repository checks passed (C-01 to C-14)");
 }
