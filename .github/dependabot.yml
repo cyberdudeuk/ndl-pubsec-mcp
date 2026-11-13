@@ -19,6 +19,11 @@ updates:
       # major would let code call APIs those runtimes lack (seen in Dependabot PR #15).
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # typescript-eslint 8.x supports TypeScript below 6.1 only. Dependabot PR #20 jumped to
+      # TypeScript 7.0.2 and npm could not resolve the peer range (ERESOLVE), so CI failed.
+      # Hold TypeScript majors until typescript-eslint declares support, then remove this entry.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
