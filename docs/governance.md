@@ -22,7 +22,7 @@ Self-assessed by the build team on 8 November 2026. These screenings are not aud
 
 - Read-only. One outbound https host (configurable). No secrets.
 - Inputs are validated with Zod. Identifiers and organisation filters are restricted to safe characters.
-- CodeQL and Dependabot are enabled through workflows. The owner must still turn on private vulnerability reporting and branch protection in the repository settings (O-11).
+- CodeQL, Dependabot, dependency review on every pull request (fails on a moderate or worse known vulnerability) and a weekly OpenSSF Scorecard are enabled through workflows. The owner must still turn on private vulnerability reporting and branch protection in the repository settings (O-11).
 
 ## Records and classification
 
