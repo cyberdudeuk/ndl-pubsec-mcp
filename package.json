@@ -57,8 +57,6 @@
     "node": ">=20.11"
   },
   "overrides": {
-    "@typescript-eslint/typescript-estree": {
-      "minimatch": "11.0.5"
-    }
+    "minimatch": "11.0.5"
   }
 }

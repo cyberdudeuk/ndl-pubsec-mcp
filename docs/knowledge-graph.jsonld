@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.3.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.3.0+56cdcf9e2e8f",
+      "schema:identifier": "ndl-pubsec-mcp@0.3.0+a3895bbca55b",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
