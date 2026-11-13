@@ -26,6 +26,10 @@ Only collaborators the owner has invited can push or review. Unexpected collabor
 - Never edit `src/generated/mem-rules.json` or `docs/index.html` by hand. Run `npm run compile:mem` and `npm run site`.
 - Plain English and sentence case in all text.
 
+## Code of conduct
+
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## Licence
 
 By contributing, you agree that code is licensed under the MIT Licence and documentation under the Open Government Licence v3.0.
