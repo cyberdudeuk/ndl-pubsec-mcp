@@ -10,7 +10,7 @@
     if (label) label.textContent = open ? "Hide contents" : "Show contents";
     try { window.localStorage.setItem("ndl-drawer", open ? "open" : "closed"); } catch (e) { /* storage unavailable: keep in memory */ }
   }
-  var saved = null;
+  var saved;
   try { saved = window.localStorage.getItem("ndl-drawer"); } catch (e) { saved = null; }
   set(saved !== "closed");
   toggle.addEventListener("click", function () { set(toggle.getAttribute("aria-checked") !== "true"); });
