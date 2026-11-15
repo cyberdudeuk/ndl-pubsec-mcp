@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+- The parity tools pair results with `zip(..., strict=True)`, so a length mismatch fails instead of passing silently (D-023).
+
 ### Changed
+- CI lints the Python tools with Ruff and fails on any finding; repository check C-15 keeps it there (D-023). Part of applying the secure development standard to every project.
 - Re-vendored the Data Quality Commons manifest at `dq-commons@76386f8`: `domain_list` now reports all 15 of its tools (closes O-16; D-021 resolved upstream in dq-commons#41).
 
 ## 0.3.0 (11 November 2026)

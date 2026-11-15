@@ -38,6 +38,8 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
+      - name: Lint Python tools (defect D-023)
+        run: pip install ruff==0.16.9 && ruff check .
       - name: Test
         run: npm test
       - name: Mutation run (every safeguard's test must fail when it is broken)
