@@ -37,7 +37,7 @@ def main():
     schema = str(Path(args[1]) / "src" / "model" / "uk_cross_government_metadata_exchange_model.yaml")
 
     rows, ours_rules = [], collections.Counter()
-    for pkg, cw in zip(packages, crosswalk(packages)):
+    for pkg, cw in zip(packages, crosswalk(packages), strict=True):
         v = cw["validation"]
         theirs = validate(cw["record"], schema, target_class="Dataset").results
         for f in v["findings"]:

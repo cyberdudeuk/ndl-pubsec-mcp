@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.3.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.3.0+a3895bbca55b",
+      "schema:identifier": "ndl-pubsec-mcp@0.3.0+83f60dbae991",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -599,6 +599,14 @@
       "schema:name": "D-022",
       "schema:description": "Every workflow stopped starting (`startup_failure`) from 08:54, on `main` and on every PR, because the account's Actions policy now requires actions pinned to a full commit SHA and the workflows used tags such as `@v4`",
       "ndl:check": "C-14 in `tools/check-repo.mjs`: every `uses:` must end in a 40-character SHA; deliberate-break test in `test/repo-checks.test.ts`. All actions pinned, with the release as a comment so Dependabot keeps them current",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-023",
+      "@type": "schema:Thing",
+      "schema:name": "D-023",
+      "schema:description": "The Python tools were never linted (only the TypeScript was): two parity checks paired lists with `zip()`, which silently drops extra items, so a length mismatch would have been reported as parity",
+      "ndl:check": "C-15: CI runs `ruff check .` with `ruff.toml`; both pairings now use `zip(..., strict=True)`, so a mismatch fails",
       "ndl:status": "Fixed"
     }
   ]

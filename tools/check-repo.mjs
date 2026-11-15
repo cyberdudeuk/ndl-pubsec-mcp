@@ -116,6 +116,8 @@ export function checkRepo(root) {
   if (!/^jobs:\n(?:\s*#.*\n)* {2}build-and-test:\n/m.test(ci)) problems.push("C-10 .github/workflows/ci.yml: job must be named build-and-test to match the required checks");
   // C-11 (defect D-016): CI must fail on any known dependency vulnerability
   if (!/npm audit --audit-level=low/.test(ci)) problems.push("C-11 .github/workflows/ci.yml: no npm audit gate");
+  // C-15 (defect D-023): CI lints the Python tools too, and fails on any finding
+  if (!/ruff check \./.test(ci) || !existsSync(join(root, "ruff.toml"))) problems.push("C-15 .github/workflows/ci.yml: the Python tools are not linted (ruff check . and ruff.toml)");
   // C-12 (rule: the public example vocabulary is generated, never hand-edited): src/data/vocabulary.json
   // equals what tools/build-vocab.mjs makes from docs/glossary.md, and claims no certification it lacks
   const vPath = join(root, "src", "data", "vocabulary.json");
@@ -157,5 +159,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-14)");
+  console.log("repository checks passed (C-01 to C-15)");
 }

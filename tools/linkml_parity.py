@@ -80,7 +80,7 @@ def main():
     cases = variants()
     a, b = ours(cases), theirs(cases, sys.argv[1])
     diff = 0
-    for (label, _, _), x, y in zip(cases, a, b):
+    for (label, _, _), x, y in zip(cases, a, b, strict=True):
         same = x == y
         diff += not same
         print(f"{'SAME' if same else 'DIFF'}  {label}: this={'valid' if x else 'invalid'} linkml={'valid' if y else 'invalid'}")

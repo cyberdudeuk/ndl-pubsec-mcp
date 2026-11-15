@@ -122,6 +122,14 @@ describe("dependency audit gate", () => {
     });
     expect(out.join()).toMatch(/C-11/);
   });
+
+  it("C-15 catches CI that does not lint the Python tools (D-023)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, ".github", "workflows", "ci.yml");
+      writeFileSync(p, readFileSync(p, "utf8").replace("ruff check .", "echo skipped"));
+    });
+    expect(out.join()).toMatch(/C-15/);
+  });
 });
 
 describe("pinned actions", () => {
