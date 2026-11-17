@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added (repository standards for the move to gds-dtx, 17 November 2026)
+
+- The Cabinet Office vulnerability disclosure route in `SECURITY.md`.
+- Pre-commit hooks: detect-secrets against a new `.secrets.baseline`, YAML and JSON checks, whitespace fixes, and gitlint for GDS Way commit messages (`.gitlint`).
+- `.secrets.baseline` with every candidate audited, and the audit recorded in `docs/compliance/secrets-audit.md`.
+
+### Changed
+
+- `codeql.yml` sets read-only permissions at the top level; the analyze job keeps the permissions it needs.
+
 ### Fixed
 - The parity tools pair results with `zip(..., strict=True)`, so a length mismatch fails instead of passing silently (D-023).
 
