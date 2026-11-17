@@ -25,3 +25,10 @@ Include what you found, how to reproduce it and the likely impact. We aim to ack
 
 - data.gov.uk and other government services. Report problems with them to their owners.
 - GitHub's own infrastructure.
+
+## Government vulnerability disclosure
+
+This is UK government work. If you find an exploitable vulnerability, you can also report it through the
+Cabinet Office vulnerability disclosure programme: follow
+[Report a vulnerability on a GOV.UK system](https://www.gov.uk/help/report-vulnerability), which routes
+reports to HackerOne. Please do not report security problems in public issues.

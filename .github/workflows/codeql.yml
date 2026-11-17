@@ -19,6 +19,10 @@ on:
   schedule:
     - cron: '32 13 * * 2'
 
+# Read-only by default; the analyze job asks for exactly what it needs (GDS Way: least privilege).
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
