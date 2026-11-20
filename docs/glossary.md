@@ -5,6 +5,7 @@
 | AI assistant | A chat tool such as Claude, ChatGPT or Copilot that answers questions in everyday language. With an MCP server plugged in, it can look things up in sources it could not reach on its own. |
 | API | Application programming interface: a way for one computer system to ask another for data or to do something, without a person in between. Many government services offer APIs alongside their websites. |
 | API catalogue | A list of APIs with what each does, who provides it and where its documentation is. The UK public sector API catalogue is at api.gov.uk; api_search reads it at a pinned commit. |
+| Case study | A real exchange of data between public bodies, told with who takes part, what moves, why, and the sources it rests on. Each carries a provenance label. |
 | CKAN | The open-source catalogue software behind data.gov.uk. Its "action API" is what this server calls. |
 | Class | A kind of thing in xGov MEM, for example Dataset or DataService. |
 | Co-design | Designing a service with the people who will use it, not only for them: they shape the personas, journeys and changes. |
@@ -28,6 +29,7 @@
 | National Data Library | The UK government's programme, led by DSIT with GDS, to make public sector data easier to find and use. Since early 2026 the data.gov.uk website has been turning into it. The NDL in this project's name. |
 | Open standard | A published, openly available specification that anyone can use, so that different systems and organisations can work together without being tied to one supplier. |
 | Persona | A short description of a type of user: their context, goals and pain points. A proto-persona is written from assumptions and has not yet been tested with real users. |
+| Practical example | A worked example to try with your own assistant: the situation, what to ask, which tool answers and how to check the result. |
 | Provenance label | How sure a stated fact is: V verified at the primary source, S found through search, K background knowledge, U unconfirmed. |
 | Read-only | Only looks at information; never changes, adds or deletes anything. Every tool in this server is read-only. |
 | Recommended attribute | An attribute xGov MEM advises but does not require. Missing ones give warnings, not errors. |
@@ -35,7 +37,9 @@
 | Service blueprint | A diagram of a journey in lanes: what the person does and sees (front stage), what happens behind it (back stage) and what supports it. |
 | Shared identifier | A key two organisations both use for the same thing, such as a company number, VAT number, EORI number, commodity code or address reference, so their data can be joined. |
 | Slot | LinkML's word for an attribute. |
+| Spotlight | A short, hand-picked set of use cases, case studies and practical examples at the top of the page. It moves only when you press Play, and stops when you point at it or tab into it. |
 | Tool | A single action an MCP server offers, such as `metadata_validate`. |
+| Use case | Who needs something and why: a role, what they are trying to do, what gets in their way, and the tools and examples that help them. |
 | User journey | The stages a person goes through to reach a goal with a service, from first need to done. |
 | Vaccination | Proving a check works by breaking the thing it guards and showing that the check fails. |
 | xGov MEM | The UK Cross-Government Metadata Exchange Model: the endorsed model for exchanging metadata about datasets and data services across government. |

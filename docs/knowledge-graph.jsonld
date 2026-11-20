@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+f6e2bd90a776",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+0137bda4367a",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -1357,6 +1357,15 @@
       }
     },
     {
+      "@id": "ndl:term/case-study",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Case study",
+      "skos:definition": "A real exchange of data between public bodies, told with who takes part, what moves, why, and the sources it rests on. Each carries a provenance label.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/ckan",
       "@type": "skos:Concept",
       "skos:prefLabel": "CKAN",
@@ -1564,6 +1573,15 @@
       }
     },
     {
+      "@id": "ndl:term/practical-example",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Practical example",
+      "skos:definition": "A worked example to try with your own assistant: the situation, what to ask, which tool answers and how to check the result.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/provenance-label",
       "@type": "skos:Concept",
       "skos:prefLabel": "Provenance label",
@@ -1627,10 +1645,28 @@
       }
     },
     {
+      "@id": "ndl:term/spotlight",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Spotlight",
+      "skos:definition": "A short, hand-picked set of use cases, case studies and practical examples at the top of the page. It moves only when you press Play, and stops when you point at it or tab into it.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/tool",
       "@type": "skos:Concept",
       "skos:prefLabel": "Tool",
       "skos:definition": "A single action an MCP server offers, such as metadata_validate.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/use-case",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Use case",
+      "skos:definition": "Who needs something and why: a role, what they are trying to do, what gets in their way, and the tools and examples that help them.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -3097,6 +3133,30 @@
       "schema:name": "D-048",
       "schema:description": "CodeQL flagged check C-41 as incomplete escaping (js/incomplete-sanitization, high)",
       "ndl:check": "C-41 compares the line exactly, with no expression built from data; CodeQL runs on every pull request",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-049",
+      "@type": "schema:Thing",
+      "schema:name": "D-049",
+      "schema:description": "Adding the spotlight made the page 4,508 px wide at 1280 px; it could be scrolled sideways",
+      "ndl:check": "Slides and strip are position: relative; the visual inspection now fails if the page's scroll width exceeds the screen; C-42 guards the rule and that the strip moves only after Play, never under reduced motion (WCAG 2.2.2)",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-050",
+      "@type": "schema:Thing",
+      "schema:name": "D-050",
+      "schema:description": "At 320 px the page could be scrolled 56 px sideways and the theme switch was off screen",
+      "ndl:check": "Narrow-screen masthead rule (all controls kept at 44 px or more, the \"More\" label kept as an accessible name only); cards, notes and table cells may break long strings; visual inspection adds 320 px; C-43",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-051",
+      "@type": "schema:Thing",
+      "schema:name": "D-051",
+      "schema:description": "The showcase said \"18 case studys\" and offered a \"Case studys\" filter",
+      "ndl:check": "Plurals written out in PLURALS; C-44 fails on a label plus \"s\" in the code and on misspelt plurals on the page",
       "ndl:status": "Fixed"
     }
   ]

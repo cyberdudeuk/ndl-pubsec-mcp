@@ -2,6 +2,7 @@
 // Generates docs/index.html, docs/knowledge-graph.jsonld and docs/assets/* from the repository's own data.
 // Never edit those files by hand. Needs `npm run build` first (it lists the tools from the built server).
 // Output is deterministic: the build identifier is a hash of the inputs, not the time or the git commit.
+import { relatedApis } from "./site/related-apis.mjs";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -14,6 +15,7 @@ import { createServer } from "../dist/server.js";
 import { renderGuide } from "./site/guide-sections.mjs";
 import { ECO_CSS, ECO_JS, loadEcosystem, renderEcosystem } from "./site/ecosystem.mjs";
 import { renderExtras } from "./site/extra-sections.mjs";
+import { renderSpotlight, SPOTLIGHT } from "./site/spotlight.mjs";
 import { searchApis, API_SOURCES } from "../dist/lib/apis.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -86,7 +88,7 @@ for (const [k, ex] of Object.entries(examples)) {
 
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
-const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/extra-sections.mjs", "tools/site/assist.js", "tools/site/ask-rank.js", "src/data/exchanges.json", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/extra-sections.mjs", "tools/site/spotlight.mjs", "tools/site/related-apis.mjs", "tools/site/assist.js", "tools/site/ask-rank.js", "src/data/exchanges.json", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
 const eco = loadEcosystem({ apiCount: API_SOURCES.catalogue.count });
 const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
@@ -130,6 +132,7 @@ const ICONS = {
   code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
   form: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>',
   up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
@@ -218,10 +221,12 @@ const docGroups = [
 ];
 const docCount = docGroups.reduce((n, g) => n + g.items.length, 0);
 const openCount = openItems.filter((o) => !o.closed).length;
-const NEW = new Set(["start", "exchanges", "safeguards"]);
+const NEW = new Set(["start", "spotlight", "showcase", "exchanges", "safeguards"]);
 const CHANGED = new Set(["standards", "what", "examples", "glossary"]);
+const SPOT_N = SPOTLIGHT.length;
 const sections = [
   { group: "Start here", id: "start", title: "New here? Start here", icon: "info" },
+  { group: "Start here", id: "spotlight", title: "Spotlight", icon: "spark", count: SPOT_N },
   { group: "Overview", id: "what", title: "What it does", icon: "tools", count: tools.length },
   { group: "Overview", id: "who", title: "Who it is for", icon: "people", count: guide.personas.length },
   { group: "Overview", id: "checker", title: "Check a record", icon: "check" },
@@ -233,6 +238,7 @@ const sections = [
   { group: "Use it", id: "tour", title: "Guided tour", icon: "route", count: guide.tour.length },
   { group: "Use it", id: "use", title: "How to use it", icon: "terminal", count: guide.tutorials.length },
   { group: "Use it", id: "examples", title: "Worked examples", icon: "spark", count: guide.examples.length },
+  { group: "Use it", id: "showcase", title: "Use cases, case studies and examples", icon: "rocket", count: guide.personas.length + exchangesData.exchanges.length + guide.examples.length },
   { group: "Use it", id: "toolkit", title: "Toolkit", icon: "kit", count: guide.toolkit.length },
   { group: "Use it", id: "documents", title: "Documents", icon: "docs", count: docCount },
   { group: "Get involved", id: "involve", title: "Contribute and champion", icon: "people", count: guide.involve.length },
@@ -255,6 +261,7 @@ const LINKS = { contact: CONTACT, bug: `${REPO}/issues/new?template=bug_report.y
 const ecoHtml = renderEcosystem(eco, { esc, iconPaths: ICONS, idPrefix: "eco" });
 const G = renderGuide({ guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links: LINKS, sectionIds: sections.map((x) => x.id), searchApis, apiSources: API_SOURCES, servers: JSON.parse(read("src/data/servers.json")) });
 const X = renderExtras({ esc, icon, term, filterBox, lower, barChart, longDate, standards, exchanges: exchangesData, searchApis, provName, tools, glossary, guide, defects, sections, contact: CONTACT, security: `${REPO}/security/advisories/new` });
+const SP = renderSpotlight({ esc, icon, lower, filterBox, head2, guide, exchanges: exchangesData, searchApis, tools });
 const STATEMENT = "An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.";
 
 const html = `<!DOCTYPE html>
@@ -307,7 +314,7 @@ ${sprite}
       <a class="wide" href="https://cyberdudeuk.github.io/">Public Good Works</a>
       <a class="wide" href="${REPO}">${icon("code")}Source</a>
       <a class="wide" href="${CONTACT}">${icon("form")}Contact form</a>
-      <details class="mast__more"><summary>${icon("menu")}More</summary><ul>
+      <details class="mast__more"><summary>${icon("menu")}<span class="mast__label">More</span></summary><ul>
         <li><a href="https://cyberdudeuk.github.io/">Public Good Works</a></li>
         <li><a href="${REPO}">Source code</a></li>
         <li><a href="${REPO}/releases">Releases</a></li>
@@ -350,6 +357,8 @@ ${drawerList}
     <p class="note">Every tool is read-only. No personal data is read or returned. Results come from the sources named with them, and the assistant you use can still make mistakes, so check the source before you rely on a result.</p>
 
     ${X.start}
+
+    ${SP.spotlight}
 
     <section class="section reveal" id="what" aria-labelledby="what-h">
       ${head2("what")}
@@ -494,6 +503,8 @@ npm run build</code></pre></div></li>
       ${head2("examples")}
       ${G.examplesHtml}
     </section>
+
+    ${SP.showcase}
 
     <section class="section reveal" id="toolkit" aria-labelledby="toolkit-h">
       ${head2("toolkit")}
@@ -688,7 +699,7 @@ writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null
     exchanges: exchangesData.exchanges.map((e) => ({
       ...e,
       portal: `https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-${e.id}`,
-      relatedApis: (e.apiQueries || []).flatMap((q) => searchApis(q.query, { provider: q.provider }).slice(0, 2)).filter((a, i, all) => all.findIndex((b) => b.name === a.name) === i).slice(0, 4).map((a) => ({ name: a.name, provider: a.provider, providerId: a.providerId, url: a.documentation || a.url, inCatalogue: Boolean(a.inCatalogue) }))
+      relatedApis: relatedApis(searchApis, e).map((a) => ({ name: a.name, provider: a.provider, providerId: a.providerId, url: a.documentation || a.url, inCatalogue: Boolean(a.inCatalogue) }))
     }))
   };
   writeFileSync(join(root, "docs/exchanges.json"), JSON.stringify(feed, null, 1) + "\n");

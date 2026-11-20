@@ -1,6 +1,7 @@
 // Sections for people new to all this (Start here), the standards register grouped by domain, the data exchanges
 // behind citizen and business journeys, and the index that powers search and "Ask this page" across the portal.
 // Every reference is resolved here: an exchange naming an unknown standard stops the build.
+import { relatedApis } from "./related-apis.mjs";
 
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -66,7 +67,7 @@ ${standards.standards.filter((s) => s.domain === d).map(stdCard).join("\n")}
   const powerChart = barChart(reg.byPower.map(([label, value]) => ({ label, value, cls: "bar-i", of: reg.agreements })), { id: "dea-power", title: `Why data moves: the ${reg.agreements} agreements by legal power`, max: reg.agreements });
   const audiences = ["Citizen", "Business", "Public body"];
   const xCard = (e) => {
-    const apis = e.apiQueries.flatMap((q) => searchApis(q.query, { provider: q.provider }).slice(0, 2)).filter((a, i, all) => all.findIndex((b) => b.name === a.name) === i).slice(0, 4);
+    const apis = relatedApis(searchApis, e);
     return `        <article class="card xch" id="xch-${esc(e.id)}" data-text="${lower(e.title, e.journey, e.parties.join(" "), e.flows, e.purpose, e.mechanism, e.sharedIdentifiers.join(" "))}" data-group="${e.audience.toLowerCase().split(" and ").map((a) => `aud-${slug(a)}`).join(" ")}">
           <p class="eyebrow">${icon("route")}${esc(e.journey)} · ${esc(e.audience)}</p>
           <h4>${esc(e.title)}</h4>
