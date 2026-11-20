@@ -6,18 +6,18 @@
 
 ### Changed (independent prototype, ADR 0006)
 
-- The website is rebuilt with its own design, no longer GOV.UK Frontend, so it is not mistaken for a government service. It says plainly that this is an independent prototype, not endorsed by any government department. The README, product requirements, contact form and citation no longer name a team or a government publisher (D-024).
-- ADR 0006 supersedes the "official work" wording of ADR 0002. Copyright and licences are unchanged.
+- The website is rebuilt with its own design instead of GOV.UK styles, so it is not mistaken for a government service. It says plainly that this is an independent prototype, not endorsed by any government department. The README, product requirements, contact form and citation no longer name a team or a government publisher (D-024).
+- ADR 0006 supersedes the wording of ADR 0002 that described this repository as official. Copyright and licences are unchanged.
 
 ### Added
 
 - An in-browser metadata checker on the website. It runs the server's own validator, bundled at build time, so nothing pasted leaves the browser. A test proves the bundle agrees with the server.
 - Website: light and dark themes, a retractable contents drawer with item counts and new-section flags, filters and search for tools, standards, documents, open items, defects and the glossary, glossary tooltips, conformance charts for the model's tests and for 50 real records, an estate map, set-up tabs for Claude Desktop and VS Code with copy buttons, a release timeline and the open register.
-- Repository checks C-16 (no team name, official claims, GOV.UK Frontend or government publisher), C-17 (the independent-prototype statement on the page and README) and C-18 (unique ids and no dangling references on the page), each with a negative test (D-024, D-025).
+- Repository checks C-16 (no team name, claims of official status, GOV.UK styles or government publisher), C-17 (the independent-prototype statement on the page and README) and C-18 (unique ids and no dangling references on the page), each with a negative test (D-024, D-025).
 
 ### Removed
 
-- The `govuk-frontend` dependency and its stylesheet.
+- The dependency on the GOV.UK front-end package, and its stylesheet.
 
 ### Added (repository standards for the move to gds-dtx, 17 November 2026)
 
