@@ -61,6 +61,11 @@
       "name": "server_search",
       "title": "Find MCP servers",
       "description": "Find MCP servers: estate servers and candidates awaiting review; never calls them"
+    },
+    {
+      "name": "exchange_search",
+      "title": "Find data exchanges between public sector organisations",
+      "description": "Find data exchanges between UK public sector organisations by journey, organisation or identifier, with sources."
     }
   ]
 }

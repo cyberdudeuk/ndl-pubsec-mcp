@@ -309,6 +309,23 @@ describe("page structure (D-025)", () => {
     expect(breakFile("src/generated/api-catalogue.json", '"commitDate": "2026-11-02"', '"commitDate": "not a date"').join()).toMatch(/C-32/);
   });
 
+  it("C-33 catches a tool with no job in the page's tool filter (D-040)", () => {
+    expect(breakFile("tools/build-site.mjs", ' server_search: "connect",', "").join()).toMatch(/C-33 .*server_search/);
+  });
+
+  it("C-34 catches the hero-only button style used on a light surface (D-041)", () => {
+    expect(breakFile("tools/site/assist.js", '"btn btn--outline", "Open Claude"', '"btn btn--line", "Open Claude"').join()).toMatch(/C-34 tools\/site\/assist.js/);
+  });
+
+  it("C-35 catches a tool input with no size limit (D-042)", () => {
+    expect(breakFile("src/server.ts", "          .refine((r) => JSON.stringify(r).length <= MAX_RECORD_CHARS", "          .optional((r) => JSON.stringify(r).length <= MAX_RECORD_CHARS").join()).toMatch(/C-35 .*record input/);
+    expect(breakFile("src/server.ts", 'query: z.string().trim().min(2).max(200).optional().describe("Words for a journey', 'query: z.string().trim().min(2).optional().describe("Words for a journey').join()).toMatch(/C-35 .*string input/);
+  });
+
+  it("C-36 catches the search ranking losing its question tests (D-043)", () => {
+    expect(breakFile("test/ask-rank.test.ts", "#xch-tell-us-once", "#xch-something-else").join()).toMatch(/C-36/);
+  });
+
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {
     expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
   });

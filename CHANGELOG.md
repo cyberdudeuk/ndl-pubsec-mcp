@@ -4,6 +4,14 @@
 
 ### Added
 
+- **Standards register extended to the wider public sector**: 41 standards in 8 areas (data and metadata, APIs and integration, identifiers and reference data, cyber security, digital services and accessibility, identity, health and care, procurement and transparency), each saying how firmly it applies (Mandatory to Proposed), who it applies to and who publishes it. `standard_explain` can list one area. BODS is recorded as v0.3, as the DSA list shows.
+- **Exchanges and journeys**: `exchange_search` and a new page section map 17 data exchanges between organisations by citizen or business journey (registering a death, claiming Universal Credit, buying a home, setting up a company, exporting and more), with parties, what moves, how, shared identifiers, legal basis, related APIs and sources. Counts come from the 667 agreements on the Digital Economy Act register, read on 20 November 2026: only 11 use an API.
+- **Search or ask across the portal** (press /): ranks passages from every section against a question in plain English and can turn them into a prompt for your own AI assistant. No AI runs on the page and nothing leaves the browser.
+- **MCP prompts** for agents: `journey-exchanges`, `standards-for-a-service` and `check-a-catalogue-record`; an `llms.txt` description for AI agents; exchanges in the knowledge graph.
+- **New here? Start here**: the portal explained with no prior knowledge assumed, ten new plain-English glossary terms with tooltips, and what NDL stands for.
+- **Safeguards for AI use**: the guardrails built into the server, for AI model and MCP developers. New roles for trade analysts, researchers and journalists, and AI developers.
+- Checks C-33 (every tool has a filter job, D-040), C-34 (hero-only button style, D-041) and C-35 (every tool input bounded; `metadata_validate` records capped at 100 KB, D-042).
+
 - Monthly refresh of the API catalogue pin: a scheduled workflow re-pins co-cddo/api-catalogue, recompiles, rebuilds and verifies, then opens a pull request for a person to merge. Check C-32 warns once the pin is 35 days old and fails the build at 100, and the worked example says how old the pin was when the page was built.
 
 ### Added

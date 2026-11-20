@@ -349,3 +349,155 @@
     wrap.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { off(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } });
   });
 })();
+// search or ask this page (tools/site/ask-rank.js, tools/site/assist.js)
+// Ranking for "Search or ask this page", kept apart from the page script so tests can run it (test/ask-rank.test.ts).
+// NDLAskRank(index) returns search(text): the index entries ranked by the words they share with the text.
+globalThis.NDLAskRank = function (index) {
+  // Everyday words a layperson might use, mapped to the words the portal uses.
+  var SYN = {
+    die: ["death", "bereavement"], died: ["death"], dies: ["death"], dead: ["death"], passed: ["death"],
+    benefit: ["universal", "credit", "dwp"], benefits: ["universal", "credit", "dwp"], tax: ["hmrc"], taxes: ["hmrc"],
+    company: ["business", "companies"], business: ["company"], house: ["home", "property", "land"], home: ["property", "land"],
+    address: ["uprn", "property"], security: ["cyber"], hacking: ["cyber"], id: ["identity"], identity: ["gpg"],
+    passport: ["identity", "hmpo"], licence: ["driving", "dvla"], driving: ["dvla"], vote: ["electoral", "register"],
+    school: ["education", "meals"], meals: ["school"], energy: ["fuel", "warm"], heating: ["energy", "fuel"],
+    health: ["nhs", "fhir"], nhs: ["health"], accessible: ["accessibility", "wcag"], disabled: ["accessibility"],
+    rules: ["standard", "standards"], rule: ["standard"], law: ["legal", "gateway"], share: ["exchange", "sharing"],
+    sharing: ["exchange", "share"], data: ["dataset"], ai: ["assistant", "mcp"], chatbot: ["assistant", "mcp"],
+    contract: ["procurement"], tender: ["procurement"], work: ["right", "employer"], rent: ["right", "landlord"],
+    move: ["exchange", "share", "flow"], moves: ["exchange", "share", "flow"], council: ["local", "authorities"], councils: ["local", "authorities"],
+    apply: ["applies"], applies: ["apply"], death: ["dies"], ndl: ["national", "library"], export: ["ukef", "trade"], exporting: ["export", "ukef"]
+  };
+  var STOP = { the: 1, a: 1, an: 1, of: 1, to: 1, and: 1, or: 1, is: 1, are: 1, what: 1, which: 1, who: 1, how: 1, why: 1, when: 1, where: 1, do: 1, does: 1, i: 1, my: 1, me: 1, can: 1, for: 1, in: 1, on: 1, with: 1, this: 1, that: 1, it: 1, be: 1, about: 1, there: 1, any: 1, you: 1, need: 1, someone: 1, somebody: 1, anyone: 1, anybody: 1, everyone: 1, something: 1, thing: 1, things: 1, get: 1, happens: 1, happen: 1, tell: 1, please: 1, from: 1, between: 1, we: 1, our: 1, us: 1, will: 1 };
+  // A light stemmer: plurals and common endings only, so "moves" stays "move" and "applies" becomes "apply".
+  function stem(w) {
+    if (w.length <= 4) return w;
+    if (/ies$/.test(w)) return w.slice(0, -3) + "y";
+    if (/(ss|us)$/.test(w)) return w;
+    if (/(ches|shes|sses|xes|zes)$/.test(w)) return w.slice(0, -2);
+    if (/s$/.test(w)) return w.slice(0, -1);
+    if (/ing$/.test(w) && w.length > 5) return w.slice(0, -3);
+    if (/ed$/.test(w) && w.length > 5) return w.slice(0, -2);
+    return w;
+  }
+  function tokens(s) { return (s.toLowerCase().match(/[a-z0-9]+/g) || []).filter(function (w) { return !STOP[w] && w.length > 1; }); }
+  var docs = index.map(function (d) {
+    var title = tokens(d.h).map(stem), body = tokens(d.x).map(stem);
+    return { d: d, title: title, body: body, type: d.t.toLowerCase() };
+  });
+  // Each word typed becomes a group of alternatives (the word and its everyday equivalents). Rarer words weigh
+  // more (inverse document frequency), so "death" outranks "data", and a title match counts three times.
+  var dfCache = {};
+  function has(words, w) { return words.some(function (x) { return x.indexOf(w) === 0; }); }
+  function idf(w) {
+    if (!(w in dfCache)) { var n = 0; docs.forEach(function (d) { if (has(d.title, w) || has(d.body, w)) n++; }); dfCache[w] = n ? Math.log((docs.length + 1) / (n + 1)) + 0.1 : 0; }
+    return dfCache[w];
+  }
+  // Words found nowhere on the page carry no information here, so they are dropped rather than counted against results.
+  function query(text) {
+    return tokens(text).map(function (w) { return [stem(w)].concat((SYN[w] || []).map(stem)); })
+      .filter(function (alts) { return alts.some(function (w) { return idf(w) > 0; }); });
+  }
+  function score(doc, groups) {
+    var s = 0, matched = 0, total = 0;
+    groups.forEach(function (alts) {
+      var best = 0;
+      alts.forEach(function (w, k) {
+        var inT = has(doc.title, w), inB = !inT && has(doc.body, w);
+        if (inT || inB) best = Math.max(best, idf(w) * (inT ? 3 : 1) * (k === 0 ? 1 : 0.8));
+      });
+      // Squared, so the most specific word typed decides which passages count as answers.
+      var weight = Math.pow(idf(alts[0]) || Math.max.apply(null, alts.map(idf)), 2);
+      total += weight;
+      if (best) { matched += weight; s += best; }
+    });
+    // Enough of the informative words must match: common words like "data" weigh little.
+    if (!groups.length || matched / total < 0.4) return 0;
+    // Housekeeping (defects) ranks below content; the exchanges and standards, the core answers, rank above the rest.
+    return s * (matched / total) * (doc.type === "defect" ? 0.25 : doc.type === "exchange" || doc.type === "standard" ? 1.5 : 1);
+  }
+  return {
+    search: function (text, limit) {
+      var qs = query(text);
+      return docs.map(function (doc) { return { doc: doc, s: score(doc, qs) }; }).filter(function (r) { return r.s > 0; })
+        .sort(function (a, b) { return b.s - a.s; }).slice(0, limit || 12).map(function (r) { return r.doc.d; });
+    }
+  };
+};
+
+/* global NDLAskRank */
+// Search or ask this page: ranks passages from the portal's own search index (#search-index) against the words
+// typed, answers question-like input with the best passages and their links, and offers a prompt to take to an AI
+// assistant. No AI runs here, nothing is fetched and nothing typed leaves the browser unless the person copies it.
+(function () {
+  var dialog = document.getElementById("ask");
+  var dataEl = document.getElementById("search-index");
+  if (!dialog || !dataEl) return;
+  var index;
+  try { index = JSON.parse(dataEl.textContent); } catch (e) { return; }
+  var input = document.getElementById("ask-q");
+  var list = document.getElementById("ask-results");
+  var answer = document.getElementById("ask-answer");
+
+  var ranker = NDLAskRank(index);
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function isQuestion(t) { return /\?\s*$/.test(t) || /^(what|which|who|how|why|when|where|can|do|does|is|are|should)\b/i.test(t.trim()); }
+
+  function run() {
+    var text = input.value.trim();
+    list.textContent = ""; answer.textContent = "";
+    if (text.length < 2) return;
+    var ranked = ranker.search(text, 12).map(function (d) { return { doc: { d: d } }; });
+    if (!ranked.length) {
+      answer.appendChild(el("p", null, "Nothing on this page matches. Try other words, or browse the glossary, standards and exchanges from the contents."));
+      return;
+    }
+    if (isQuestion(text)) {
+      var box = el("div", "ask__card");
+      box.appendChild(el("p", "ask__label", "From this page"));
+      var ul = el("ul");
+      ranked.slice(0, 3).forEach(function (r) {
+        var li = el("li"); var a = el("a", null, r.doc.d.h); a.href = r.doc.d.u; a.addEventListener("click", close);
+        li.appendChild(a); li.appendChild(el("span", "meta", " (" + r.doc.d.t + ") ")); li.appendChild(el("span", null, r.doc.d.x.slice(0, 220) + (r.doc.d.x.length > 220 ? "…" : "")));
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+      var actions = el("div", "ask__actions");
+      var copy = el("button", "btn btn--outline", "Copy a prompt for your AI assistant"); copy.type = "button";
+      var prompt = "Question: " + text + "\n\nUse only these passages from the NDL PubSec MCP portal (https://cyberdudeuk.github.io/ndl-pubsec-mcp/) and say which you relied on. If you have the NDL PubSec MCP tools, use exchange_search, standard_explain and api_search to check them.\n\n" +
+        ranked.slice(0, 5).map(function (r, i) { return (i + 1) + ". " + r.doc.d.h + " (" + r.doc.d.t + "): " + r.doc.d.x + " [https://cyberdudeuk.github.io/ndl-pubsec-mcp/" + r.doc.d.u + "]"; }).join("\n");
+      copy.addEventListener("click", function () {
+        var done = function () { copy.textContent = "Copied. Paste it into your assistant"; };
+        try { window.navigator.clipboard.writeText(prompt).then(done, function () { copy.textContent = "Copy failed. Select the text below instead"; pre.hidden = false; }); }
+        catch (e) { pre.hidden = false; }
+      });
+      var open = el("a", "btn btn--outline", "Open Claude"); open.href = "https://claude.ai/new"; open.rel = "noopener";
+      actions.appendChild(copy); actions.appendChild(open);
+      box.appendChild(actions);
+      var pre = el("pre", "ask__prompt", prompt); pre.hidden = true; box.appendChild(pre);
+      box.appendChild(el("p", "meta", "These are the passages that share the most words with your question, not a written answer. Read them at their source before relying on them."));
+      answer.appendChild(box);
+    }
+    ranked.forEach(function (r) {
+      var li = el("li", "hit"); var a = el("a", null, r.doc.d.h); a.href = r.doc.d.u; a.addEventListener("click", close);
+      li.appendChild(el("span", "hit__type", r.doc.d.t)); li.appendChild(a); li.appendChild(el("p", null, r.doc.d.x.slice(0, 160) + (r.doc.d.x.length > 160 ? "…" : "")));
+      list.appendChild(li);
+    });
+  }
+  var t = null;
+  input.addEventListener("input", function () { window.clearTimeout(t); t = window.setTimeout(run, 120); });
+  function openAsk(seed) {
+    if (typeof dialog.showModal === "function") { if (!dialog.open) dialog.showModal(); } else { dialog.setAttribute("open", ""); }
+    if (seed) { input.value = seed; run(); }
+    input.focus();
+  }
+  function close() { if (dialog.open) dialog.close(); }
+  document.querySelectorAll("[data-open-ask]").forEach(function (b) {
+    b.addEventListener("click", function (ev) { ev.preventDefault(); openAsk(b.getAttribute("data-ask") || ""); });
+  });
+  dialog.addEventListener("click", function (ev) { if (ev.target === dialog) close(); });
+  document.addEventListener("keydown", function (ev) {
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (ev.key === "/" && !ev.ctrlKey && !ev.metaKey && !/INPUT|TEXTAREA|SELECT/.test(tag) && !(document.activeElement && document.activeElement.isContentEditable)) { ev.preventDefault(); openAsk(""); }
+  });
+})();

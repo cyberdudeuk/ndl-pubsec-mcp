@@ -85,6 +85,33 @@ Inputs and outputs of every tool. Types are JSON types. Every output also carrie
 | servers[] | out | array | | `id`, `title`, `status` (this server, estate, or candidate awaiting review and not endorsed), `repository` or `url`, `description`, `tools`, `transport`, `checked`, `provenance` |
 | asOf | out | date | | When the register was last checked |
 
+## `exchange_search`
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| query | in | string, optional | 2 to 200 characters | Words for a journey, organisation, data item or identifier; every word must match the start of a word in the exchange; leave out to list all |
+| party | in | string, optional | Letters, digits, spaces and `& ' ( ) , . -` only; up to 80 characters | Only exchanges involving this organisation |
+| audience | in | enum, optional | `Citizen`, `Business`, `Public body` | Only journeys for this audience |
+| exchanges[] | out | array | | `id`, `title`, `journey`, `audience`, `parties[]`, `flows`, `purpose`, `mechanism`, `sharedIdentifiers[]`, `standards[]` (ids for `standard_explain`), `apiQueries[]` (for `api_search`), `scale`, `legalBasis`, `notes`, `sources[]`, `provenance`, `checked` |
+| register | out | object | | Counts from the Digital Economy Act register of information sharing agreements: `agreements`, `byPower`, `byMethod`, `topPairs`, with its `limits` |
+
+## `standard_explain`: domain filter
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| domain | in | enum, optional | One of the register's `domains` | List only the standards in this domain |
+| standards[] | out | array | | Each adds `domain`, `obligation` (Mandatory, Endorsed, Recommended, Voluntary, In review, Proposed), `appliesTo` and `publisher` |
+
+## MCP prompts
+
+Ready-made tasks an assistant can offer. Each is text that asks the assistant to use the tools; none acts by itself.
+
+| Prompt | Argument | What it asks for |
+|---|---|---|
+| `journey-exchanges` | journey | The exchanges, APIs and standards behind a journey, and what still relies on email, files or paper |
+| `standards-for-a-service` | service | The standards a service must meet, grouped by domain, Mandatory first |
+| `check-a-catalogue-record` | dataset | A dataset's gaps against xGov MEM, with draft fixes |
+
 ## Term
 
 | Field | Type | Meaning |

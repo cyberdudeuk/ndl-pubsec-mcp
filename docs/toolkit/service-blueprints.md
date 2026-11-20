@@ -23,7 +23,7 @@ Answers questions with data and needs to know quickly what exists, who holds it 
 
 - **Wants to:** Find candidate datasets, judge whether they are fit for the question, and cite them properly.
 - **What gets in the way:** Keyword search returns many near-duplicates; Licence, update frequency and format are buried; Hard to tell a maintained dataset from an abandoned one
-- **Tools:** `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search`
+- **Tools:** `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search`, `exchange_search`
 - **Journey:** Find and judge data
 - **How they can shape it:** Suggests searches that went badly so the tool descriptions and results can improve. Shares the prompt library with their analysis community.
 
@@ -33,7 +33,7 @@ Looks after metadata quality across an organisation or a community of publishers
 
 - **Wants to:** See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms.
 - **What gets in the way:** Conformance is checked by hand, one record at a time; Colleagues ask what a standard is for and where it stands; Business terms are drafted in many places with no record of review
-- **Tools:** `metadata_validate`, `standard_explain`, `term_lookup`, `api_search`
+- **Tools:** `metadata_validate`, `standard_explain`, `term_lookup`, `api_search`, `exchange_search`
 - **Journey:** Assess a set of records
 - **How they can shape it:** Checks validation against their own records and reports disagreements with the model. Runs the show-and-tell and the co-design session in their community.
 
@@ -43,7 +43,7 @@ Connects tools to assistants, agents or pipelines and has to answer for what the
 
 - **Wants to:** Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects.
 - **What gets in the way:** Needs to know exactly what each tool reads and returns; Must show that nothing writes, sends or stores data; Wants to try tools before wiring them in
-- **Tools:** `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search`
+- **Tools:** `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search`, `exchange_search`
 - **Journey:** Set up and try
 - **How they can shape it:** Opens pull requests with tests, and reports defects with a way to reproduce them. Shows other builders how the server is checked: the defect register and its checks.
 
@@ -53,7 +53,7 @@ Not a data specialist. Uses an AI assistant to understand what data exists and w
 
 - **Wants to:** Get a plain-English answer they can trust, with a link to the source they can pass on.
 - **What gets in the way:** Jargon: DCAT, CURIE, crosswalk; Cannot tell whether an assistant's answer came from a real source; Does not know who to ask
-- **Tools:** `catalogue_search`, `standard_explain`, `term_lookup`, `api_search`
+- **Tools:** `catalogue_search`, `standard_explain`, `term_lookup`, `api_search`, `exchange_search`
 - **Journey:** Find and judge data
 - **How they can shape it:** Tells us where an answer was unclear, so explanations and the glossary improve. Points colleagues at the glossary and the worked examples.
 
@@ -76,6 +76,36 @@ Wants to shape the service: report, test, suggest, design or code.
 - **Tools:** `standard_explain`, `domain_list`
 - **Journey:** Champion and contribute
 - **How they can shape it:** Joins co-design sessions, improves the standards list, writes tests and checks. Brings a second organisation's view, so the work is not shaped by one.
+
+### Export finance or trade analyst
+
+Works on export finance, trade or business support, for example at UK Export Finance or the Department for Business and Trade, and needs to check exporters and size markets.
+
+- **Wants to:** Know today which HMRC and other published APIs could help, how access works, and what needs a legal route, without waiting for a new platform.
+- **What gets in the way:** Does not know which government APIs exist or where they are documented; Cannot tell open APIs from restricted data that needs an agreement; Has to ask colleagues in other departments one by one
+- **Tools:** `api_search`, `exchange_search`, `standard_explain`
+- **Journey:** Find and judge data
+- **How they can shape it:** Tells us which exchanges and APIs matter for trade and which are missing from the registers. Shares the UKEF and HMRC worked example with others in the trade and export community.
+
+### Researcher, journalist or civil society organisation
+
+Works in academia, journalism, the media, a charity or any organisation outside government, and wants to understand what public data exists and how it moves.
+
+- **Wants to:** Find the data, the rules and the exchanges behind a public service, with sources good enough to cite.
+- **What gets in the way:** Government data is spread across many sites and named in insiders' terms; Hard to know which statements about data sharing are current; No single place explains the standards in plain English
+- **Tools:** `catalogue_search`, `exchange_search`, `standard_explain`
+- **Journey:** Find and judge data
+- **How they can shape it:** Points out where an explanation is unclear or a source is out of date. Cites the portal's sources and links to the registers in their own work.
+
+### AI model or MCP developer
+
+Builds AI models, assistants or MCP servers and wants a ready-made, safe way to reach UK government data resources.
+
+- **Wants to:** Connect assistants to government data through a read-only server with clear safeguards, sources and provenance on every answer.
+- **What gets in the way:** Scraping government sites is fragile and hard to keep current; Unclear which sources are authoritative; Needs guardrails that stop an assistant overstating what it found
+- **Tools:** `catalogue_search`, `api_search`, `server_search`, `exchange_search`
+- **Journey:** Set up and try
+- **How they can shape it:** Reports where tool descriptions or results confuse a model, and proposes new read-only tools. Lists the server in their own catalogue of MCP servers and links to its safeguards.
 
 ## Journeys and service blueprints
 

@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+2474870da589",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+10d154722190",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -43,6 +43,9 @@
         },
         {
           "@id": "ndl:tool/server_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
         }
       ],
       "schema:audience": [
@@ -66,6 +69,15 @@
         },
         {
           "@id": "ndl:persona/contributor"
+        },
+        {
+          "@id": "ndl:persona/trade-analyst"
+        },
+        {
+          "@id": "ndl:persona/researcher"
+        },
+        {
+          "@id": "ndl:persona/ai-developer"
         }
       ]
     },
@@ -94,10 +106,16 @@
       "schema:description": "Check a metadata record against the UK Cross-Government Metadata Exchange Model (xGov MEM, commit d6d9a24). Classes: ContactPoint, DataService, Dataset, Distribution, Organisation. Returns errors (must fix) and warnings (recommended), each with the attribute path.",
       "dct:references": [
         {
+          "@id": "ndl:standard/dcat"
+        },
+        {
           "@id": "ndl:standard/xgov-mem"
         },
         {
-          "@id": "ndl:standard/dcat"
+          "@id": "ndl:standard/uk-gemini"
+        },
+        {
+          "@id": "ndl:standard/metadata-shared-data"
         }
       ]
     },
@@ -105,7 +123,7 @@
       "@id": "ndl:tool/standard_explain",
       "@type": "schema:EntryPoint",
       "schema:name": "standard_explain",
-      "schema:description": "Explain open data standards used across UK government (xGov MEM, DCAT, ATRS, BODS, CSV, OpenAPI and others): purpose, status, licence and link, each with its provenance label and check date. Leave id out to list them all.",
+      "schema:description": "Explain the open standards recommended or required across UK government and the wider public sector, for data, APIs, identifiers, cyber security, digital services, identity, health and procurement: purpose, how firmly it applies, who it applies to, status, licence and link, each with its provenance label and check date. Leave id out to list them all, optionally for one domain.",
       "dct:references": []
     },
     {
@@ -137,13 +155,38 @@
       "dct:references": []
     },
     {
-      "@id": "ndl:standard/xgov-mem",
+      "@id": "ndl:tool/exchange_search",
+      "@type": "schema:EntryPoint",
+      "schema:name": "exchange_search",
+      "schema:description": "Find data exchanges between UK public sector organisations by journey (for example 'register a death', 'claim universal credit', 'set up a limited company'), organisation or identifier. Each result gives the parties, what flows, how, the shared identifiers, the standards involved, the legal basis where known, suggested api_search queries and sources with a provenance label. Also returns counts from the Digital Economy Act register of information sharing agreements. Descriptive only: this server never takes part in an exchange.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:standard/esda",
       "@type": "schema:CreativeWork",
-      "schema:name": "UK Cross-Government Metadata Exchange Model (xGov MEM)",
-      "schema:url": "https://co-cddo.github.io/ukgov-metadata-exchange-model/",
-      "schema:license": "Open Government Licence v3.0",
-      "schema:creativeWorkStatus": "Endorsed for implementation by the Data Standards Authority Steering Board",
+      "schema:name": "Essential Shared Data Assets (ESDA) policy",
+      "schema:url": "https://www.gov.uk/government/publications/essential-shared-data-assets-and-data-ownership-in-government",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Policy, in beta",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government departments",
+      "schema:publisher": "Government Digital Service",
       "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/csv-rfc4180",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Common Format and MIME Type for Comma-Separated Values (CSV) Files (RFC 4180)",
+      "schema:url": "https://www.rfc-editor.org/rfc/rfc4180",
+      "schema:license": "Not stated in the catalogue",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "IETF (endorsed by the DSA)",
+      "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
@@ -153,48 +196,26 @@
       "schema:url": "https://www.w3.org/TR/vocab-dcat-3/",
       "schema:license": "W3C",
       "schema:creativeWorkStatus": "Base standard of xGov MEM",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "W3C (endorsed by the DSA)",
       "ndl:provenance": "V",
       "dct:date": "2026-11-08"
     },
     {
-      "@id": "ndl:standard/atrs",
+      "@id": "ndl:standard/odf-1-2",
       "@type": "schema:CreativeWork",
-      "schema:name": "Algorithmic Transparency Reporting Standard (ATRS)",
-      "schema:url": "https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub",
-      "schema:license": "Open Government Licence v3.0",
+      "schema:name": "Open Document Format (ODF) 1.2",
+      "schema:url": "https://docs.oasis-open.org/office/v1.2/OpenDocument-v1.2.html",
+      "schema:license": "See the publisher's page",
       "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "OASIS (endorsed by the DSA)",
       "ndl:provenance": "V",
-      "dct:date": "2026-11-08"
-    },
-    {
-      "@id": "ndl:standard/bods",
-      "@type": "schema:CreativeWork",
-      "schema:name": "Beneficial Ownership Data Standard (BODS) v0.2",
-      "schema:url": "https://standard.openownership.org/",
-      "schema:license": "Apache License 2.0",
-      "schema:creativeWorkStatus": "Endorsed",
-      "ndl:provenance": "V",
-      "dct:date": "2026-11-08"
-    },
-    {
-      "@id": "ndl:standard/csv-rfc4180",
-      "@type": "schema:CreativeWork",
-      "schema:name": "Common Format and MIME Type for Comma-Separated Values (CSV) Files (RFC 4180)",
-      "schema:url": "https://www.rfc-editor.org/rfc/rfc4180",
-      "schema:license": "Not stated in the catalogue",
-      "schema:creativeWorkStatus": "Endorsed",
-      "ndl:provenance": "V",
-      "dct:date": "2026-11-08"
-    },
-    {
-      "@id": "ndl:standard/openapi-3",
-      "@type": "schema:CreativeWork",
-      "schema:name": "OpenAPI 3 (describing RESTful APIs)",
-      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government",
-      "schema:license": "Apache License 2.0",
-      "schema:creativeWorkStatus": "Recommended open standard for government",
-      "ndl:provenance": "V",
-      "dct:date": "2026-11-08"
+      "dct:date": "2026-11-20"
     },
     {
       "@id": "ndl:standard/open-referral-uk",
@@ -203,8 +224,1017 @@
       "schema:url": "https://openreferraluk.org/",
       "schema:license": "Creative Commons Attribution-ShareAlike 4.0",
       "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "Open Referral UK (endorsed by the DSA)",
       "ndl:provenance": "V",
       "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/xgov-mem",
+      "@type": "schema:CreativeWork",
+      "schema:name": "UK Cross-Government Metadata Exchange Model (xGov MEM)",
+      "schema:url": "https://co-cddo.github.io/ukgov-metadata-exchange-model/",
+      "schema:license": "Open Government Licence v3.0",
+      "schema:creativeWorkStatus": "Endorsed for implementation by the Data Standards Authority Steering Board",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Data Standards Authority",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/uk-gemini",
+      "@type": "schema:CreativeWork",
+      "schema:name": "UK GEMINI",
+      "schema:url": "https://www.agi.org.uk/uk-gemini/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "AGI (endorsed by the DSA)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/tabular-data-standard",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Tabular data standard",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government/tabular-data-standard",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Data Standards Authority",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/geospatial-register",
+      "@type": "schema:CreativeWork",
+      "schema:name": "UK Geospatial Data Standards Register",
+      "schema:url": "https://www.gov.uk/government/publications/uk-geospatial-data-standards-register",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "Geospatial Commission",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/csvw",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Using metadata to describe CSV data (CSV on the Web)",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government/using-metadata-to-describe-csv-data",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Data Standards Authority",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/metadata-shared-data",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Using metadata to describe data shared within government",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government/using-metadata-to-describe-data-shared-within-government",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Data Standards Authority",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/metadata-tabular-publishing",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Using metadata to describe tabular data for publishing",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government/using-metadata-to-describe-tabular-data-for-publishing",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Data Standards Authority",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/dcat-ap-uk",
+      "@type": "schema:CreativeWork",
+      "schema:name": "DCAT-AP-UK (proposed UK application profile of DCAT)",
+      "schema:url": "https://github.com/cyberdudeuk/dcat-ap-uk",
+      "schema:license": "See the repository",
+      "schema:creativeWorkStatus": "Proposed, not endorsed",
+      "schema:about": "Data and metadata",
+      "ndl:obligation": "Proposed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Independent proposal by the owner of this server",
+      "ndl:provenance": "U",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/api-standards",
+      "@type": "schema:CreativeWork",
+      "schema:name": "API technical and data standards",
+      "schema:url": "https://www.gov.uk/guidance/gds-api-technical-and-data-standards",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Government guidance",
+      "schema:about": "APIs and integration",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Government Digital Service",
+      "ndl:provenance": "K",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/openapi-3",
+      "@type": "schema:CreativeWork",
+      "schema:name": "OpenAPI 3 (describing RESTful APIs)",
+      "schema:url": "https://www.gov.uk/government/publications/recommended-open-standards-for-government",
+      "schema:license": "Apache License 2.0",
+      "schema:creativeWorkStatus": "Recommended open standard for government",
+      "schema:about": "APIs and integration",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "OpenAPI Initiative (recommended by the DSA)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/uprn-usrn",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Unique Property Reference Number (UPRN) and Unique Street Reference Number (USRN)",
+      "schema:url": "https://www.gov.uk/government/publications/open-standards-for-government/identifying-property-and-street-information",
+      "schema:license": "Open Government Licence v3.0 (the identifiers and their grid references)",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Identifiers and reference data",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "Open Standards Board (GeoPlace maintains the identifiers)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/doi",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Digital Object Identifier (DOI) System",
+      "schema:url": "https://www.doi.org/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Identifiers and reference data",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "International DOI Foundation (endorsed by the DSA)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/iso-20022",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ISO 20022 (universal financial industry message scheme)",
+      "schema:url": "https://www.iso20022.org/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "In review",
+      "schema:about": "Identifiers and reference data",
+      "ndl:obligation": "In review",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "ISO (under DSA review)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/cyber-essentials",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Cyber Essentials and Cyber Essentials Plus",
+      "schema:url": "https://www.ncsc.gov.uk/cyberessentials/overview",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Required for certain contracts",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "Suppliers on certain public contracts (PPN 014)",
+      "schema:publisher": "DSIT and NCSC, delivered by IASME",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/govassure",
+      "@type": "schema:CreativeWork",
+      "schema:name": "GovAssure",
+      "schema:url": "https://www.security.gov.uk/policy-and-guidance/govassure/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government organisations",
+      "schema:publisher": "Government Security Group and NCSC",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/ncsc-caf",
+      "@type": "schema:CreativeWork",
+      "schema:name": "NCSC Cyber Assessment Framework (CAF)",
+      "schema:url": "https://www.ncsc.gov.uk/collection/cyber-assessment-framework",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government (through GovAssure); essential services",
+      "schema:publisher": "National Cyber Security Centre",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/secure-by-design",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Secure by Design",
+      "schema:url": "https://www.security.gov.uk/policy-and-guidance/secure-by-design/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "Central government and arm's length bodies; optional for the wider public sector",
+      "schema:publisher": "Government Security Group, DSIT and NCSC",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/security-txt",
+      "@type": "schema:CreativeWork",
+      "schema:name": "security.txt (RFC 9116)",
+      "schema:url": "https://www.rfc-editor.org/rfc/rfc9116",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "IETF (endorsed by the DSA)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/cyber-governance-code",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Cyber Governance Code of Practice",
+      "schema:url": "https://www.gov.uk/government/publications/cyber-governance-code-of-practice",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Voluntary",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Voluntary",
+      "ndl:appliesTo": "All organisations' boards and directors",
+      "schema:publisher": "DSIT and NCSC",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/software-security-code",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Software Security Code of Practice",
+      "schema:url": "https://www.gov.uk/government/publications/software-security-code-of-practice",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Voluntary",
+      "schema:about": "Cyber security",
+      "ndl:obligation": "Voluntary",
+      "ndl:appliesTo": "Organisations that develop or sell software to other organisations",
+      "schema:publisher": "DSIT and NCSC",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/govs-005",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Government Functional Standard GovS 005: Digital",
+      "schema:url": "https://assets.publishing.service.gov.uk/media/6ac79c84e8ef5609e7c933b4/GovS005_Digital_v2.2_2026.pdf",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Cabinet Office and DSIT",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/service-standard",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Service Standard",
+      "schema:url": "https://www.gov.uk/service-manual/service-standard",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government services (assessed for in-scope services)",
+      "schema:publisher": "Government Digital Service",
+      "ndl:provenance": "K",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/tcop",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Technology Code of Practice",
+      "schema:url": "https://www.gov.uk/guidance/the-technology-code-of-practice",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK government technology projects",
+      "schema:publisher": "Government Digital Service",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/wcag-2-2",
+      "@type": "schema:CreativeWork",
+      "schema:name": "WCAG 2.2 level AA and the public sector accessibility regulations",
+      "schema:url": "https://www.gov.uk/guidance/accessibility-requirements-for-public-sector-websites-and-apps",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK public sector websites and apps",
+      "schema:publisher": "W3C; required by the Public Sector Bodies Accessibility Regulations 2018",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/digital-scotland-service-standard",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Digital Scotland Service Standard",
+      "schema:url": "https://www.gov.scot/publications/digital-scotland-service-standard/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "All organisations asked to work towards it",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "Organisations delivering public services in Scotland",
+      "schema:publisher": "Scottish Government",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/wales-digital-service-standard",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Digital Service Standard for Wales",
+      "schema:url": "https://www.gov.wales/digital-service-standard",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Published standard",
+      "schema:about": "Digital services and accessibility",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "Public services in Wales",
+      "schema:publisher": "Welsh Government (Digital Public Services Wales)",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/gpg-45",
+      "@type": "schema:CreativeWork",
+      "schema:name": "GPG 45: How to check someone's identity",
+      "schema:url": "https://www.gov.uk/government/publications/how-to-check-someones-identity-1-0",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Recommended",
+      "schema:about": "Identity",
+      "ndl:obligation": "Recommended",
+      "ndl:appliesTo": "Anyone checking identity, including GOV.UK One Login",
+      "schema:publisher": "Office for Digital Identities and Attributes (DSIT)",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/dvs-trust-framework",
+      "@type": "schema:CreativeWork",
+      "schema:name": "UK digital verification services trust framework",
+      "schema:url": "https://www.gov.uk/guidance/digital-identity",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Voluntary",
+      "schema:about": "Identity",
+      "ndl:obligation": "Voluntary",
+      "ndl:appliesTo": "Organisations offering digital identity services",
+      "schema:publisher": "Office for Digital Identities and Attributes (DSIT)",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/fhir-uk-core",
+      "@type": "schema:CreativeWork",
+      "schema:name": "FHIR UK Core (HL7 FHIR R4)",
+      "schema:url": "https://standards.nhs.uk/published-standards/uk-core-fhir-release-4-governance",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Health and care",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "Health and care IT in England (NHS service standard)",
+      "schema:publisher": "NHS England",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/nhs-number",
+      "@type": "schema:CreativeWork",
+      "schema:name": "NHS number",
+      "schema:url": "https://service-manual.nhs.uk/service-standard/17-make-your-service-interoperable",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Health and care",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "Identifying patients in England, Wales and the Isle of Man",
+      "schema:publisher": "NHS England",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/snomed-ct",
+      "@type": "schema:CreativeWork",
+      "schema:name": "SNOMED CT",
+      "schema:url": "https://www.england.nhs.uk/digitaltechnology/info-revolution/interoperability/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Mandatory",
+      "schema:about": "Health and care",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "Electronic care records in England",
+      "schema:publisher": "NHS England (UK release)",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/ocds",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Open Contracting Data Standard (OCDS)",
+      "schema:url": "https://standard.open-contracting.org/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Selected by the Open Standards Board; used for all notices under the Procurement Act 2023",
+      "schema:about": "Procurement, grants and transparency",
+      "ndl:obligation": "Mandatory",
+      "ndl:appliesTo": "UK public procurement (Procurement Act 2023)",
+      "schema:publisher": "Open Contracting Partnership; used by the Cabinet Office central digital platform",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/atrs",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Algorithmic Transparency Reporting Standard (ATRS)",
+      "schema:url": "https://www.gov.uk/government/collections/algorithmic-transparency-recording-standard-hub",
+      "schema:license": "Open Government Licence v3.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Procurement, grants and transparency",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "Government Digital Service",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-08"
+    },
+    {
+      "@id": "ndl:standard/bods",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Beneficial Ownership Data Standard (BODS) v0.3",
+      "schema:url": "https://standard.openownership.org/",
+      "schema:license": "Apache License 2.0",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Procurement, grants and transparency",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "Open Ownership (endorsed by the DSA)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/iati",
+      "@type": "schema:CreativeWork",
+      "schema:name": "International Aid Transparency Initiative (IATI) Standard",
+      "schema:url": "https://iatistandard.org/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "Endorsed",
+      "schema:about": "Procurement, grants and transparency",
+      "ndl:obligation": "Endorsed",
+      "ndl:appliesTo": "UK government",
+      "schema:publisher": "IATI",
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:standard/360giving",
+      "@type": "schema:CreativeWork",
+      "schema:name": "360Giving Data Standard",
+      "schema:url": "https://standard.threesixtygiving.org/",
+      "schema:license": "See the publisher's page",
+      "schema:creativeWorkStatus": "In review",
+      "schema:about": "Procurement, grants and transparency",
+      "ndl:obligation": "In review",
+      "ndl:appliesTo": "UK public sector",
+      "schema:publisher": "360Giving (under DSA review)",
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/rti-universal-credit",
+      "@type": "schema:Action",
+      "schema:name": "Earnings from payroll to Universal Credit",
+      "schema:description": "Pay As You Earn earnings reported by employers in real time (RTI) for Universal Credit claimants",
+      "ndl:journey": "Claim Universal Credit",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "HMRC",
+        "DWP",
+        "Local authorities"
+      ],
+      "ndl:mechanism": "DWP's Real Time Earnings system requests RTI data from HMRC for claimants several times a day; DWP passes some PAYE data on to local authorities for Housing Benefit",
+      "ndl:sharedIdentifier": [
+        "National Insurance number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/api-standards"
+        },
+        {
+          "@id": "ndl:standard/esda"
+        }
+      ],
+      "dct:source": [
+        "https://data.parliament.uk/DepositedPapers/Files/DEP2024-0673/138_Real_Time_Information_V12.0.pdf",
+        "https://www.gov.uk/hmrc-internal-manuals/paye-manual/paye5001",
+        "https://committees.parliament.uk/writtenevidence/79051/html/"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/tell-us-once",
+      "@type": "schema:Action",
+      "schema:name": "Report a death once to many services",
+      "schema:description": "Notification of a death and the details needed to stop benefits, cancel a passport and driving licence, and update council services",
+      "ndl:journey": "Report a death",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "Registrars (local authorities)",
+        "DWP",
+        "HMRC",
+        "HM Passport Office",
+        "DVLA",
+        "Local authority services",
+        "Social Security Scotland",
+        "Public sector pension schemes"
+      ],
+      "ndl:mechanism": "The registrar gives a Tell Us Once reference; the service, run by DWP, notifies the organisations the informant consents to",
+      "ndl:sharedIdentifier": [
+        "National Insurance number",
+        "Passport number",
+        "Driving licence number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/uprn-usrn"
+        }
+      ],
+      "dct:source": [
+        "https://www.mygov.scot/tell-us-once",
+        "https://civilservicelocal.blog.gov.uk/2018/11/16/a-spotlight-on-tell-us-once/"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/civil-registration",
+      "@type": "schema:Action",
+      "schema:name": "Birth, death and marriage registrations shared with services",
+      "schema:description": "Birth, death, marriage and civil partnership registration details, and NHS numbers linked with births and deaths",
+      "ndl:journey": "Register a birth or death",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "General Register Office",
+        "DWP",
+        "HM Passport Office",
+        "NHS"
+      ],
+      "ndl:mechanism": "Civil registration powers in Part 5 of the Digital Economy Act; many agreements use electronic verification",
+      "ndl:sharedIdentifier": [
+        "NHS number",
+        "National Insurance number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/nhs-number"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/662",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/88",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/79"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/register-to-vote",
+      "@type": "schema:Action",
+      "schema:name": "Register to vote: identity checked against DWP records",
+      "schema:description": "Name, date of birth, address and National Insurance number of the applicant",
+      "ndl:journey": "Register to vote",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "Electoral registration officers (local authorities)",
+        "MHCLG (digital service)",
+        "DWP"
+      ],
+      "ndl:mechanism": "The central Register to vote digital service matches applications against DWP data; results go to the electoral registration officer",
+      "ndl:sharedIdentifier": [
+        "National Insurance number",
+        "UPRN"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/uprn-usrn"
+        }
+      ],
+      "dct:source": [
+        "https://www.registertovote.service.gov.uk/register-to-vote/privacy",
+        "https://www.gov.uk/government/publications/using-data-matching-to-confirm-electors-in-great-britain"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/prove-identity",
+      "@type": "schema:Action",
+      "schema:name": "Prove your identity once to use government services",
+      "schema:description": "The minimum data to check an identity or match a user to an existing record, and credentials such as a driving licence or veteran card for the GOV.UK wallet",
+      "ndl:journey": "Prove your identity online",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "Government Digital Service (GOV.UK One Login)",
+        "HMRC",
+        "DWP",
+        "DVLA",
+        "Ministry of Defence"
+      ],
+      "ndl:mechanism": "API between GOV.UK One Login and each department",
+      "ndl:sharedIdentifier": [
+        "National Insurance number",
+        "Driving licence number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/gpg-45"
+        },
+        {
+          "@id": "ndl:standard/dvs-trust-framework"
+        },
+        {
+          "@id": "ndl:standard/api-standards"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/353",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/415",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/520"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/warm-home-discount",
+      "@type": "schema:Action",
+      "schema:name": "Help with energy bills: benefit data matched for suppliers",
+      "schema:description": "Whether a customer gets a qualifying benefit, matched against suppliers' customer lists",
+      "ndl:journey": "Get help with energy bills",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "DWP",
+        "DESNZ",
+        "Energy suppliers"
+      ],
+      "ndl:mechanism": "Data matching; agreements use encrypted email and secure platforms",
+      "ndl:sharedIdentifier": [
+        "Name and address",
+        "UPRN"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/uprn-usrn"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/667",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/648"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/water-poverty",
+      "@type": "schema:Action",
+      "schema:name": "Help with water bills: benefit data matched for water companies",
+      "schema:description": "Whether a customer gets a qualifying benefit",
+      "ndl:journey": "Get help with water bills",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "DWP",
+        "Water companies"
+      ],
+      "ndl:mechanism": "Data matching by secure file transfer",
+      "ndl:sharedIdentifier": [
+        "Name and address"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/uprn-usrn"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/561"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/public-sector-debt",
+      "@type": "schema:Action",
+      "schema:name": "Debts owed to the public sector: councils, HMRC and DWP",
+      "schema:description": "Contact, income and employment details of people who owe money to more than one body",
+      "ndl:journey": "Repay money owed to a council or government",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "Local authorities",
+        "HMRC",
+        "DWP"
+      ],
+      "ndl:mechanism": "Agreements use secure file transfer and secure platforms; many are council by council",
+      "ndl:sharedIdentifier": [
+        "National Insurance number",
+        "Name and address"
+      ],
+      "dct:references": [],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/628",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/525"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/free-school-meals",
+      "@type": "schema:Action",
+      "schema:name": "Free school meals: eligibility checked once",
+      "schema:description": "Surname, date of birth and National Insurance number or asylum support number; the answer is eligible or not",
+      "ndl:journey": "Apply for free school meals",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "DfE",
+        "Local authorities",
+        "DWP",
+        "HMRC",
+        "Home Office"
+      ],
+      "ndl:mechanism": "DfE's eligibility checking service queries DWP, HMRC and Home Office data for local authorities",
+      "ndl:sharedIdentifier": [
+        "National Insurance number",
+        "National Asylum Support Service number"
+      ],
+      "dct:references": [],
+      "dct:source": [
+        "https://check-free-school-meals-admin.education.gov.uk/",
+        "https://rd.springer.com/content/pdf/10.1007/978-3-642-38411-0_10.pdf"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/early-learning-scotland",
+      "@type": "schema:Action",
+      "schema:name": "Funded early learning and childcare in Scotland",
+      "schema:description": "Data to identify and evaluate eligibility for funded early learning and childcare",
+      "ndl:journey": "Get funded childcare (Scotland)",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "Scottish Government",
+        "Local authorities (Scotland)",
+        "DWP"
+      ],
+      "ndl:mechanism": "Within a secure platform",
+      "ndl:sharedIdentifier": [
+        "Name and address"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/digital-scotland-service-standard"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/533",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/532"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/right-to-work",
+      "@type": "schema:Action",
+      "schema:name": "Prove your right to work or rent with a share code",
+      "schema:description": "A live view of the person's immigration status, shown only with their share code and date of birth",
+      "ndl:journey": "Prove your right to work or rent",
+      "schema:audience": "Citizen and business",
+      "schema:participant": [
+        "Home Office",
+        "Employers",
+        "Landlords"
+      ],
+      "ndl:mechanism": "Home Office online services; the person generates a share code from their eVisa",
+      "ndl:sharedIdentifier": [
+        "Share code",
+        "Date of birth"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/dvs-trust-framework"
+        }
+      ],
+      "dct:source": [
+        "https://www.gov.uk/prove-right-to-work/get-a-share-code-online",
+        "https://www.gov.uk/government/publications/right-to-work-checks-employers-guide/employers-guide-to-right-to-work-checks-8-february-2024-accessible"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/driving-licence-photo",
+      "@type": "schema:Action",
+      "schema:name": "Driving licence applications reuse your passport photo",
+      "schema:description": "The passport photo, and identity confirmation from passport records",
+      "ndl:journey": "Apply for or renew a driving licence",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "DVLA",
+        "HM Passport Office"
+      ],
+      "ndl:mechanism": "DVLA's secure link with HM Passport Office, with the applicant's agreement",
+      "ndl:sharedIdentifier": [
+        "Passport number",
+        "Driver number"
+      ],
+      "dct:references": [],
+      "dct:source": [
+        "https://www.gov.uk/id-for-driving-licence",
+        "https://www.gov.uk/government/news/dvla-adds-2-more-services-to-its-driver-and-vehicles-account-service"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/buy-a-home",
+      "@type": "schema:Action",
+      "schema:name": "Buying a home: Stamp Duty return to land registration",
+      "schema:description": "The SDLT5 certificate and Unique Transaction Reference Number showing the Stamp Duty Land Tax return was made",
+      "ndl:journey": "Buy a home",
+      "schema:audience": "Citizen and business",
+      "schema:participant": [
+        "HMRC",
+        "HM Land Registry",
+        "Conveyancers"
+      ],
+      "ndl:mechanism": "The conveyancer files the return with HMRC and sends the SDLT5 with the registration application; the link is a document, not a system-to-system exchange",
+      "ndl:sharedIdentifier": [
+        "Unique Transaction Reference Number",
+        "Title number",
+        "UPRN"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/uprn-usrn"
+        }
+      ],
+      "dct:source": [
+        "https://www.gov.uk/guidance/stamp-duty-land-tax-online-and-paper-returns",
+        "https://www.gov.uk/hmrc-internal-manuals/stamp-duty-land-tax-manual/sdltm50200"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/set-up-a-company",
+      "@type": "schema:Action",
+      "schema:name": "Set up a company and register for Corporation Tax together",
+      "schema:description": "Company registration details, passed on so the company is set up for Corporation Tax",
+      "ndl:journey": "Set up a limited company",
+      "schema:audience": "Business",
+      "schema:participant": [
+        "Companies House",
+        "HMRC"
+      ],
+      "ndl:mechanism": "Joint service: registering with Companies House usually sets the company up for Corporation Tax too",
+      "ndl:sharedIdentifier": [
+        "Company registration number",
+        "Unique Taxpayer Reference"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/bods"
+        }
+      ],
+      "dct:source": [
+        "https://www.gov.uk/limited-company-formation/register-your-company",
+        "https://www.gov.uk/government/news/helping-hand-to-set-up-new-businesses"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/ukef-hmrc",
+      "@type": "schema:Action",
+      "schema:name": "Export finance and trade: UK Export Finance and HMRC",
+      "schema:description": "VAT and EORI checks on exporters, published trade statistics and commodity codes",
+      "ndl:journey": "Export goods with export finance",
+      "schema:audience": "Business",
+      "schema:participant": [
+        "UK Export Finance",
+        "HMRC",
+        "Department for Business and Trade"
+      ],
+      "ndl:mechanism": "Published HMRC APIs; restricted customs data needs a legal route",
+      "ndl:sharedIdentifier": [
+        "VAT registration number",
+        "EORI number",
+        "Commodity code"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/api-standards"
+        },
+        {
+          "@id": "ndl:standard/openapi-3"
+        }
+      ],
+      "dct:source": [
+        "https://developer.service.hmrc.gov.uk/api-documentation",
+        "https://www.uktradeinfo.com/api-documentation"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/public-procurement",
+      "@type": "schema:Action",
+      "schema:name": "Bid for a public contract: one platform, one data standard",
+      "schema:description": "Procurement notices and supplier information, with unique identifiers for authorities, suppliers, procurements and contracts",
+      "ndl:journey": "Find and bid for a public contract",
+      "schema:audience": "Business",
+      "schema:participant": [
+        "Cabinet Office (central digital platform)",
+        "Contracting authorities",
+        "Suppliers"
+      ],
+      "ndl:mechanism": "All notices under the Procurement Act 2023 are published on the central digital platform, structured in OCDS",
+      "ndl:sharedIdentifier": [
+        "Supplier and contracting authority identifiers"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/ocds"
+        },
+        {
+          "@id": "ndl:standard/cyber-essentials"
+        }
+      ],
+      "dct:source": [
+        "https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-procure-phase/guidance-central-digital-platform-and-publication-of-information-html",
+        "https://www.gov.uk/government/publications/procurement-act-2023-short-guides/buyers-and-suppliers-how-to-use-the-central-digital-platform-the-enhanced-find-a-tender-service-html"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
+      "@id": "ndl:exchange/education-fraud",
+      "@type": "schema:Action",
+      "schema:name": "Education funding fraud checks by API",
+      "schema:description": "Data to prevent fraud in education funding",
+      "ndl:journey": "Apply for education funding",
+      "schema:audience": "Public body",
+      "schema:participant": [
+        "DfE",
+        "HMRC"
+      ],
+      "ndl:mechanism": "API",
+      "ndl:sharedIdentifier": [
+        "National Insurance number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/api-standards"
+        }
+      ],
+      "dct:source": [
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/279"
+      ],
+      "ndl:provenance": "V",
+      "dct:date": "2026-11-20"
     },
     {
       "@id": "ndl:xgov-mem-classes",
@@ -266,6 +1296,24 @@
       "@id": "ndl:glossary",
       "@type": "skos:ConceptScheme",
       "skos:prefLabel": "Glossary"
+    },
+    {
+      "@id": "ndl:term/ai-assistant",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "AI assistant",
+      "skos:definition": "A chat tool such as Claude, ChatGPT or Copilot that answers questions in everyday language. With an MCP server plugged in, it can look things up in sources it could not reach on its own.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/api",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "API",
+      "skos:definition": "Application programming interface: a way for one computer system to ask another for data or to do something, without a person in between. Many government services offer APIs alongside their websites.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
     },
     {
       "@id": "ndl:term/api-catalogue",
@@ -340,6 +1388,15 @@
       }
     },
     {
+      "@id": "ndl:term/data-exchange",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Data exchange",
+      "skos:definition": "Data passing from one organisation to another for a stated purpose, such as payroll earnings going from HMRC to DWP so Universal Credit can be worked out.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/data-service",
       "@type": "skos:Concept",
       "skos:prefLabel": "Data service",
@@ -385,6 +1442,24 @@
       }
     },
     {
+      "@id": "ndl:term/information-sharing-agreement",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Information sharing agreement",
+      "skos:definition": "A written agreement between organisations setting out what personal data they share, why, how, for how long and under which law. Agreements under the Digital Economy Act 2017 are listed on a public register.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/legal-gateway",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Legal gateway",
+      "skos:definition": "The law that allows one public body to share data with another for a particular purpose. Without one, a body may not be allowed to share, even when sharing would help.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/linkml",
       "@type": "skos:Concept",
       "skos:prefLabel": "LinkML",
@@ -403,10 +1478,46 @@
       }
     },
     {
+      "@id": "ndl:term/mcp-prompt",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "MCP prompt",
+      "skos:definition": "A ready-made task an MCP server offers to an AI assistant, such as 'map the data exchanges behind a journey'. It is text that asks the assistant to use the tools; it does not act by itself.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/mcp-server",
       "@type": "skos:Concept",
       "skos:prefLabel": "MCP server",
       "skos:definition": "A program that offers tools and resources to an AI assistant using MCP. This repository is one.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/metadata",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Metadata",
+      "skos:definition": "Data about data: the title, description, publisher, licence, dates and format that tell you what a dataset is and whether you can use it.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/national-data-library",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "National Data Library",
+      "skos:definition": "The UK government's programme, led by DSIT with GDS, to make public sector data easier to find and use. Since early 2026 the data.gov.uk website has been turning into it. The NDL in this project's name.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/open-standard",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Open standard",
+      "skos:definition": "A published, openly available specification that anyone can use, so that different systems and organisations can work together without being tied to one supplier.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -425,6 +1536,15 @@
       "@type": "skos:Concept",
       "skos:prefLabel": "Provenance label",
       "skos:definition": "How sure a stated fact is: V verified at the primary source, S found through search, K background knowledge, U unconfirmed.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/read-only",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Read-only",
+      "skos:definition": "Only looks at information; never changes, adds or deletes anything. Every tool in this server is read-only.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -588,6 +1708,9 @@
         },
         {
           "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
         }
       ],
       "ndl:journey": {
@@ -612,6 +1735,9 @@
         },
         {
           "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
         }
       ],
       "ndl:journey": {
@@ -648,6 +1774,9 @@
         },
         {
           "@id": "ndl:tool/server_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
         }
       ],
       "ndl:journey": {
@@ -672,6 +1801,9 @@
         },
         {
           "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
         }
       ],
       "ndl:journey": {
@@ -715,6 +1847,72 @@
       ],
       "ndl:journey": {
         "@id": "ndl:journey/champion"
+      }
+    },
+    {
+      "@id": "ndl:persona/trade-analyst",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Export finance or trade analyst",
+      "schema:description": "Know today which HMRC and other published APIs could help, how access works, and what needs a legal route, without waiting for a new platform.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/find-data"
+      }
+    },
+    {
+      "@id": "ndl:persona/researcher",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Researcher, journalist or civil society organisation",
+      "schema:description": "Find the data, the rules and the exchanges behind a public service, with sources good enough to cite.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/find-data"
+      }
+    },
+    {
+      "@id": "ndl:persona/ai-developer",
+      "@type": "schema:Audience",
+      "schema:audienceType": "AI model or MCP developer",
+      "schema:description": "Connect assistants to government data through a read-only server with clear safeguards, sources and provenance on every answer.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/server_search"
+        },
+        {
+          "@id": "ndl:tool/exchange_search"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/set-up"
       }
     },
     {
@@ -1211,6 +2409,23 @@
       ],
       "dct:references": {
         "@id": "ndl:tool/metadata_validate"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-journey",
+      "@type": "schema:CreativeWork",
+      "schema:name": "What data moves when someone dies?",
+      "schema:text": "Using exchange_search, show the data exchanges behind registering and reporting a death: who is told, what moves, which identifiers join it, the legal basis and sources. Then list what still relies on email or paper.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/exchange_search"
       }
     },
     {
@@ -1778,6 +2993,38 @@
       "schema:name": "D-039",
       "schema:description": "In light mode the DQ Commons mark in the ecosystem diagram showed only a yellow dot",
       "ndl:check": "C-31: ecosystem node styles target only the direct `> rect` child",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-040",
+      "@type": "schema:Thing",
+      "schema:name": "D-040",
+      "schema:description": "The page filed `api_search` and `server_search` under \"Other\" in the tool filter",
+      "ndl:check": "C-33: every registered tool has a job in the map",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-041",
+      "@type": "schema:Thing",
+      "schema:name": "D-041",
+      "schema:description": "The two buttons in the \"Search or ask\" answer card had white text on a white card (contrast 1.00:1)",
+      "ndl:check": "C-34: `btn--line` appears only inside the hero; the visual audit also now opens the search dialog with a question typed and fails on its contrast",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-042",
+      "@type": "schema:Thing",
+      "schema:name": "D-042",
+      "schema:description": "`metadata_validate` accepted a metadata record of any size, so one huge input could tie up the server (CWE-400)",
+      "ndl:check": "C-35: every string input has a length limit or an anchored pattern, and every record input a size limit (100 KB for records)",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-043",
+      "@type": "schema:Thing",
+      "schema:name": "D-043",
+      "schema:description": "\"Search or ask\" missed the Tell Us Once exchange for \"what data moves when someone dies?\" and ranked a glossary entry above it",
+      "ndl:check": "C-36: test/ask-rank.test.ts runs plain-English questions against the built index and requires the right passages in the top four",
       "ndl:status": "Fixed"
     }
   ]

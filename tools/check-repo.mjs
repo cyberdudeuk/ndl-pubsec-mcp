@@ -68,6 +68,35 @@ export function checkRepo(root) {
     if (!tests.includes(`name: "${t}"`)) problems.push(`C-05 ${t}: no test calls this tool through callTool`);
     if (!dict.includes(`\`${t}\``)) problems.push(`C-05 ${t}: missing from docs/data-dictionary.md`);
   }
+  // C-33 (defect D-040): every tool has a job in the page's tool filter, so none is filed under "Other"
+  {
+    const build = readFileSync(join(root, "tools", "build-site.mjs"), "utf8");
+    const job = (build.match(/const JOB = \{([^}]*)\}/) ?? ["", ""])[1];
+    const jobs = new Set([...job.matchAll(/([a-z_]+):/g)].map((m) => m[1]));
+    for (const t of tools) if (!jobs.has(t)) problems.push(`C-33 tools/build-site.mjs: tool ${t} has no job in JOB, so the page files it under "Other"`);
+  }
+  // C-34 (defect D-041): the hero-only button style (white on transparent) is never used on a light surface
+  {
+    const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
+    const outsideHero = page.replace(/<section class="hero"[\s\S]*?<\/section>/, "");
+    if (/class="[^"]*\bbtn--line\b/.test(outsideHero)) problems.push("C-34 docs/index.html: btn--line is used outside the hero, where it is white text on a light surface; use btn--outline");
+    for (const f of ["tools/site/assist.js", "tools/site/site.js", "tools/site/extra-sections.mjs", "tools/site/guide-sections.mjs"]) {
+      if (existsSync(join(root, f)) && /["'`][^"'`]*\bbtn btn--line\b/.test(readFileSync(join(root, f), "utf8"))) problems.push(`C-34 ${f}: btn--line is for the dark hero only; use btn--outline`);
+    }
+  }
+  // C-35 (defect D-042): every tool input is bounded: strings by .max() or an anchored regex, records by a size refine
+  for (const [i, line] of server.split("\n").entries()) {
+    if (/z\.string\(\)/.test(line) && !/\.max\(|\.regex\(\/\^.*\$\//.test(line) && !/\.record\(z\.string\(\)/.test(line)) problems.push(`C-35 src/server.ts:${i + 1}: a string input with no length limit`);
+    if (/z\s*$/.test(line) || /\.record\(/.test(line)) {
+      const window = server.split("\n").slice(i, i + 3).join(" ");
+      if (/\.record\(/.test(window) && !/\.refine\(/.test(window)) problems.push(`C-35 src/server.ts:${i + 1}: a record input with no size limit`);
+    }
+  }
+  // C-36 (defect D-043): the search ranking keeps its plain-English question tests
+  {
+    const t = existsSync(join(root, "test", "ask-rank.test.ts")) ? readFileSync(join(root, "test", "ask-rank.test.ts"), "utf8") : "";
+    for (const id of ["#xch-tell-us-once", "#xch-ukef-hmrc"]) if (!t.includes(id)) problems.push(`C-36 test/ask-rank.test.ts: no longer checks that a plain-English question finds ${id}`);
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -247,7 +276,7 @@ export function checkRepo(root) {
   };
   for (const [where, text] of Object.entries(ownStatements)) {
     for (const sentence of text.split(/(?<=\.)\s+|\n+/)) {
-      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem|API catalogue|co-cddo\/api-catalogue/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
+      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem|API catalogue|co-cddo\/api-catalogue|Digital Economy Act register/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
     }
   }
   if (!/© 2026 Emanuel Silva/.test(ownStatements["README.md"])) problems.push("C-29 README.md: the licence section does not name the copyright holder (ADR 0007)");
@@ -324,5 +353,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-32)");
+  console.log("repository checks passed (C-01 to C-36)");
 }

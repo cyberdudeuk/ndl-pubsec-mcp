@@ -15,6 +15,16 @@ Check this Dataset record against xGov MEM and list anything I must fix before I
 
 Check it: Each finding names the attribute path. Fix the errors; consider the warnings.
 
+## What data moves when someone dies?
+
+For: Analyst or researcher, Policy or product colleague. Tool: `exchange_search`.
+
+```text
+Using exchange_search, show the data exchanges behind registering and reporting a death: who is told, what moves, which identifiers join it, the legal basis and sources. Then list what still relies on email or paper.
+```
+
+Check it: Each exchange names its sources and a provenance label. Read the source before relying on it; S means found through search.
+
 ## Catch a misspelt attribute
 
 For: Catalogue publisher, Metadata or standards lead. Tool: `metadata_validate`.
@@ -107,6 +117,7 @@ Check it: Candidates are listed for review only and are not endorsed. Read each 
 
 ## Tips
 
+- Press / anywhere on the page to search or ask a question in plain English.
 - Name the tool in your prompt when you need a specific one.
 - Ask for a table with the catalogue link in every row, so each answer can be checked.
 - Ask the assistant to say how sure it is, and which tool each fact came from.
