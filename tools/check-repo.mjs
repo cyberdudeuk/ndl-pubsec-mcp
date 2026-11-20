@@ -147,7 +147,7 @@ export function checkRepo(root) {
     const cffLic = [...cff.matchAll(/^\s+-\s+([A-Za-z0-9.-]+)\s*$/gm)].map((m) => m[1]).filter((x) => /^(MIT|CC-BY-4\.0|Apache-2\.0|OGL-UK-3\.0)$/.test(x));
     if (!pc) problems.push("C-41 publiccode.yml: missing, so the launchpad cannot check this project's card against its licence");
     else {
-      if (!new RegExp(`^softwareVersion: ${version.replace(/\./g, "\\.")}$`, "m").test(pc)) problems.push(`C-41 publiccode.yml: softwareVersion is not ${version} (package.json)`);
+      if (!pc.split("\n").includes(`softwareVersion: ${version}`)) problems.push(`C-41 publiccode.yml: softwareVersion is not ${version} (package.json)`);
       const lic = (pc.match(/^\s+license: (.+)$/m) || [])[1] || "";
       if (lic.split(" AND ").sort().join(",") !== [...cffLic].sort().join(",")) problems.push(`C-41 publiccode.yml: license "${lic}" differs from CITATION.cff (${cffLic.join(", ")})`);
       if (/@[a-z0-9-]+\.[a-z]/i.test(pc)) problems.push("C-41 publiccode.yml: contains an email address; contact is by the form only");

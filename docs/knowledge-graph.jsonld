@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+28981b13d896",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+f6e2bd90a776",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -3089,6 +3089,14 @@
       "schema:name": "D-047",
       "schema:description": "The Public Good Works launchpad still called this project official GDS work under OGL v3.0, after its content was relicensed CC BY 4.0 on 20 November",
       "ndl:check": "C-41: `publiccode.yml` exists and agrees with `package.json` and `CITATION.cff`; the card is corrected in the launchpad",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-048",
+      "@type": "schema:Thing",
+      "schema:name": "D-048",
+      "schema:description": "CodeQL flagged check C-41 as incomplete escaping (js/incomplete-sanitization, high)",
+      "ndl:check": "C-41 compares the line exactly, with no expression built from data; CodeQL runs on every pull request",
       "ndl:status": "Fixed"
     }
   ]
