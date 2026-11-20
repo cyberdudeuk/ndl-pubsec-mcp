@@ -4,6 +4,10 @@
 
 ### Added
 
+- Monthly refresh of the API catalogue pin: a scheduled workflow re-pins co-cddo/api-catalogue, recompiles, rebuilds and verifies, then opens a pull request for a person to merge. Check C-32 warns once the pin is 35 days old and fails the build at 100, and the worked example says how old the pin was when the page was built.
+
+### Added
+
 - `api_search`: finds UK public sector APIs in the government API catalogue (pinned at co-cddo/api-catalogue b239f15, 2 November 2026, 231 APIs) and two HMRC APIs the catalogue lacks, each result with where it came from. It never calls the APIs.
 - `server_search`: finds MCP servers in the estate and candidates awaiting review, each with its status and the date it was checked.
 - An interactive ecosystem view in the Estate map, also published on its own as `ecosystem.html`: every component links to its home, and hovering or focusing one highlights what it connects to.

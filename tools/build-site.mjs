@@ -84,7 +84,7 @@ for (const [k, ex] of Object.entries(examples)) {
 
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
-const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
 const eco = loadEcosystem();
 const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });

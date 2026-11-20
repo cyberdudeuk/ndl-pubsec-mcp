@@ -1,0 +1,63 @@
+name: Refresh API catalogue
+
+# Monthly self-updating routine for api_search (open item O-19). Re-pins co-cddo/api-catalogue at its latest
+# commit, recompiles it (the compiler drops the maintainer contact field and refuses to write if an email
+# address survives), rebuilds the site, runs every check, and opens a pull request only when something changed.
+# A person reviews and merges it: this workflow never merges. Check C-32 warns at 35 days and fails at 100.
+#
+# Note: a pull request opened with GITHUB_TOKEN does not start other workflows, so this job runs the full
+# verify itself and says so in the pull request. CI runs again on main after the merge.
+
+on:
+  schedule:
+    - cron: "17 5 3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-api-catalogue
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Fetch the catalogue (data only; nothing in it is run)
+        run: |
+          git clone --quiet --depth 1 https://github.com/co-cddo/api-catalogue.git "$RUNNER_TEMP/api-catalogue"
+          echo "CAT_COMMIT=$(git -C "$RUNNER_TEMP/api-catalogue" rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "CAT_DATE=$(git -C "$RUNNER_TEMP/api-catalogue" log -1 --format=%cs)" >> "$GITHUB_ENV"
+      - name: Recompile, rebuild and verify
+        run: |
+          node tools/compile_api_catalogue.mjs "$RUNNER_TEMP/api-catalogue" "$CAT_COMMIT" "$CAT_DATE"
+          npm run build
+          npm run site
+          npm run verify
+      - name: Open a pull request if anything changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then echo "Catalogue unchanged at ${CAT_COMMIT:0:7}"; exit 0; fi
+          branch="chore/api-catalogue-${CAT_COMMIT:0:7}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then echo "A pull request for ${CAT_COMMIT:0:7} already exists"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -A src/generated docs
+          git commit -m "Refresh the API catalogue pin to co-cddo/api-catalogue ${CAT_COMMIT:0:7} (${CAT_DATE})"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "Refresh the API catalogue pin (${CAT_COMMIT:0:7}, ${CAT_DATE})" \
+            --body "Monthly refresh for api_search (O-19). Re-pinned co-cddo/api-catalogue at ${CAT_COMMIT} (${CAT_DATE}), recompiled without the maintainer contact field, rebuilt the site, and ran \`npm run verify\` in this workflow, which passed. CI does not start on pull requests opened by this workflow; it runs on main after the merge. Review the change in \`src/generated/api-catalogue.json\` before merging."

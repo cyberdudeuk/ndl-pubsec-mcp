@@ -5,6 +5,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative, extname, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildVocabulary } from "./build-vocab.mjs";
+import { catalogueStaleness } from "./catalogue-staleness.mjs";
 
 // Reserved example domains (RFC 2606/6761) are the only addresses allowed, and only in tests.
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
@@ -216,6 +217,13 @@ export function checkRepo(root) {
     const eco = readFileSync(join(root, "tools/site/ecosystem.mjs"), "utf8");
     for (const rule of eco.match(/\.eco__node[^{}]*\{/g) ?? []) if (/\srect\b/.test(rule.replace(/>\s*rect/g, ""))) problems.push(`C-31 tools/site/ecosystem.mjs: "${rule.trim()}" styles every rect in a node, including the logos inlined there; use "> rect"`);
   }
+  // C-32 (open item O-19): the pinned API catalogue is not shown as current once it is too old
+  {
+    const f = join(root, "src/generated/api-catalogue.json");
+    const { status, message } = catalogueStaleness(JSON.parse(readFileSync(f, "utf8")).source.commitDate);
+    if (status === "fail") problems.push(`C-32 src/generated/api-catalogue.json: ${message}`);
+    else if (status === "warn") console.warn(`warning (C-32): ${message}`);
+  }
   // C-30 (defect D-037): the footer leaves room for the fixed Top button at the end of the page
   const foot = cssRules.filter((r) => !r.media && r.selectors.includes("footer")).map((r) => r.body).join(";");
   const fb = Number((foot.match(/padding-bottom\s*:\s*(\d+)px/) ?? [])[1] ?? 0);
@@ -316,5 +324,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-31)");
+  console.log("repository checks passed (C-01 to C-32)");
 }
