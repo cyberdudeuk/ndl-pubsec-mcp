@@ -11,6 +11,7 @@ import bwipjs from "bwip-js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../dist/server.js";
+import { renderGuide } from "./site/guide-sections.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(root, p), "utf8");
@@ -76,11 +77,13 @@ for (const [k, ex] of Object.entries(examples)) {
   const r = validateRecord(ex.record, ex.className);
   if (r.valid !== ex.expectValid) throw new Error(`checker example ${k} should be ${ex.expectValid ? "valid" : "invalid"} but the validator says otherwise`);
   ex.errors = r.errors;
+  ex.result = r;
 }
 
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
-const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js"];
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json"];
+const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
 const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs).digest("hex").slice(0, 12)}`;
 
@@ -125,6 +128,10 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2a5 5 0 0 1 5.5 5"/>',
+  route: '<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+  kit: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/>',
   rocket: '<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 12a12 12 0 0 1 11-9 12 12 0 0 1-9 11z"/><path d="M9 12l3 3M14 7.5h.01"/>'
 };
 const icon = (name, label) => `<svg class="icon" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'}><use href="#i-${name}"/></svg>`;
@@ -139,16 +146,23 @@ const term = (t, shown = t) => {
 
 // --- charts, drawn here as SVG so they show without the script ---
 const totals = Object.values(conf.byClass).reduce((x, k) => ({ v: x.v + k.valid, i: x.i + k.invalid }), { v: 0, i: 0 });
+// Column widths come from the longest label at about 7.6 px a character (13 px system sans), so no label is
+// cut off at the edge of the chart (defect D-035, check C-28).
+const CHAR_W = 7.6;
 function barChart(rows, { id, title, max, unit }) {
-  const rowH = 34, left = 170, width = 560, h = rows.length * rowH + 28;
+  const value = (r) => `${r.value} of ${r.of ?? max}${unit ? ` ${unit}` : ""}`;
+  const rowH = 34, barW = 380;
+  const left = Math.ceil(Math.max(...rows.map((r) => r.label.length)) * CHAR_W) + 20;
+  const valW = Math.ceil(Math.max(...rows.map((r) => value(r).length)) * CHAR_W) + 20;
+  const width = left + barW + valW, h = rows.length * rowH + 28;
   const bars = rows.map((r, i) => {
     const y = 10 + i * rowH;
     return `<g><text x="${left - 10}" y="${y + 17}" text-anchor="end">${esc(r.label)}</text>` +
-      `<rect class="bar-bg" x="${left}" y="${y + 4}" width="${width - left - 70}" height="18" rx="5"/>` +
-      `<rect class="${r.cls} grow" x="${left}" y="${y + 4}" width="${Math.max(2, ((width - left - 70) * r.value) / (r.of ?? max)).toFixed(1)}" height="18" rx="5"/>` +
-      `<text x="${width - 62}" y="${y + 17}">${r.value} of ${r.of ?? max}${unit ? ` ${unit}` : ""}</text></g>`;
+      `<rect class="bar-bg" x="${left}" y="${y + 4}" width="${barW}" height="18" rx="5"/>` +
+      `<rect class="${r.cls} grow" x="${left}" y="${y + 4}" width="${Math.max(2, (barW * r.value) / (r.of ?? max)).toFixed(1)}" height="18" rx="5"/>` +
+      `<text x="${left + barW + 10}" y="${y + 17}">${esc(value(r))}</text></g>`;
   }).join("");
-  return `<svg class="chart" viewBox="0 0 ${width} ${h}" role="img" aria-labelledby="${id}-t ${id}-d"><title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(rows.map((r) => `${r.label}: ${r.value} of ${r.of ?? max}`).join("; "))}</desc>${bars}</svg>`;
+  return `<div class="scroll-x" role="region" aria-label="${esc(title)}, scrolls sideways on small screens" tabindex="0"><svg class="chart" viewBox="0 0 ${width} ${h}" role="img" aria-labelledby="${id}-t ${id}-d"><title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(rows.map((r) => `${r.label}: ${value(r)}`).join("; "))}</desc>${bars}</svg></div>`;
 }
 const corpusRows = Object.entries(conf.byClass).flatMap(([k, v]) => [
   ...(v.valid ? [{ label: `${k}, valid`, value: v.validAgree, cls: "bar-v", of: v.valid }] : []),
@@ -187,6 +201,7 @@ const jobOf = (t) => JOB[t.name] ?? "other";
 const provName = { V: "Verified at the primary source", S: "Found through search; re-verify", K: "Background knowledge", U: "Unconfirmed" };
 const gh = (p) => `${REPO}/blob/main/${p}`;
 const docGroups = [
+  { name: "Using it", icon: "people", items: [["User guide", gh("docs/user-guide.md")], ...guide.toolkit.map((k) => [k.title, k.file])] },
   { name: "Product", icon: "rocket", items: [["Product requirements", gh("docs/prd.md")], ["Data dictionary", gh("docs/data-dictionary.md")], ["Glossary (source)", gh("docs/glossary.md")]] },
   { name: "Architecture", icon: "map", items: [["Architecture (SAD, HLD and LLD)", gh("docs/architecture.md")], ["Knowledge graph (JSON-LD)", "knowledge-graph.jsonld"]] },
   { name: "Assurance", icon: "shield", items: [["Governance screening", gh("docs/governance.md")], ["Conformance report", gh("docs/conformance.md")], ["Defect register", gh("docs/defect-register.md")], ["Open register", gh("docs/open-register.md")], ["Security policy", gh("SECURITY.md")]] },
@@ -195,15 +210,22 @@ const docGroups = [
 ];
 const docCount = docGroups.reduce((n, g) => n + g.items.length, 0);
 const openCount = openItems.filter((o) => !o.closed).length;
-const NEW = new Set(["checker", "map"]);
+const NEW = new Set(["who", "tour", "examples", "toolkit", "involve", "journeys"]);
+const CHANGED = new Set(["use", "documents"]);
 const sections = [
   { group: "Overview", id: "what", title: "What it does", icon: "tools", count: tools.length },
+  { group: "Overview", id: "who", title: "Who it is for", icon: "people", count: guide.personas.length },
   { group: "Overview", id: "checker", title: "Check a record", icon: "check" },
   { group: "Overview", id: "conformance", title: "How well it follows xGov MEM", icon: "chart" },
   { group: "Overview", id: "standards", title: "Standards it explains", icon: "book", count: standards.standards.length },
   { group: "Overview", id: "map", title: "Estate map", icon: "map", count: nodes.length },
-  { group: "Use it", id: "use", title: "How to use it", icon: "terminal" },
+  { group: "Use it", id: "tour", title: "Guided tour", icon: "route", count: guide.tour.length },
+  { group: "Use it", id: "use", title: "How to use it", icon: "terminal", count: guide.tutorials.length },
+  { group: "Use it", id: "examples", title: "Worked examples", icon: "spark", count: guide.examples.length },
+  { group: "Use it", id: "toolkit", title: "Toolkit", icon: "kit", count: guide.toolkit.length },
   { group: "Use it", id: "documents", title: "Documents", icon: "docs", count: docCount },
+  { group: "Get involved", id: "involve", title: "Contribute and champion", icon: "people", count: guide.involve.length },
+  { group: "Design", id: "journeys", title: "Journeys and blueprints", icon: "route", count: guide.journeys.length },
   { group: "Progress", id: "changes", title: "What has changed", icon: "history", count: releases.length },
   { group: "Progress", id: "open", title: "Open items and roadmap", icon: "list", count: openCount },
   { group: "Progress", id: "defects", title: "Defects and their checks", icon: "bug", count: defects.length },
@@ -211,13 +233,15 @@ const sections = [
   { group: "About", id: "accessibility", title: "Accessibility statement", icon: "access" },
   { group: "About", id: "about", title: "About this page", icon: "info" }
 ];
-const drawerList = sections.map((s, i) => `${i === 0 || sections[i - 1].group !== s.group ? `<li class="drawer__group">${esc(s.group)}</li>` : ""}<li><a href="#${s.id}">${icon(s.icon)}<span>${esc(s.title)}</span>${NEW.has(s.id) ? '<span class="pill pill--new">New</span>' : ""}${s.count ? `<span class="count">${s.count}<span class="visually-hidden"> items</span></span>` : ""}</a></li>`).join("\n");
-const head2 = (id) => { const s = sections.find((x) => x.id === id); return `<header>${icon(s.icon)}<h2 id="${id}-h">${esc(s.title)}</h2>${NEW.has(id) ? '<span class="pill pill--new">New in this version</span>' : ""}</header>`; };
+const drawerList = sections.map((s, i) => `${i === 0 || sections[i - 1].group !== s.group ? `<li class="drawer__group">${esc(s.group)}</li>` : ""}<li><a href="#${s.id}">${icon(s.icon)}<span>${esc(s.title)}</span>${NEW.has(s.id) ? '<span class="pill pill--new">New</span>' : CHANGED.has(s.id) ? '<span class="pill pill--changed">Updated</span>' : ""}${s.count ? `<span class="count">${s.count}<span class="visually-hidden"> items</span></span>` : ""}</a></li>`).join("\n");
+const head2 = (id) => { const s = sections.find((x) => x.id === id); return `<header>${icon(s.icon)}<h2 id="${id}-h">${esc(s.title)}</h2>${NEW.has(id) ? '<span class="pill pill--new">New</span>' : CHANGED.has(id) ? '<span class="pill pill--changed">Updated</span>' : ""}</header>`; };
 const lower = (...xs) => esc(xs.join(" ").toLowerCase());
 const filterBox = (target, label, chips = []) => `<div class="toolbar" data-filter="${target}"><label class="search">${icon("search")}<span class="visually-hidden">${esc(label)}</span><input type="search" placeholder="${esc(label)}" autocomplete="off"></label>${chips.map(([v, t]) => `<button type="button" class="chip" aria-pressed="false" data-value="${esc(v)}">${esc(t)}</button>`).join("")}<span class="filter-count meta" aria-live="polite"></span></div>`;
 const letters = [...new Set(glossary.map((g) => g.term[0].toUpperCase()))];
 const claudeCfg = JSON.stringify({ mcpServers: { "ndl-pubsec-mcp": { command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
 const vscodeCfg = JSON.stringify({ servers: { "ndl-pubsec-mcp": { type: "stdio", command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
+const LINKS = { contact: CONTACT, bug: `${REPO}/issues/new?template=bug_report.yml`, feature: `${REPO}/issues/new?template=feature_request.yml`, contributing: gh("CONTRIBUTING.md"), toolkit: "#toolkit" };
+const G = renderGuide({ guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, gh, links: LINKS, sectionIds: sections.map((x) => x.id) });
 const STATEMENT = "An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.";
 
 const html = `<!DOCTYPE html>
@@ -296,7 +320,7 @@ ${drawerList}
       <p class="hero__eyebrow">Data discoverability · open source</p>
       <h1 id="hero-h">Find UK public sector data and check its metadata, from your AI assistant</h1>
       <p>NDL PubSec MCP is an open-source ${term("MCP server")}. It lets an AI assistant search ${term("data.gov.uk")} and check metadata against the UK Cross-Government Metadata Exchange Model (${term("xGov MEM")}).</p>
-      <div class="hero__cta"><a class="btn btn--light" href="#use">${icon("terminal")}Set it up</a><a class="btn btn--line" href="#checker">${icon("check")}Try the checker</a></div>
+      <div class="hero__cta"><a class="btn btn--light" href="#tour" data-tour-start>${icon("route")}Take the tour</a><a class="btn btn--line" href="#who">${icon("people")}Find your role</a><a class="btn btn--line" href="#checker">${icon("check")}Try the checker</a><a class="btn btn--line" href="#use">${icon("terminal")}Set it up</a></div>
       <ul class="stats">
         <li><b data-count="${tools.length}">${tools.length}</b><span>read-only tools</span></li>
         <li><b>${conf.agree}/${conf.cases}</b><span>model test cases agreed</span></li>
@@ -315,6 +339,11 @@ ${drawerList}
 ${tools.map((t) => `        <article class="card tool" data-text="${lower(t.name, t.title, t.description, JOB_NAME[jobOf(t)])}" data-group="${jobOf(t)} ${t.annotations?.openWorldHint ? "live" : "offline"}"><h3>${icon(jobOf(t) === "check" ? "check" : jobOf(t) === "find" ? "search" : jobOf(t) === "connect" ? "map" : "book")}<code class="name">${esc(t.name)}</code></h3><p class="meta">${esc(t.title ?? "")}</p><p>${esc(t.description)}</p><ul class="tags"><li class="tag">${esc(JOB_NAME[jobOf(t)])}</li><li class="tag">${t.annotations?.openWorldHint ? "Uses the live catalogue" : "Works offline"}</li><li class="tag">Read-only</li></ul>${Object.keys(t.inputSchema?.properties ?? {}).length ? `<details><summary>Inputs</summary><ul class="params">${Object.entries(t.inputSchema.properties).map(([k, p]) => `<li><code>${esc(k)}</code>${(t.inputSchema.required ?? []).includes(k) ? " (required)" : ""}${p.description ? `: ${esc(p.description)}` : ""}</li>`).join("")}</ul></details>` : ""}</article>`).join("\n")}
       </div>
       <p class="empty" hidden>No tool matches. Clear the search or the filters.</p>
+    </section>
+
+    <section class="section reveal" id="who" aria-labelledby="who-h">
+      ${head2("who")}
+      ${G.who}
     </section>
 
     <section class="section reveal" id="checker" aria-labelledby="checker-h">
@@ -377,28 +406,61 @@ ${standards.standards.map((s) => `        <article class="card" data-text="${low
       ${head2("map")}
       <p class="lead">How the standards, the tools, this server and the other servers it lists connect. Hover or tab to a point to see its links. The same graph is published as <a href="knowledge-graph.jsonld">JSON-LD</a>.</p>
       <ul class="legend"><li><i class="k-std"></i>Standard</li><li><i class="k-tool"></i>Tool</li><li><i class="k-server"></i>This server</li><li><i class="k-dom"></i>Other server in the estate</li></ul>
-      <div class="card">${estateMap}</div>
+      <div class="card scroll-x" role="region" aria-label="Estate map, scrolls sideways on small screens" tabindex="0">${estateMap}</div>
+    </section>
+
+    <section class="section reveal" id="tour" aria-labelledby="tour-h">
+      ${head2("tour")}
+      ${G.tour}
     </section>
 
     <section class="section reveal" id="use" aria-labelledby="use-h">
       ${head2("use")}
-      <p class="lead">You need Node.js 20 or later and an assistant that supports ${term("MCP")}.</p>
-      <div class="code"><pre tabindex="0"><code>git clone ${REPO}.git
+      <p class="lead">Start with the quick start, follow a tutorial for your role, look things up in the user guide, or pick up a tip. The same guide is also in the repository as <a href="${gh("docs/user-guide.md")}">docs/user-guide.md</a>.</p>
+      <div class="tabs">
+        <div role="tablist" aria-label="How to use it">
+          <button role="tab" id="t-use-start" aria-controls="p-use-start" type="button">Quick start</button>
+          <button role="tab" id="t-use-tutorials" aria-controls="p-use-tutorials" type="button">Tutorials</button>
+          <button role="tab" id="t-use-guide" aria-controls="p-use-guide" type="button">User guide</button>
+          <button role="tab" id="t-use-tips" aria-controls="p-use-tips" type="button">Hints and tips</button>
+        </div>
+        <div role="tabpanel" id="p-use-start" aria-labelledby="t-use-start">
+          <ol class="steps steps--big">
+            <li><strong>Check you have what you need.</strong> Node.js 20 or later, git, and an assistant that supports ${term("MCP")}.</li>
+            <li><strong>Get and build the server.</strong><div class="code"><pre tabindex="0"><code>git clone ${REPO}.git
 cd ndl-pubsec-mcp
 npm ci
-npm run build</code></pre></div>
-      <p>Then tell your assistant where the server is. Replace the path with where you cloned it.</p>
-      <div class="tabs">
-        <div role="tablist" aria-label="Assistant">
-          <button role="tab" id="t-claude" aria-controls="p-claude" type="button">Claude Desktop</button>
-          <button role="tab" id="t-vscode" aria-controls="p-vscode" type="button">VS Code</button>
-          <button role="tab" id="t-inspect" aria-controls="p-inspect" type="button">Try it first</button>
+npm run build</code></pre></div></li>
+            <li><strong>Tell your assistant where it is.</strong> Replace the path with where you cloned it.
+              <details class="cfg" open><summary>Claude Desktop: <code>claude_desktop_config.json</code></summary><div class="code"><pre tabindex="0"><code>${esc(claudeCfg)}</code></pre></div></details>
+              <details class="cfg"><summary>VS Code: <code>.vscode/mcp.json</code> in your workspace</summary><div class="code"><pre tabindex="0"><code>${esc(vscodeCfg)}</code></pre></div></details>
+              <details class="cfg"><summary>Try it first, without an assistant: the MCP Inspector</summary><p>Open the Inspector against the built server and call each tool by hand:</p><div class="code"><pre tabindex="0"><code>npm run inspector</code></pre></div></details>
+            </li>
+            <li><strong>Restart the assistant and ask a question.</strong> For example: <q>Which standards can you explain?</q> Then try the <a href="#examples">worked examples</a>.</li>
+          </ol>
+          <p><a href="${gh("README.md")}">Full instructions</a>, including the environment settings.</p>
         </div>
-        <div role="tabpanel" id="p-claude" aria-labelledby="t-claude"><p>Add this to <code>claude_desktop_config.json</code>:</p><div class="code"><pre tabindex="0"><code>${esc(claudeCfg)}</code></pre></div></div>
-        <div role="tabpanel" id="p-vscode" aria-labelledby="t-vscode" hidden><p>Add this to <code>.vscode/mcp.json</code> in your workspace:</p><div class="code"><pre tabindex="0"><code>${esc(vscodeCfg)}</code></pre></div></div>
-        <div role="tabpanel" id="p-inspect" aria-labelledby="t-inspect" hidden><p>Open the MCP Inspector against the built server and call each tool by hand:</p><div class="code"><pre tabindex="0"><code>npm run inspector</code></pre></div></div>
+        <div role="tabpanel" id="p-use-tutorials" aria-labelledby="t-use-tutorials" hidden>
+          <p>Step-by-step guides, each for the roles shown on it. Open one to see the steps.</p>
+          ${G.tutorialsHtml}
+        </div>
+        <div role="tabpanel" id="p-use-guide" aria-labelledby="t-use-guide" hidden>
+          ${G.guideHtml}
+        </div>
+        <div role="tabpanel" id="p-use-tips" aria-labelledby="t-use-tips" hidden>
+          ${G.tipsHtml}
+        </div>
       </div>
-      <p><a href="${gh("README.md")}">Full instructions</a>, including the environment settings.</p>
+    </section>
+
+    <section class="section reveal" id="examples" aria-labelledby="examples-h">
+      ${head2("examples")}
+      ${G.examplesHtml}
+    </section>
+
+    <section class="section reveal" id="toolkit" aria-labelledby="toolkit-h">
+      ${head2("toolkit")}
+      ${G.toolkitHtml}
     </section>
 
     <section class="section reveal" id="documents" aria-labelledby="documents-h">
@@ -408,6 +470,16 @@ npm run build</code></pre></div>
 ${docGroups.flatMap((g) => g.items.map(([t, href]) => `        <a class="card" href="${esc(href)}" data-text="${lower(t, g.name)}" data-group="${g.name.toLowerCase()}"><h3>${icon(g.icon)}${esc(t)}</h3><p class="meta">${esc(g.name)}</p></a>`)).join("\n")}
       </div>
       <p class="empty" hidden>No document matches.</p>
+    </section>
+
+    <section class="section reveal" id="involve" aria-labelledby="involve-h">
+      ${head2("involve")}
+      ${G.involveHtml}
+    </section>
+
+    <section class="section reveal" id="journeys" aria-labelledby="journeys-h">
+      ${head2("journeys")}
+      ${G.journeysHtml}
     </section>
 
     <section class="section reveal" id="changes" aria-labelledby="changes-h">
@@ -459,7 +531,8 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
         <tr><th scope="row">What this is</th><td>${esc(STATEMENT)}</td></tr>
         <tr><th scope="row">Status</th><td>Prototype, version ${esc(pkg.version)}. Not a live service, and it has not had a service assessment.</td></tr>
         <tr><th scope="row">First published</th><td>8 November 2026</td></tr>
-        <tr><th scope="row">Last updated</th><td>${esc(longDate(AS_OF))}</td></tr>
+        <tr><th scope="row">Last updated</th><td>${esc(releases[0].date)} (version ${esc(releases[0].version)})</td></tr>
+        <tr><th scope="row">Standards last checked</th><td>${esc(longDate(AS_OF))}</td></tr>
         <tr><th scope="row">Review by</th><td>${esc(longDate(REVIEW))}</td></tr>
         <tr><th scope="row">How it is built</th><td>Generated from the repository's own data by <a href="${gh("tools/build-site.mjs")}">tools/build-site.mjs</a>. Build <code>${esc(buildId)}</code>.</td></tr>
       </tbody></table></div>
@@ -474,7 +547,7 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
       <p>${esc(STATEMENT)} It gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code), and changes are reviewed before they are merged.</p>
       <p><a href="${CONTACT}">Contact form</a> · <a href="${REPO}">Source code</a> · <a href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
       <p>Code: <a href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
-      <p>Version ${esc(pkg.version)} · as of ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
+      <p>Version ${esc(pkg.version)} · updated ${esc(releases[0].date)} · standards checked ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
     </div>
     <div class="foot__codes">
       ${qr}
@@ -489,6 +562,8 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
 </html>
 `;
 writeFileSync(join(root, "docs/index.html"), html);
+mkdirSync(join(root, "docs", "toolkit"), { recursive: true });
+for (const [f, text] of Object.entries(G.files)) writeFileSync(join(root, f), text);
 
 
 // --- knowledge graph ---
@@ -509,8 +584,10 @@ const kg = {
     { "@id": "ndl:glossary", "@type": "skos:ConceptScheme", "skos:prefLabel": "Glossary" },
     ...glossary.map((g) => ({ "@id": `ndl:term/${g.term.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, "@type": "skos:Concept", "skos:prefLabel": g.term, "skos:definition": g.meaning.replace(/`/g, ""), "skos:inScheme": { "@id": "ndl:glossary" } })),
     ...adrs.map((d) => ({ "@id": `ndl:adr/${d.file.replace(/\.md$/, "")}`, "@type": "schema:CreativeWork", "schema:name": d.title, "schema:url": gh(`docs/adr/${d.file}`) })),
+    ...G.kg,
     ...defects.map((d) => ({ "@id": `ndl:defect/${d.id}`, "@type": "schema:Thing", "schema:name": d.id, "schema:description": d.defect, "ndl:check": d.check, "ndl:status": d.status }))
   ]
 };
+kg["@graph"][0]["schema:audience"] = guide.personas.map((p) => ({ "@id": `ndl:persona/${p.id}` }));
 writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null, 2) + "\n");
 console.log(`site built: ${buildId} (${tools.length} tools, ${glossary.length} glossary terms, ${defects.length} defects)`);

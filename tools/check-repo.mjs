@@ -182,7 +182,95 @@ export function checkRepo(root) {
     if (raw === null || raw === "") continue;
     for (const ref of raw.split(/\s+/)) if (!known.has(ref)) problems.push(`C-18 docs/index.html: reference to "#${ref}" has no matching id`);
   }
+  // C-21 (defect D-028): the bug report form offers every tool the server registers
+  const bug = existsSync(join(root, ".github", "ISSUE_TEMPLATE", "bug_report.yml")) ? readFileSync(join(root, ".github", "ISSUE_TEMPLATE", "bug_report.yml"), "utf8") : "";
+  const bugOpts = (bug.match(/options:\s*\[([^\]]*)\]/)?.[1] ?? "").split(",").map((x) => x.trim());
+  for (const t of tools) if (!bugOpts.includes(t)) problems.push(`C-21 .github/ISSUE_TEMPLATE/bug_report.yml: does not offer the tool ${t}`);
+  // C-19 (defect D-026): code inside a dark code block must not get the light inline-code background, or
+  // light text lands on a light chip. The pre code reset must exist and come after the inline code rule.
+  const css = existsSync(join(root, "tools", "site", "site.css")) ? readFileSync(join(root, "tools", "site", "site.css"), "utf8") : "";
+  const cssRules = topLevelRules(css);
+  const inlineCode = cssRules.findIndex((r) => !r.media && r.selectors.includes("code") && /background\s*:/.test(r.body));
+  const preCode = cssRules.findIndex((r) => !r.media && r.selectors.includes("pre code") && /background\s*:\s*(none|transparent)/.test(r.body) && /color\s*:\s*inherit/.test(r.body));
+  if (inlineCode >= 0 && (preCode < 0 || preCode < inlineCode)) problems.push("C-19 tools/site/site.css: code inside pre is not reset (background none, color inherit) after the inline code rule");
+  // C-20 (defect D-027): a narrow-screen override must come after the base rule it overrides, or the base
+  // rule wins the cascade and the override never applies.
+  for (const [i, r] of cssRules.entries()) {
+    if (!r.media || !/max-width/.test(r.media)) continue;
+    for (const inner of topLevelRules(r.body)) for (const sel of inner.selectors) {
+      const later = cssRules.findIndex((b, j) => j > i && !b.media && b.selectors.includes(sel));
+      if (later >= 0) problems.push(`C-20 tools/site/site.css: "${sel}" in ${r.media} comes before its base rule, so the override never applies`);
+    }
+  }
+  // C-28 (defect D-035): no chart label runs past the edge of its chart (about 7.6 px a character at 13 px)
+  for (const m of page.matchAll(/<svg class="chart[^"]*" viewBox="0 0 (\d+) \d+"[\s\S]*?<\/svg>/g)) {
+    const vb = Number(m[1]);
+    for (const t of m[0].matchAll(/<text x="([\d.]+)"([^>]*)>([^<]*)<\/text>/g)) {
+      const x = Number(t[1]), w = t[3].length * 7.6, anchor = (t[2].match(/text-anchor="(\w+)"/) ?? [])[1] ?? "start";
+      const [l, r] = anchor === "end" ? [x - w, x] : anchor === "middle" ? [x - w / 2, x + w / 2] : [x, x + w];
+      if (l < 0 || r > vb) problems.push(`C-28 docs/index.html: chart label "${t[3]}" runs past the chart edge (viewBox ${vb})`);
+    }
+  }
+  // C-22 (defect D-033): text and background token pairs meet WCAG 2.2 AA contrast in both themes
+  const tokenBlock = (re) => Object.fromEntries([...((css.match(re) ?? [""])[0].matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi))].map((m) => [m[1], m[2]]));
+  const light = tokenBlock(/:root \{[^}]*\}/);
+  const dark = { ...light, ...tokenBlock(/:root\[data-theme="dark"\] \{[^}]*\}/) };
+  for (const [name, t] of [["light", light], ["dark", dark]]) {
+    for (const [fg, bg, min] of CONTRAST_PAIRS) {
+      if (!t[fg] || !t[bg]) { problems.push(`C-22 tools/site/site.css: ${name} theme lacks --${fg} or --${bg}`); continue; }
+      const r = contrast(t[fg], t[bg]);
+      if (r < min) problems.push(`C-22 tools/site/site.css: ${name} theme --${fg} on --${bg} is ${r.toFixed(2)}:1, below ${min}:1`);
+    }
+  }
+  for (const r of cssRules) if (!r.media && r.selectors.some((x) => /^\.tag--[A-Z]/.test(x)) && /color-mix\([^;]*transparent/.test(r.body)) problems.push(`C-22 tools/site/site.css: ${r.selectors.join(", ")} uses a translucent tint, so its contrast cannot be checked; use the solid -soft and -ink tokens (D-036)`);
+  // C-23 (defect D-030): "Last updated" on the page is the latest release date, not another date
+  const latest = (existsSync(join(root, "CHANGELOG.md")) ? readFileSync(join(root, "CHANGELOG.md"), "utf8") : "").match(/^## \d+\.\d+\.\d+\S* \((\d{1,2} \w+ \d{4})\)/m);
+  if (page && (!latest || !page.includes(`Last updated</th><td>${latest[1]}`))) problems.push(`C-23 docs/index.html: "Last updated" is not the latest release date (${latest ? latest[1] : "none found"})`);
+  // C-24 (defect D-031): wide graphics keep a readable size and scroll on small screens instead of shrinking
+  for (const sel of [".map", ".chart"]) if (!cssRules.some((r) => !r.media && r.selectors.includes(sel) && /min-width\s*:\s*\d{3}px/.test(r.body))) problems.push(`C-24 tools/site/site.css: ${sel} has no min-width, so its labels shrink below reading size on phones`);
+  if (page && /<div class="card(?![^"]*scroll-x)[^"]*"[^>]*>\s*<svg class="(?:map|chart[^"]*)"/.test(page)) problems.push("C-24 docs/index.html: a map or chart is not inside a scroll-x region");
+  // C-25 (defect D-029): code blocks reserve room at the top for the copy button, so it never covers code
+  const pre = cssRules.find((r) => !r.media && r.selectors.includes(".code pre"));
+  const padTop = pre && (pre.body.match(/padding\s*:\s*(\d+)px/) ?? [])[1];
+  if (!padTop || Number(padTop) < 36) problems.push("C-25 tools/site/site.css: .code pre leaves no room above the code for the copy button (padding-top under 36px)");
+  // C-26 (defect D-032): tab bars wrap, so no tab is hidden off-screen
+  if (!cssRules.some((r) => !r.media && r.selectors.some((x) => x.includes('[role="tablist"]')) && /flex-wrap\s*:\s*wrap/.test(r.body))) problems.push("C-26 tools/site/site.css: tab bars do not wrap, so tabs can be hidden off-screen");
+  // C-27 (defect D-034): the worked example names every attribute tied for most often missing in the real-record run
+  if (page && existsSync(livePath)) {
+    const live = JSON.parse(readFileSync(livePath, "utf8"));
+    const max = Math.max(...Object.values(live.missingRequired));
+    const art = (page.match(/<article class="card example" id="ex-describe"[\s\S]*?<\/article>/) ?? [""])[0];
+    for (const [k, n] of Object.entries(live.missingRequired)) if (n === max && !art.includes(`<code>${k}</code>`)) problems.push(`C-27 docs/index.html: the ex-describe example leaves out ${k}, which is tied for most often missing (${n} of ${live.records})`);
+  }
   return problems;
+}
+
+// Text and background token pairs and the WCAG 2.2 AA ratio each must meet (C-22).
+const CONTRAST_PAIRS = [["ink", "bg", 4.5], ["ink", "surface", 4.5], ["ink", "surface-2", 4.5], ["ink-2", "bg", 4.5], ["ink-2", "surface", 4.5], ["brand", "surface", 4.5], ["brand", "bg", 4.5], ["brand-ink", "brand", 4.5], ["on-pill", "pill", 4.5], ["on-pill-new", "pill-new", 4.5], ["ink-3", "bg", 3], ["ink-3", "surface", 3], ["ok-ink", "ok-soft", 4.5], ["warn-ink", "warn-soft", 4.5], ["bad-ink", "bad-soft", 4.5]];
+export function contrast(a, b) {
+  const L = (hex) => { const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const [x, y] = [L(a), L(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+
+// Splits CSS into top-level rules in source order: { selectors, body, media }. Comments are dropped.
+export function topLevelRules(text) {
+  const src = text.replace(/\/\*[\s\S]*?\*\//g, "");
+  const out = [];
+  let depth = 0, start = 0, head = "";
+  for (let i = 0; i < src.length; i++) {
+    if (src[i] === "{") { if (depth === 0) { head = src.slice(start, i).trim(); start = i + 1; } depth++; }
+    else if (src[i] === "}") {
+      depth--;
+      if (depth === 0) {
+        const body = src.slice(start, i);
+        const media = head.startsWith("@media") ? head : null;
+        out.push({ selectors: media ? [] : head.split(",").map((x) => x.trim().replace(/\s+/g, " ")), body, media });
+        start = i + 1;
+      }
+    }
+  }
+  return out;
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
@@ -194,5 +282,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-18)");
+  console.log("repository checks passed (C-01 to C-28)");
 }

@@ -1,0 +1,405 @@
+{
+  "_about": "Single source for the page's people-centred content: proto-personas, journeys and service blueprints, worked examples, tutorials, user guide, hints, toolkit, ways to get involved and the guided tour. tools/build-site.mjs renders the page sections, docs/user-guide.md and docs/toolkit/* from this file and stops the build if a reference does not resolve. Everything about people here is an assumption to be tested with real users (open item O-03).",
+  "status": "Proto-personas and assumed journeys. Written from the tools, the standard and the people this kind of service usually serves; not yet tested in research with real users (open item O-03).",
+  "personas": [
+    {
+      "id": "publisher",
+      "role": "Catalogue publisher",
+      "icon": "docs",
+      "context": "Publishes datasets for an organisation to data.gov.uk, often alongside another job.",
+      "goal": "Get records complete and correct before a return, an audit or a release, without learning the whole standard first.",
+      "pains": ["Finds out which attributes are required only when something is rejected", "Catalogue fields and xGov MEM attributes have different names", "No quick way to see what a record still lacks"],
+      "tools": ["dataset_describe", "metadata_validate"],
+      "journey": "fix-a-record",
+      "start": "tut-first-check",
+      "contributes": "Tells us where a verdict disagrees with the standard or with how records are really kept.",
+      "champions": "Shares the metadata readiness checklist with other publishers."
+    },
+    {
+      "id": "analyst",
+      "role": "Analyst or researcher",
+      "icon": "search",
+      "context": "Answers questions with data and needs to know quickly what exists, who holds it and whether it can be reused.",
+      "goal": "Find candidate datasets, judge whether they are fit for the question, and cite them properly.",
+      "pains": ["Keyword search returns many near-duplicates", "Licence, update frequency and format are buried", "Hard to tell a maintained dataset from an abandoned one"],
+      "tools": ["catalogue_search", "dataset_describe", "standard_explain"],
+      "journey": "find-data",
+      "start": "tut-install",
+      "contributes": "Suggests searches that went badly so the tool descriptions and results can improve.",
+      "champions": "Shares the prompt library with their analysis community."
+    },
+    {
+      "id": "standards-lead",
+      "role": "Metadata or standards lead",
+      "icon": "shield",
+      "context": "Looks after metadata quality across an organisation or a community of publishers.",
+      "goal": "See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms.",
+      "pains": ["Conformance is checked by hand, one record at a time", "Colleagues ask what a standard is for and where it stands", "Business terms are drafted in many places with no record of review"],
+      "tools": ["metadata_validate", "standard_explain", "term_lookup"],
+      "journey": "assess-estate",
+      "start": "tut-fix-record",
+      "contributes": "Checks validation against their own records and reports disagreements with the model.",
+      "champions": "Runs the show-and-tell and the co-design session in their community."
+    },
+    {
+      "id": "builder",
+      "role": "Developer or AI builder",
+      "icon": "code",
+      "context": "Connects tools to assistants, agents or pipelines and has to answer for what they do.",
+      "goal": "Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects.",
+      "pains": ["Needs to know exactly what each tool reads and returns", "Must show that nothing writes, sends or stores data", "Wants to try tools before wiring them in"],
+      "tools": ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list"],
+      "journey": "set-up",
+      "start": "tut-install",
+      "contributes": "Opens pull requests with tests, and reports defects with a way to reproduce them.",
+      "champions": "Shows other builders how the server is checked: the defect register and its checks."
+    },
+    {
+      "id": "policy",
+      "role": "Policy or product colleague",
+      "icon": "book",
+      "context": "Not a data specialist. Uses an AI assistant to understand what data exists and what the standards mean.",
+      "goal": "Get a plain-English answer they can trust, with a link to the source they can pass on.",
+      "pains": ["Jargon: DCAT, CURIE, crosswalk", "Cannot tell whether an assistant's answer came from a real source", "Does not know who to ask"],
+      "tools": ["catalogue_search", "standard_explain", "term_lookup"],
+      "journey": "find-data",
+      "start": "tut-first-check",
+      "contributes": "Tells us where an answer was unclear, so explanations and the glossary improve.",
+      "champions": "Points colleagues at the glossary and the worked examples."
+    },
+    {
+      "id": "champion",
+      "role": "Data champion",
+      "icon": "rocket",
+      "context": "Promotes good data practice inside their organisation, usually on top of a day job.",
+      "goal": "Show colleagues something useful in under an hour and leave them able to carry on alone.",
+      "pains": ["Little time to prepare material", "Needs examples that work on the day", "Hard to collect feedback in a form others can act on"],
+      "tools": ["metadata_validate", "catalogue_search", "standard_explain"],
+      "journey": "champion",
+      "start": "tut-show-and-tell",
+      "contributes": "Collects feedback from sessions and raises it through the contact form.",
+      "champions": "Uses the champion pack and the session plan from the toolkit."
+    },
+    {
+      "id": "contributor",
+      "role": "Contributor or co-designer",
+      "icon": "form",
+      "context": "Wants to shape the service: report, test, suggest, design or code.",
+      "goal": "Make a change that is accepted, and see what happened to their idea.",
+      "pains": ["Unclear where ideas go and how they are decided", "Worried a change will be rejected on process", "No visible roadmap"],
+      "tools": ["standard_explain", "domain_list"],
+      "journey": "champion",
+      "start": "tut-add-standard",
+      "contributes": "Joins co-design sessions, improves the standards list, writes tests and checks.",
+      "champions": "Brings a second organisation's view, so the work is not shaped by one."
+    }
+  ],
+  "lanes": [
+    ["doing", "What the person does"],
+    ["sees", "What they see (front stage)"],
+    ["behind", "What happens behind the scenes (back stage)"],
+    ["support", "What supports it"],
+    ["pain", "Likely pain point"],
+    ["opportunity", "What this portal offers"]
+  ],
+  "journeys": [
+    {
+      "id": "set-up",
+      "title": "Set up and try",
+      "personas": ["builder"],
+      "stages": [
+        { "name": "Discover", "effort": 2, "doing": "Lands on this page from a link or a search", "sees": "What it does, what it is not, the six tools", "behind": "Static page generated from the repository", "support": "GitHub Pages; the build in CI", "pain": "Is this safe to use?", "opportunity": "Read-only statement, defect register, open register" },
+        { "name": "Try without installing", "effort": 1, "doing": "Pastes a record into the checker", "sees": "A verdict with each finding and its path", "behind": "The server's own validator, compiled into the page", "support": "xGov MEM model at a pinned commit", "pain": "My record is in another shape", "opportunity": "Example records and the record template" },
+        { "name": "Install", "effort": 3, "doing": "Clones, installs and builds", "sees": "Four commands", "behind": "npm ci and the TypeScript build", "support": "Node.js 20 or later", "pain": "Node version or path mistakes", "opportunity": "Troubleshooting in the user guide" },
+        { "name": "Connect", "effort": 3, "doing": "Adds the server to an assistant's settings", "sees": "A configuration snippet for each assistant", "behind": "The assistant starts the server over stdio", "support": "MCP client in the assistant", "pain": "The tools do not appear", "opportunity": "Inspector route to test the server on its own" },
+        { "name": "First call", "effort": 2, "doing": "Asks a question that needs a tool", "sees": "An answer that names its source", "behind": "One read-only tool call", "support": "data.gov.uk catalogue API", "pain": "Not sure which tool was used", "opportunity": "Worked examples show the call behind each prompt" },
+        { "name": "Keep using", "effort": 2, "doing": "Updates to new releases", "sees": "What has changed, newest first", "behind": "Release notes generated from the changelog", "support": "GitHub releases; weekly live smoke test", "pain": "Breaking changes", "opportunity": "Changelog and versioned releases" }
+      ]
+    },
+    {
+      "id": "find-data",
+      "title": "Find and judge data",
+      "personas": ["analyst", "policy"],
+      "stages": [
+        { "name": "Ask", "effort": 1, "doing": "Describes what they need in their own words", "sees": "The assistant's reply", "behind": "The assistant chooses catalogue_search", "support": "Tool descriptions written for assistants", "pain": "Too vague a question", "opportunity": "Prompt library with good starting questions" },
+        { "name": "Search", "effort": 2, "doing": "Narrows by publisher or topic", "sees": "Titles, publishers, licences, formats, dates and links", "behind": "catalogue_search calls package_search", "support": "data.gov.uk", "pain": "Near-duplicates", "opportunity": "Tip: ask for a table with last-updated dates to spot stale entries" },
+        { "name": "Shortlist", "effort": 2, "doing": "Picks two or three candidates", "sees": "Comparable facts side by side", "behind": "Results stay as returned; nothing is ranked by guesswork", "support": "Catalogue metadata as published", "pain": "Missing licence or dates", "opportunity": "dataset_describe reports what is missing" },
+        { "name": "Describe", "effort": 2, "doing": "Opens one dataset in detail", "sees": "Description, distributions and a draft xGov MEM record", "behind": "dataset_describe calls package_show and the crosswalk", "support": "The crosswalk, tested against live records", "pain": "Gaps in the source record", "opportunity": "Gaps are named, never filled in by guess" },
+        { "name": "Judge", "effort": 3, "doing": "Decides whether it is fit for the question", "sees": "Update frequency, licence, standards it follows", "behind": "standard_explain gives each standard's purpose and status", "support": "Standards list with provenance labels", "pain": "Unsure what a standard means", "opportunity": "Plain-English explanations and the glossary" },
+        { "name": "Use and cite", "effort": 1, "doing": "Uses the data and cites the catalogue entry", "sees": "A link to the source", "behind": "Links come straight from the catalogue", "support": "data.gov.uk dataset pages", "pain": "Citing an assistant instead of the source", "opportunity": "Tip: always cite the catalogue link" }
+      ]
+    },
+    {
+      "id": "fix-a-record",
+      "title": "Fix a catalogue record",
+      "personas": ["publisher"],
+      "stages": [
+        { "name": "Pick a record", "effort": 1, "doing": "Chooses a record due for a return or review", "sees": "The record in their catalogue", "behind": "Nothing yet", "support": "Their own publishing process", "pain": "Which record first?", "opportunity": "Readiness checklist to prioritise" },
+        { "name": "See the gaps", "effort": 2, "doing": "Asks for the record against xGov MEM", "sees": "A draft record and a list of what it lacks", "behind": "dataset_describe and the crosswalk", "support": "Live catalogue; pinned model", "pain": "Long list of gaps", "opportunity": "Gaps grouped as required or recommended" },
+        { "name": "Fill the gaps", "effort": 4, "doing": "Finds the missing facts from the people who hold them", "sees": "The record template", "behind": "Nothing is guessed on their behalf", "support": "Their data owners", "pain": "Facts held by someone else", "opportunity": "Checklist explains each attribute in plain terms" },
+        { "name": "Check", "effort": 2, "doing": "Validates the corrected record", "sees": "Errors to fix and warnings to consider, with paths", "behind": "metadata_validate or the in-page checker", "support": "Validator agreed with the model's own tests", "pain": "Misspelt names, values outside the list", "opportunity": "Worked examples for the common mistakes" },
+        { "name": "Publish", "effort": 3, "doing": "Updates the record in their own catalogue", "sees": "Their catalogue's own screens", "behind": "This server never writes anywhere", "support": "Their publishing route", "pain": "Two systems to keep in step", "opportunity": "Tip: keep the validated JSON with the change" },
+        { "name": "Re-check", "effort": 1, "doing": "Checks again after the catalogue harvests", "sees": "Fewer or no gaps", "behind": "dataset_describe against the updated entry", "support": "Catalogue harvest cycle", "pain": "Harvest delay", "opportunity": "Re-check step in the tutorial" }
+      ]
+    },
+    {
+      "id": "assess-estate",
+      "title": "Assess a set of records",
+      "personas": ["standards-lead"],
+      "stages": [
+        { "name": "Sample", "effort": 2, "doing": "Chooses a publisher or a theme to look at", "sees": "Search results for that slice", "behind": "catalogue_search with an organisation filter", "support": "data.gov.uk", "pain": "Large result sets", "opportunity": "Tip: page through with limit and offset" },
+        { "name": "Check each record", "effort": 3, "doing": "Asks the assistant to describe and check each in turn", "sees": "One verdict per record", "behind": "One read-only call per record; findings capped at 100 per call", "support": "Validator and crosswalk", "pain": "Assistant stops part way through a long list", "opportunity": "Prompt that asks for a table and a running count" },
+        { "name": "Find patterns", "effort": 3, "doing": "Looks for the attributes missing most often", "sees": "A summary table", "behind": "The assistant tallies tool results", "support": "The 50-record sample on this page as a baseline", "pain": "Assistant arithmetic can be wrong", "opportunity": "Tip: ask for the per-record table, then check the totals" },
+        { "name": "Explain", "effort": 2, "doing": "Explains the gaps and standards to publishers", "sees": "Plain-English explanations", "behind": "standard_explain and term_lookup", "support": "Standards list and glossary", "pain": "Terms used differently across teams", "opportunity": "term_lookup shows who drafted a term and its review level" },
+        { "name": "Report", "effort": 3, "doing": "Writes up findings and actions", "sees": "Their own report", "behind": "Nothing is stored by this server", "support": "Their governance route", "pain": "Evidence hard to reproduce", "opportunity": "Record the model commit and date with the findings" },
+        { "name": "Re-check", "effort": 2, "doing": "Repeats the sample after fixes", "sees": "Change over time", "behind": "Same calls, same pinned model", "support": "Versioned releases", "pain": "Model changes between checks", "opportunity": "Model commit is shown on every result" }
+      ]
+    },
+    {
+      "id": "champion",
+      "title": "Champion and contribute",
+      "personas": ["champion", "contributor"],
+      "stages": [
+        { "name": "Try", "effort": 1, "doing": "Uses the checker and a few prompts", "sees": "Worked examples that work on the day", "behind": "Examples checked by the validator at build time", "support": "This page", "pain": "Demo fails live", "opportunity": "In-browser checker needs no install or network" },
+        { "name": "Show others", "effort": 3, "doing": "Runs a short session for colleagues", "sees": "Session plan and champion pack", "behind": "Toolkit files generated with the page", "support": "Toolkit", "pain": "Little time to prepare", "opportunity": "A 45-minute plan, ready to use" },
+        { "name": "Gather feedback", "effort": 2, "doing": "Collects what worked and what did not", "sees": "Feedback questions in the session plan", "behind": "Nothing collected by this site", "support": "Their own notes", "pain": "Feedback lost after the session", "opportunity": "Feedback questions mirror the contact form" },
+        { "name": "Raise it", "effort": 1, "doing": "Sends feedback, a bug or an idea", "sees": "A short GitHub form", "behind": "An issue, labelled and triaged", "support": "Issue templates", "pain": "Not sure which form", "opportunity": "Get involved section maps each need to a form" },
+        { "name": "Co-design", "effort": 3, "doing": "Joins a session to shape a change", "sees": "Personas and journeys to react to", "behind": "Decisions recorded as ADRs", "support": "Open register and roadmap", "pain": "Ideas disappear", "opportunity": "Open register shows what happened to each item" },
+        { "name": "Contribute", "effort": 4, "doing": "Opens a pull request", "sees": "Contributing guide and checks", "behind": "CI, code scanning and the repository gate", "support": "Maintainer review", "pain": "Process feels heavy", "opportunity": "Tutorial for a first, small change" }
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "id": "ex-missing",
+      "title": "Check a record before it goes out",
+      "personas": ["publisher", "champion"],
+      "situation": "A Dataset record is ready to publish, but two attributes were never filled in.",
+      "prompt": "Check this Dataset record against xGov MEM and list anything I must fix before I publish it: <paste the record>",
+      "tool": "metadata_validate",
+      "validatorExample": "missing",
+      "check": "Each finding names the attribute path. Fix the errors; consider the warnings."
+    },
+    {
+      "id": "ex-misspelt",
+      "title": "Catch a misspelt attribute",
+      "personas": ["publisher", "standards-lead"],
+      "situation": "The record uses US spelling for one attribute name, so the model does not recognise it and treats the real attribute as missing.",
+      "prompt": "Validate this record and tell me if any attribute names are not in the model: <paste the record>",
+      "tool": "metadata_validate",
+      "validatorExample": "misspelt",
+      "check": "Look for an unknown attribute and a missing one with a similar name together: that pair usually means a spelling difference."
+    },
+    {
+      "id": "ex-bad-enum",
+      "title": "Spot a value outside the allowed list",
+      "personas": ["publisher", "standards-lead"],
+      "situation": "Access rights were typed by hand and do not match one of the model's values.",
+      "prompt": "Check this record and, for any value outside the model's list, show me the allowed values: <paste the record>",
+      "tool": "metadata_validate",
+      "validatorExample": "badEnum",
+      "enum": "AccessRightsValues",
+      "check": "Choose one of the allowed values exactly as written, including capital letters."
+    },
+    {
+      "id": "ex-find",
+      "title": "Find data on a topic",
+      "personas": ["analyst", "policy"],
+      "situation": "You need recent data on a topic and want the licence and format before you open anything.",
+      "prompt": "Search data.gov.uk for road traffic counts. Show the ten most relevant results as a table with title, publisher, licence, formats and last updated, and give me each catalogue link.",
+      "tool": "catalogue_search",
+      "check": "Results change as the catalogue changes, so none are shown here. Open the catalogue link before you rely on a result."
+    },
+    {
+      "id": "ex-describe",
+      "title": "See how ready a catalogue entry is for xGov MEM",
+      "personas": ["publisher", "standards-lead", "analyst"],
+      "situation": "You want to know what a real catalogue entry would still need to meet the model.",
+      "prompt": "Describe the data.gov.uk dataset <name or id> and list the xGov MEM attributes its record still lacks, required ones first.",
+      "tool": "dataset_describe",
+      "live": true,
+      "check": "Missing attributes are reported as missing, never guessed. Compare with the real-record sample on this page."
+    },
+    {
+      "id": "ex-standard",
+      "title": "Explain a standard to a colleague",
+      "personas": ["policy", "champion", "standards-lead"],
+      "situation": "A colleague asks what Open Referral UK is for and whether it is current.",
+      "prompt": "Explain Open Referral UK in plain English: what it is for, its status, its licence and where to read it. Tell me how sure you are of each fact.",
+      "tool": "standard_explain",
+      "standard": "open-referral-uk",
+      "check": "Each answer carries a provenance label and a check date. Anything not verified at the primary source should be re-read there."
+    },
+    {
+      "id": "ex-term",
+      "title": "Check whether a business term is certified",
+      "personas": ["standards-lead", "policy"],
+      "situation": "A term is used in a report and you need to know who defined it and whether it was reviewed.",
+      "prompt": "Look up the term 'crosswalk'. Who drafted it, what review level has it passed, and is it certified?",
+      "tool": "term_lookup",
+      "check": "A term counts as certified only when it is endorsed after review at level H2 or above. Anything unrecorded is reported as unknown."
+    },
+    {
+      "id": "ex-estate",
+      "title": "Find tools that work alongside this one",
+      "personas": ["builder", "contributor"],
+      "situation": "You want to know which other servers cover data quality or related jobs.",
+      "prompt": "List the MCP servers that work alongside this one, what each is for, and where each manifest came from.",
+      "tool": "domain_list",
+      "check": "This server lists the others but never calls them. Each entry names the repository and commit its manifest came from."
+    }
+  ],
+  "tutorials": [
+    {
+      "id": "tut-first-check",
+      "title": "Check your first record in two minutes, with nothing to install",
+      "audience": ["publisher", "policy", "champion"],
+      "time": "2 minutes",
+      "steps": [
+        "Go to Check a record on this page.",
+        "Choose the example called 'Two required attributes missing'. The record appears in the box.",
+        "Leave Class as 'Work it out from the record' and select Check the record.",
+        "Read the findings. Each one names the attribute and whether it is an error (must fix) or a warning (recommended).",
+        "Now paste one of your own records, as JSON. Nothing you paste leaves your browser.",
+        "Fix the errors in your source system, not here: this checker only reads."
+      ],
+      "next": "tut-fix-record"
+    },
+    {
+      "id": "tut-install",
+      "title": "Install the server and connect your assistant",
+      "audience": ["builder", "analyst"],
+      "time": "10 minutes",
+      "steps": [
+        "Check you have Node.js 20 or later: run node --version.",
+        "Clone, install and build with the four commands in Quick start.",
+        "Add the server to your assistant using the snippet for Claude Desktop or VS Code. Replace the path with where you cloned it.",
+        "Restart the assistant. It should list six tools.",
+        "Not working? Run npm run inspector and call a tool by hand. If it works there, the problem is the assistant's settings.",
+        "Ask: 'Which standards can you explain?' The answer should come from standard_explain."
+      ],
+      "next": "tut-fix-record"
+    },
+    {
+      "id": "tut-fix-record",
+      "title": "Fix a catalogue record from start to finish",
+      "audience": ["publisher", "standards-lead"],
+      "time": "30 minutes",
+      "steps": [
+        "Pick one record you are responsible for. Note its data.gov.uk name or id.",
+        "Ask your assistant to describe it and list what its xGov MEM record lacks (worked example: See how ready a catalogue entry is).",
+        "Download the Dataset record template and the readiness checklist from the toolkit.",
+        "Fill the gaps from the people who hold the facts. Do not invent values: an empty gap is better than a wrong one.",
+        "Validate the finished record with metadata_validate or the in-page checker until there are no errors.",
+        "Update the record in your own catalogue. This server never writes anywhere.",
+        "After the catalogue next harvests, describe the record again to confirm the gaps have closed."
+      ],
+      "next": "tut-show-and-tell"
+    },
+    {
+      "id": "tut-add-standard",
+      "title": "Make a first contribution: add or correct a standard",
+      "audience": ["contributor", "builder"],
+      "time": "45 minutes",
+      "steps": [
+        "Read the contributing guide and fork the repository.",
+        "Open src/data/standards.json. Each entry has a name, purpose, status, licence, link, provenance label and check date.",
+        "Read the standard at its primary source. Set the provenance to V only if you checked it there, with today's date; otherwise use S, K or U.",
+        "Run npm run verify. It rebuilds the page and runs every check.",
+        "Open a pull request explaining what you checked and where.",
+        "The maintainer reviews it. If it is merged, the page updates on the next build."
+      ],
+      "next": null
+    },
+    {
+      "id": "tut-show-and-tell",
+      "title": "Run a 45-minute show-and-tell",
+      "audience": ["champion", "standards-lead"],
+      "time": "45 minutes plus 20 to prepare",
+      "steps": [
+        "Download the session plan and the champion pack from the toolkit.",
+        "Before the session, run each worked example you plan to show, so you know what to expect.",
+        "Open with the problem, not the tool: ask who has had a record rejected or could not find data.",
+        "Show the in-page checker live. It needs no install and no network.",
+        "Let people try one of their own records, in pairs.",
+        "Close with the feedback questions, then raise what you heard through the contact form."
+      ],
+      "next": null
+    }
+  ],
+  "guide": [
+    {
+      "group": "Getting started",
+      "items": [
+        { "q": "Do I need to install anything to try it?", "a": "No. The record checker on this page runs the server's own validator in your browser. To use the six tools from an assistant, you need to install the server." },
+        { "q": "What do I need to install it?", "a": "Node.js 20 or later, git, and an assistant that supports MCP, such as Claude Desktop or VS Code." },
+        { "q": "Which assistants work?", "a": "Any assistant that can start an MCP server over stdio. Snippets are given for Claude Desktop and VS Code; others follow the same pattern." }
+      ]
+    },
+    {
+      "group": "Using the tools",
+      "items": [
+        { "q": "How do I choose a tool?", "a": "You usually do not: ask your question and the assistant picks. To be sure, name the tool in your prompt, for example 'use metadata_validate'." },
+        { "q": "Can I check many records at once?", "a": "Each call checks one record. Ask the assistant to go through a list and give you a table, then check the totals yourself." },
+        { "q": "Why do I see at most 100 findings?", "a": "Findings are capped at 100 per call, with a count of how many were left out, so one very broken record cannot flood the reply (defect D-020)." },
+        { "q": "Can I point it at a different catalogue or vocabulary?", "a": "Yes. NDL_MCP_CKAN_BASE sets the catalogue API (https only) and NDL_MCP_VOCAB_PATH sets the vocabulary term_lookup reads. See the README for details." }
+      ]
+    },
+    {
+      "group": "Trust and safety",
+      "items": [
+        { "q": "Does it change anything?", "a": "No. Every tool is read-only. It never writes to a catalogue, sends messages or stores what you ask." },
+        { "q": "Does it handle personal data?", "a": "No personal data is read or returned. Do not paste personal data into the checker or your prompts." },
+        { "q": "Can I rely on the answers?", "a": "Results come from the sources named with them, but the assistant can still make mistakes. Check the source before you rely on a result, and treat provenance labels S, K and U as leads, not facts." },
+        { "q": "Is this a government service?", "a": "No. It is an independent prototype. It is not endorsed by any government department and does not set policy." }
+      ]
+    },
+    {
+      "group": "Troubleshooting",
+      "items": [
+        { "q": "The assistant does not show the tools", "a": "Check the path in the settings points at dist/index.js, that npm run build finished, and restart the assistant. Then try npm run inspector." },
+        { "q": "Search returns nothing or fails", "a": "The catalogue may be unreachable. A weekly live smoke test watches for changes to its API; check the open items, then raise it through the contact form." },
+        { "q": "The checker says my record is invalid, but I think it is right", "a": "Check the class is right and attribute names are spelt as the model spells them (UK spelling, for example licence). If you still disagree, tell us: it may be a difference from the standard." }
+      ]
+    }
+  ],
+  "tips": [
+    { "tip": "Name the tool in your prompt when you need a specific one.", "kind": "Prompting" },
+    { "tip": "Ask for a table with the catalogue link in every row, so each answer can be checked.", "kind": "Prompting" },
+    { "tip": "Ask the assistant to say how sure it is, and which tool each fact came from.", "kind": "Prompting" },
+    { "tip": "Use organisation, limit and offset with catalogue_search to page through one publisher's records.", "kind": "Searching" },
+    { "tip": "A missing attribute next to an unknown one with a similar name is usually a spelling difference.", "kind": "Checking" },
+    { "tip": "Values in the model's lists are exact, including capitals: OPEN, not Open.", "kind": "Checking" },
+    { "tip": "Record the model commit shown with the results whenever you report conformance.", "kind": "Reporting" },
+    { "tip": "Cite the catalogue entry, not the assistant.", "kind": "Reporting" },
+    { "tip": "Keep the validated JSON next to the change you make in your own catalogue.", "kind": "Publishing" },
+    { "tip": "Use the in-page checker for live demos: it needs no network.", "kind": "Championing" }
+  ],
+  "toolkit": [
+    { "id": "dataset-record-template", "file": "toolkit/dataset-record-template.json", "title": "Dataset record template", "kind": "Template", "audience": ["publisher", "standards-lead"], "about": "Every required xGov MEM attribute for a Dataset, with a placeholder to replace. Generated from the model, so it lists exactly the required attributes." },
+    { "id": "metadata-checklist", "file": "toolkit/metadata-readiness-checklist.md", "title": "Metadata readiness checklist", "kind": "Checklist", "audience": ["publisher", "standards-lead", "champion"], "about": "Each required attribute, class by class, with the model's own description and the allowed values where there is a list." },
+    { "id": "prompt-library", "file": "toolkit/prompt-library.md", "title": "Prompt library", "kind": "Prompts", "audience": ["analyst", "policy", "publisher", "standards-lead"], "about": "The worked-example prompts and the tips, ready to copy." },
+    { "id": "session-plan", "file": "toolkit/show-and-tell-session-plan.md", "title": "Show-and-tell and co-design session plan", "kind": "Session plan", "audience": ["champion", "contributor"], "about": "A 45-minute agenda, a co-design exercise using the personas and journeys, and feedback questions." },
+    { "id": "champion-pack", "file": "toolkit/champion-pack.md", "title": "Champion pack", "kind": "Champion pack", "audience": ["champion"], "about": "A short description, an intranet post and a team message you can adapt, saying plainly what this is and is not." },
+    { "id": "service-blueprints", "file": "toolkit/service-blueprints.md", "title": "Proto-personas, journeys and service blueprints", "kind": "Design", "audience": ["contributor", "standards-lead", "champion"], "about": "The personas and blueprints on this page as a document you can annotate in a co-design session." }
+  ],
+  "involve": [
+    { "id": "feedback", "title": "Tell us what worked and what did not", "icon": "form", "who": ["publisher", "analyst", "policy", "champion"], "how": "Use the contact form. It takes two minutes.", "link": "contact" },
+    { "id": "bug", "title": "Report something wrong", "icon": "bug", "who": ["builder", "publisher", "standards-lead"], "how": "Use the bug report form with the tool, what you sent and what came back.", "link": "bug" },
+    { "id": "idea", "title": "Suggest a feature or a standard", "icon": "rocket", "who": ["standards-lead", "contributor", "analyst"], "how": "Use the feature request form. Ideas go on the open register with who must act.", "link": "feature" },
+    { "id": "co-design", "title": "Join a co-design session", "icon": "map", "who": ["champion", "contributor", "publisher", "policy"], "how": "Use the contact form, choose 'Something else' and say you would like to join. Bring a real record or question.", "link": "contact" },
+    { "id": "code", "title": "Contribute a change", "icon": "code", "who": ["builder", "contributor"], "how": "Follow the contributing guide. Every defect fixed comes with a check that would catch it again.", "link": "contributing" },
+    { "id": "champion", "title": "Champion it in your organisation", "icon": "people", "who": ["champion", "standards-lead"], "how": "Use the champion pack and session plan, then tell us what you heard.", "link": "toolkit" }
+  ],
+  "tour": [
+    { "target": "what", "title": "What it does", "text": "Six read-only tools, each with one job. Filter them by what you want to do." },
+    { "target": "who", "title": "Who it is for", "text": "Find your role. Each one links to a journey, a first tutorial and the examples that fit." },
+    { "target": "checker", "title": "Try it now", "text": "Check a record in your browser. Nothing is sent anywhere." },
+    { "target": "use", "title": "How to use it", "text": "Quick start, tutorials, a user guide and tips, in tabs." },
+    { "target": "examples", "title": "Worked examples", "text": "Real prompts, the tool behind each, and what to check. Validator results are produced by the validator itself." },
+    { "target": "toolkit", "title": "Toolkit", "text": "Templates, a checklist, prompts and a champion pack to download." },
+    { "target": "involve", "title": "Get involved", "text": "Feedback, bugs, ideas, co-design and code: each has its own route." },
+    { "target": "journeys", "title": "Journeys and service blueprints", "text": "How each role moves through the service, front stage and back stage. These are assumptions to test with you." },
+    { "target": "open", "title": "What happens next", "text": "Open items and the roadmap, with who must act on each." }
+  ]
+}

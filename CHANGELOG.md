@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Fixed
+
+- Code in "How to use it" was illegible in the light theme: the inline-code background was painted over the dark code block (D-026, check C-19).
+- Below 961 px wide, the contents drawer floated over the page text, because the narrow-screen rule came before the rule it overrides (D-027, check C-20).
+- The bug report form now offers every tool, including `term_lookup` and `domain_list` (D-028, check C-21).
+- Found by visual inspection: the copy button no longer covers code on phones (D-029, C-25); "Last updated" now shows the release date, with the standards check date labelled separately (D-030, C-23); the estate map and effort curves keep readable labels and scroll sideways on phones (D-031, C-24); tab bars wrap so no tab is hidden (D-032, C-26); pill and inactive-letter colours meet WCAG AA in both themes (D-033, C-22); a worked example now names every attribute tied for most often missing (D-034, C-27). Provenance tags meet AA contrast in both themes (D-036, C-22). Bar chart labels are no longer cut off, and the charts keep a readable size on phones (D-035, C-28). The footer barcode is larger on phones.
+
+### Added
+
+- `npm run visual` (`tools/visual_inspect.py`): renders the page at three widths in light and dark, saves a screenshot of every section for a person to look at, and fails on contrast, overflow, clipping or script errors.
+- Who it is for: seven proto-personas (roles, not people), each linked to a journey, a first tutorial and the worked examples that fit. Labelled as assumptions to test (open item O-03).
+- A guided tour of the page, which also works as a plain list of links without JavaScript.
+- How to use it is now in tabs: quick start, five tutorials, a user guide (questions and answers) and filterable hints and tips. Also published as `docs/user-guide.md`.
+- Eight worked examples with copyable prompts. Validator results shown with them come from the validator at build time, and the live-catalogue comparison from the recorded run, never typed in.
+- A toolkit generated with the page: a Dataset record template and a readiness checklist, both generated from the model, plus a prompt library, a show-and-tell and co-design session plan, a champion pack, and the personas and blueprints as a document (`docs/toolkit/`).
+- Contribute and champion: a route for each kind of contribution, and what happens to it.
+- Journeys and service blueprints for five journeys, with modelled effort curves.
+- Personas, journeys, tutorials, examples and toolkit items in the knowledge graph, and five new glossary terms.
+- Links into a tab or an accordion now open it.
+
 ## 0.4.0 (20 November 2026)
 
 ### Changed (independent prototype, ADR 0006)
