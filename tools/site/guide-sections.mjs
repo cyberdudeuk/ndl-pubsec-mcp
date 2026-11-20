@@ -4,7 +4,7 @@
 // resolved here and an unresolved one stops the build, so the page cannot link to something that is not there.
 
 export function renderGuide(ctx) {
-  const { guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links, sectionIds } = ctx;
+  const { guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links, sectionIds, searchApis, apiSources, servers } = ctx;
   const toolNames = new Set(tools.map((t) => t.name));
   const persona = Object.fromEntries(guide.personas.map((p) => [p.id, p]));
   const journey = Object.fromEntries(guide.journeys.map((j) => [j.id, j]));
@@ -44,7 +44,7 @@ export function renderGuide(ctx) {
   const ex = (e) => examples[e.validatorExample];
 
   // --- who it is for ---
-  const who = `<p class="lead">Seven roles this portal is designed around, each written as a ${term("Persona", "proto-persona")}. Pick yours: each links to a ${term("User journey", "journey")}, a first tutorial and the examples that fit.</p>
+  const who = `<p class="lead">The ${guide.personas.length} roles this portal is designed around, each written as a ${term("Persona", "proto-persona")}. Pick yours: each links to a ${term("User journey", "journey")}, a first tutorial and the examples that fit.</p>
       <p class="note note--warn">${icon("info")} ${esc(guide.status)}</p>
       <div class="grid grid--wide" id="who-list">
 ${guide.personas.map((p) => `        <article class="card persona" id="who-${p.id}"><h3>${icon(p.icon)}${esc(p.role)}</h3><p class="meta">${esc(p.context)}</p><p><strong>Wants to:</strong> ${esc(p.goal)}</p><details><summary>What gets in the way</summary><ul>${p.pains.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details><p class="persona__label">Tools they use most</p><ul class="tags">${p.tools.map(toolTag).join("")}</ul><p class="persona__label">How they can shape it</p><p>${esc(p.contributes)} ${esc(p.champions)}</p><p class="persona__links"><a class="btn btn--quiet btn--sm" href="#${esc(tutorial[p.start].id)}">${icon("rocket")}Start here</a><a class="btn btn--quiet btn--sm" href="#p-jr-${esc(p.journey)}">${icon("route")}Their journey</a><a class="btn btn--quiet btn--sm" href="#examples" data-persona="${esc(p.id)}">${icon("spark")}Their examples</a></p></article>`).join("\n")}
@@ -81,6 +81,17 @@ ${guide.personas.map((p) => `        <article class="card persona" id="who-${p.i
       const top = counts.filter(([, n]) => n === max).map(([k]) => k).sort();
       const list = top.length > 1 ? `${top.slice(0, -1).map((k) => `<code>${esc(k)}</code>`).join(", ")} and <code>${esc(top.at(-1))}</code>` : `<code>${esc(top[0])}</code>`;
       return `<div class="outcome"><p class="outcome__label">${icon("chart")}For comparison <span class="tag tag--V">From the recorded real-record run</span></p><p>${live.validHere === 0 ? "None" : `${live.validHere}`} of the ${live.records} real catalogue records sampled ${live.validHere === 1 ? "was" : "were"} valid straight from the catalogue. ${max === live.records ? `Every one lacked ${list}` : `The required ${top.length > 1 ? "attributes" : "attribute"} most often missing (${max} of ${live.records}): ${list}`}. <a href="#p-live">See the full chart</a>.</p></div>`;
+    }
+    if (e.apiQueries) {
+      const groups = e.apiQueries.map((q) => ({ q, hits: searchApis(q.query, { provider: q.provider }).slice(0, 3) }));
+      groups.forEach(({ q, hits }) => hits.length || fail(`example ${e.id}: api_search for "${q.query}" found nothing`));
+      return `<div class="outcome"><p class="outcome__label">${icon("check")}What api_search returns <span class="tag tag--V">Produced by the tool when this page was built</span></p><ul class="findings">${groups.map(({ q, hits }) => hits.map((a) => `<li><span class="sev sev--source">${a.inCatalogue ? "in catalogue" : "named source"}</span><a href="${esc(a.documentation || a.url)}">${esc(a.name)}</a> · ${esc(a.provider)} <span class="meta">(for "${esc(q.query)}")</span></li>`).join("")).join("")}</ul><p class="meta">Catalogue: ${esc(apiSources.catalogue.repository.replace("https://github.com/", ""))} at ${esc(apiSources.catalogue.commit.slice(0, 7))} (${esc(apiSources.catalogue.commitDate)}), ${apiSources.catalogue.count} APIs, plus ${apiSources.named.count} named sources checked at the publisher's page.</p></div>`;
+    }
+    if (e.serverQuery) {
+      const q = e.serverQuery.toLowerCase();
+      const hits = [...servers.estate.map((x) => ({ ...x, status: "estate" })), ...servers.candidates].filter((x) => `${x.title} ${x.description}`.toLowerCase().includes(q));
+      if (!hits.length) fail(`example ${e.id}: server_search for "${e.serverQuery}" found nothing`);
+      return `<div class="outcome"><p class="outcome__label">${icon("check")}What server_search returns <span class="tag tag--V">Read from the register when this page was built</span></p><ul class="findings">${hits.map((x) => `<li><span class="sev sev--source">${esc(x.status.split(";")[0])}</span><a href="${esc(x.url ?? x.repository)}">${esc(x.title)}</a></li>`).join("")}</ul><p class="meta">Register checked ${esc(servers.asOf)}. Candidates are not endorsed and this server never calls them.</p></div>`;
     }
     return `<div class="outcome outcome--soft"><p class="outcome__label">${icon("info")}Illustrative prompt</p><p class="meta">Results come from the live source at the time you ask, so none are shown here.</p></div>`;
   };

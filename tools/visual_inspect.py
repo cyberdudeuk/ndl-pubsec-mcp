@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Visual inspection of docs/index.html: run with `npm run visual` after `npm run site`.
+"""Visual inspection of docs/index.html and docs/ecosystem.html: run with `npm run visual` after `npm run site`.
 
 Renders the page in a real browser at 1280, 853 and 390 px, in light and dark, opens every accordion
 and tab, and saves a screenshot of every section to visual-inspection/ (git-ignored) for a person to
@@ -20,6 +20,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
 URL = (ROOT / "docs" / "index.html").as_uri()
+ECO_URL = (ROOT / "docs" / "ecosystem.html").as_uri()
 OUT = ROOT / "visual-inspection"
 AUDIT = r"""() => {
  const lum = c => { let m = c.match(/[\d.]+/g); if(!m) return null; let [r,g,b,a] = m.map(Number); if (c.startsWith('color(srgb')) { r*=255; g*=255; b*=255; } if (a===0) return null;
@@ -48,7 +49,7 @@ AUDIT = r"""() => {
  return out; }"""
 SECTIONS = ["what", "who", "checker", "conformance", "standards", "map", "tour", "use", "examples", "toolkit",
             "documents", "involve", "journeys", "changes", "open", "defects", "glossary", "accessibility", "about"]
-TABS = ["t-use-tutorials", "t-use-guide", "t-use-tips", "t-live", "t-limits"]
+TABS = ["t-use-tutorials", "t-use-guide", "t-use-tips", "t-live", "t-limits", "t-map-graph"]
 
 
 def main() -> int:
@@ -71,6 +72,10 @@ def main() -> int:
                 results.append(page.evaluate(AUDIT))
             page.click("#t-use-start")
             page.click("#t-corpus")
+            page.click("#t-map-eco")
+            page.hover('#map .eco__node[data-node="ndl-pubsec-mcp"]')
+            page.locator("#map").screenshot(path=str(OUT / f"map-hover-{key}.png"))
+            page.mouse.move(0, 0)
             for section in SECTIONS:
                 page.locator("#" + section).screenshot(path=str(OUT / f"{section}-{key}.png"))
             page.locator("footer").screenshot(path=str(OUT / f"footer-{key}.png"))
@@ -80,6 +85,18 @@ def main() -> int:
                 failures += [f"{key} {label}: {x}" for x in items]
             review += [f"{key} overlap (check by eye): {x}" for x in found["overlap"]]
             page.close()
+            # The standalone ecosystem page, checked the same way.
+            eco = browser.new_page(viewport={"width": width, "height": 900}, color_scheme=scheme, reduced_motion="reduce")
+            eco_errors = []
+            eco.on("pageerror", lambda e, errors=eco_errors: errors.append(str(e)))
+            eco.on("console", lambda m, errors=eco_errors: errors.append(m.text) if m.type == "error" else None)
+            eco.goto(ECO_URL)
+            eco.hover('.eco__node[data-node="api-catalogue"]')
+            eco_found = eco.evaluate(AUDIT.replace("e.closest('main') &&", "e.closest('main') && !e.closest('.eco') &&"))
+            eco.screenshot(path=str(OUT / f"ecosystem-page-{key}.png"), full_page=True)
+            for label, items in [("script error", eco_errors), ("contrast", eco_found["contrast"]), ("wider than screen", eco_found["overflow"]), ("clipped", eco_found["clipped"])]:
+                failures += [f"ecosystem.html {key} {label}: {x}" for x in items]
+            eco.close()
         browser.close()
     print("\n".join(review) or "no overlaps to review")
     print(json.dumps({"screenshots": str(OUT), "failures": failures}, indent=1))

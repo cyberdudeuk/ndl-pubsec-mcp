@@ -3,7 +3,7 @@
 // Never edit those files by hand. Needs `npm run build` first (it lists the tools from the built server).
 // Output is deterministic: the build identifier is a hash of the inputs, not the time or the git commit.
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import QRCode from "qrcode";
@@ -12,6 +12,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../dist/server.js";
 import { renderGuide } from "./site/guide-sections.mjs";
+import { ECO_CSS, ECO_JS, loadEcosystem, renderEcosystem } from "./site/ecosystem.mjs";
+import { searchApis, API_SOURCES } from "../dist/lib/apis.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(root, p), "utf8");
@@ -82,7 +84,8 @@ for (const [k, ex] of Object.entries(examples)) {
 
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
-const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json"];
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
+const eco = loadEcosystem();
 const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
 const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs).digest("hex").slice(0, 12)}`;
@@ -90,8 +93,8 @@ const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs
 // --- assets ---
 mkdirSync(join(root, "docs", "assets"), { recursive: true });
 rmSync(join(root, "docs", "assets", "govuk-frontend.min.css"), { force: true });
-copyFileSync(join(root, "tools/site/site.css"), join(root, "docs/assets/site.css"));
-copyFileSync(join(root, "tools/site/site.js"), join(root, "docs/assets/site.js"));
+writeFileSync(join(root, "docs/assets/site.css"), read("tools/site/site.css") + "\n/* ecosystem view (tools/site/ecosystem.mjs) */" + ECO_CSS);
+writeFileSync(join(root, "docs/assets/site.js"), read("tools/site/site.js") + "\n// ecosystem view (tools/site/ecosystem.mjs)\n" + ECO_JS + "\n");
 // The browser checker runs the server's own compiled validator with the rules inlined, because the page's
 // Content-Security-Policy allows no fetches. Anything the transform misses stops the build.
 const memJs = read("dist/lib/mem.js")
@@ -241,7 +244,8 @@ const letters = [...new Set(glossary.map((g) => g.term[0].toUpperCase()))];
 const claudeCfg = JSON.stringify({ mcpServers: { "ndl-pubsec-mcp": { command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
 const vscodeCfg = JSON.stringify({ servers: { "ndl-pubsec-mcp": { type: "stdio", command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
 const LINKS = { contact: CONTACT, bug: `${REPO}/issues/new?template=bug_report.yml`, feature: `${REPO}/issues/new?template=feature_request.yml`, contributing: gh("CONTRIBUTING.md"), toolkit: "#toolkit" };
-const G = renderGuide({ guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, gh, links: LINKS, sectionIds: sections.map((x) => x.id) });
+const ecoHtml = renderEcosystem(eco, { esc, iconPaths: ICONS, idPrefix: "eco" });
+const G = renderGuide({ guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links: LINKS, sectionIds: sections.map((x) => x.id), searchApis, apiSources: API_SOURCES, servers: JSON.parse(read("src/data/servers.json")) });
 const STATEMENT = "An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.";
 
 const html = `<!DOCTYPE html>
@@ -405,9 +409,21 @@ ${standards.standards.map((s) => `        <article class="card" data-text="${low
 
     <section class="section reveal" id="map" aria-labelledby="map-h">
       ${head2("map")}
-      <p class="lead">How the standards, the tools, this server and the other servers it lists connect. Hover or tab to a point to see its links. The same graph is published as <a href="knowledge-graph.jsonld">JSON-LD</a>.</p>
-      <ul class="legend"><li><i class="k-std"></i>Standard</li><li><i class="k-tool"></i>Tool</li><li><i class="k-server"></i>This server</li><li><i class="k-dom"></i>Other server in the estate</li></ul>
-      <div class="card scroll-x" role="region" aria-label="Estate map, scrolls sideways on small screens" tabindex="0">${estateMap}</div>
+      <p class="lead">How this server connects to the masters it reads, the other portals and servers in the estate, and the standards behind its tools. Hover or tab to a component to see its links. The tools graph is also published as <a href="knowledge-graph.jsonld">JSON-LD</a>.</p>
+      <div class="tabs">
+        <div role="tablist" aria-label="Estate map views">
+          <button role="tab" id="t-map-eco" aria-controls="p-map-eco" type="button">Ecosystem</button>
+          <button role="tab" id="t-map-graph" aria-controls="p-map-graph" type="button">Tools and standards</button>
+        </div>
+        <div role="tabpanel" id="p-map-eco" aria-labelledby="t-map-eco">
+          <p>Where this server's data, APIs and servers come from, the other portals in the estate, and who uses them. Every component is a link. Also published on its own as <a href="ecosystem.html">the ecosystem page</a>.</p>
+          ${ecoHtml}
+        </div>
+        <div role="tabpanel" id="p-map-graph" aria-labelledby="t-map-graph" hidden>
+          <ul class="legend"><li><i class="k-std"></i>Standard</li><li><i class="k-tool"></i>Tool</li><li><i class="k-server"></i>This server</li><li><i class="k-dom"></i>Other server in the estate</li></ul>
+          <div class="card scroll-x" role="region" aria-label="Estate map, scrolls sideways on small screens" tabindex="0">${estateMap}</div>
+        </div>
+      </div>
     </section>
 
     <section class="section reveal" id="tour" aria-labelledby="tour-h">
@@ -563,6 +579,47 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
 </html>
 `;
 writeFileSync(join(root, "docs/index.html"), html);
+// Standalone ecosystem page from the same source, with hashed inline style and script for its own CSP.
+{
+  const siteCss = read("tools/site/site.css");
+  const tokens = (siteCss.match(/:root \{[^}]*\}/) ?? [""])[0];
+  const dark = (siteCss.match(/:root\[data-theme="dark"\] \{[^}]*\}/) ?? [""])[0].replace(':root[data-theme="dark"]', ":root");
+  const css = `${tokens}
+@media (prefers-color-scheme: dark) { ${dark} }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 24px 20px 64px; }
+h1 { font-size: 26px; margin: 0 0 6px; } a { color: var(--brand); } .meta { color: var(--ink-2); font-size: 14px; } code { font-size: 13px; }
+.scroll-x, .table-wrap { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-size: 14px; } caption { text-align: left; font-weight: 700; padding: 8px 0; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+footer { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 16px; font-size: 14px; color: var(--ink-2); }
+${ECO_CSS}`;
+  const hash = (t) => `'sha256-${createHash("sha256").update(t).digest("base64")}'`;
+  const page = `<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${hash(css)}; script-src ${hash(ECO_JS)}; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<title>Ecosystem: NDL PubSec MCP and the estate around it</title>
+<meta name="description" content="${esc(eco.title)}">
+<meta name="artefact:id" content="ndl-pubsec-mcp/ecosystem">
+<meta name="artefact:version" content="${esc(buildId)}">
+<meta name="artefact:as-of" content="${esc(eco.asOf)}">
+<style>${css}</style>
+</head>
+<body>
+<main>
+<h1>Ecosystem</h1>
+<p class="meta">NDL PubSec MCP and the estate around it, as of ${esc(eco.asOf)}. ${esc(STATEMENT)}</p>
+${renderEcosystem(eco, { esc, iconPaths: ICONS, idPrefix: "ecoS" })}
+<footer><p>Generated from <a href="${REPO}/blob/main/tools/site/ecosystem.json">tools/site/ecosystem.json</a> with the <a href="https://cyberdudeuk.github.io/ndl-pubsec-mcp/">project page</a>. <a href="${CONTACT}">Contact form</a>. Content: <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a>. © 2026 Emanuel Silva. Your own project marks are shown for DQ Commons and the DAM playbooks; other organisations' marks are not reproduced. Build <code>${esc(buildId)}</code>.</p></footer>
+</main>
+<script>${ECO_JS}</script>
+</body>
+</html>
+`;
+  writeFileSync(join(root, "docs/ecosystem.html"), page);
+}
 mkdirSync(join(root, "docs", "toolkit"), { recursive: true });
 for (const [f, text] of Object.entries(G.files)) writeFileSync(join(root, f), text);
 

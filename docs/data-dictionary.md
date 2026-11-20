@@ -64,6 +64,27 @@ Inputs and outputs of every tool. Types are JSON types. Every output also carrie
 | asOf, about | out | string | | When the register was checked, and what it is |
 | domains[] | out | object | | `domain`, `title`, `repository`, `manifest`, `self`, `description`, `tools[]`, `safety`, `provenance`, `checked`, and for other servers `vendoredFrom` (owner/repo@commit) and any `note` |
 
+
+## `api_search`
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| query | in | string | 2 to 200 characters | Words to find in an API's name, provider or description; every word must match somewhere |
+| provider | in | string, optional | 2 to 120 letters, digits, spaces and `&'(),.-` | Provider name or id, for example `hm-revenue-customs` |
+| limit | in | integer | 1 to 25, default 10 | APIs to return |
+| sources | out | object | | `catalogue` (repository, file, commit, commitDate, licence, count) and `named` (about, count) |
+| total, returned | out | integer | | Matches found and returned |
+| apis[] | out | array | | `name`, `provider`, `providerId`, `description` (at most 400 characters), `url`, `documentation`, `dateUpdated`, `access` (named sources), `source`, `inCatalogue` |
+| note | out | string | | Listing is not endorsement; the server never calls the APIs |
+
+## `server_search`
+
+| Field | Direction | Type | Rules | Meaning |
+|---|---|---|---|---|
+| query | in | string, optional | 2 to 100 characters | Words to find in a server's title or description; leave out to list all |
+| servers[] | out | array | | `id`, `title`, `status` (this server, estate, or candidate awaiting review and not endorsed), `repository` or `url`, `description`, `tools`, `transport`, `checked`, `provenance` |
+| asOf | out | date | | When the register was last checked |
+
 ## Term
 
 | Field | Type | Meaning |

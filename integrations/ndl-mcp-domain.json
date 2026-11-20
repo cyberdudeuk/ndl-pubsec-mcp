@@ -1,7 +1,7 @@
 {
   "domain": "discoverability",
   "title": "NDL PubSec MCP",
-  "description": "Find UK public sector data, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
+  "description": "Find UK public sector data, APIs and MCP servers, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
   "server": {
     "command": "node",
     "args": [
@@ -51,6 +51,16 @@
       "name": "domain_list",
       "title": "List the MCP servers in this estate",
       "description": "The other MCP servers in the estate, their tools and safety statements."
+    },
+    {
+      "name": "api_search",
+      "title": "Find UK public sector APIs",
+      "description": "Find UK public sector APIs in the pinned API catalogue and named sources; lists, never calls them"
+    },
+    {
+      "name": "server_search",
+      "title": "Find MCP servers",
+      "description": "Find MCP servers: estate servers and candidates awaiting review; never calls them"
     }
   ]
 }

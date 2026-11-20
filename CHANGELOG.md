@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- `api_search`: finds UK public sector APIs in the government API catalogue (pinned at co-cddo/api-catalogue b239f15, 2 November 2026, 231 APIs) and two HMRC APIs the catalogue lacks, each result with where it came from. It never calls the APIs.
+- `server_search`: finds MCP servers in the estate and candidates awaiting review, each with its status and the date it was checked.
+- An interactive ecosystem view in the Estate map, also published on its own as `ecosystem.html`: every component links to its home, and hovering or focusing one highlights what it connects to.
+- Worked examples "What could connect UK Export Finance and HMRC?" and "Find an MCP server for UK legislation", with results produced by the tools when the page is built; a tour stop, a tip, a guide answer and glossary terms (API catalogue, Data service, Shared identifier).
+- Check C-31 (defect D-038); the visual inspection now also covers the standalone ecosystem page and the map's hover state.
+
 ### Changed
 
 - Licence: the repository's own content (documentation, website, user guide and toolkit) is now © 2026 Emanuel Silva under Creative Commons Attribution 4.0, and code stays under MIT with the owner as copyright holder (ADR 0007, check C-29). The vendored xGov MEM files stay © Crown copyright under OGL v3.0, with their licence text moved to `vendor/xgov-mem/LICENCE-OGL`.

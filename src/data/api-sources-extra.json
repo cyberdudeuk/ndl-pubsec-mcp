@@ -1,0 +1,27 @@
+{
+  "about": "Public sector APIs that are not in the UK public sector API catalogue, added by name after checking each at its publisher's own page. Each records where and when it was checked. Propose them to the catalogue too (open item O-19), so this list can shrink.",
+  "apis": [
+    {
+      "name": "Check a UK VAT number",
+      "provider": "HM Revenue & Customs",
+      "providerId": "hm-revenue-customs",
+      "description": "Check whether a UK VAT number is registered, see the name and address of the business it is registered to, and get a reference number proving the check was made.",
+      "url": "https://api.service.hmrc.gov.uk/",
+      "documentation": "https://www.tax.service.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/1.0",
+      "access": "HMRC Developer Hub application",
+      "checked": "2026-11-20",
+      "provenance": "V"
+    },
+    {
+      "name": "UK Trade Info API",
+      "provider": "HM Revenue & Customs",
+      "providerId": "hm-revenue-customs",
+      "description": "UK overseas and regional trade in goods statistics, with imports, exports, traders and commodities feeds. Open access with no authorisation header; OData queries; at most 40,000 items a response.",
+      "url": "https://api.uktradeinfo.com/",
+      "documentation": "https://www.uktradeinfo.com/api-documentation",
+      "access": "Open, no key",
+      "checked": "2026-11-20",
+      "provenance": "V"
+    }
+  ]
+}

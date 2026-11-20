@@ -18,6 +18,8 @@ An open-source [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) 
 | `standard_explain` | Explains open data standards used in government, each with a provenance label | Register in `src/data/standards.json` |
 | `term_lookup` | Looks up business terms and reports, for each, who drafted it (person or AI), the review level it passed (H0 to H5) and whether that makes it certified | The vocabulary named in `NDL_MCP_VOCAB_PATH`, else this repository's own glossary |
 | `domain_list` | Lists the other MCP servers in the same estate, starting with the Public Sector Data Quality Commons, with their tools and safety statements | `src/data/federation.json` |
+| `api_search` | Finds UK public sector APIs by name, provider or description, with endpoint and documentation links and the source of each entry. Lists APIs; never calls them | The UK public sector API catalogue at a pinned commit (`src/generated/api-catalogue.json`), plus APIs added by name after checking them (`src/data/api-sources-extra.json`) |
+| `server_search` | Finds MCP servers to use alongside this one: the estate's servers and public candidates awaiting review, each with its status and when it was checked. Never calls them | `src/data/federation.json`, `src/data/servers.json` |
 
 A term counts as certified only when its register marks it endorsed after review at H2 (peer check) or above, using the review model in the [AI capability governance toolkit](https://github.com/cyberdudeuk/ai-capability-governance). Anything not recorded is reported as unknown. The bundled glossary was drafted with AI assistance and has not been reviewed, so nothing in it is certified ([ADR 0005](docs/adr/0005-term-layer-and-federation.md)).
 
@@ -92,4 +94,4 @@ Use the [contact form](https://github.com/cyberdudeuk/ndl-pubsec-mcp/issues/new?
 
 Code: [MIT Licence](LICENCE). Documentation, the website and its generated content: [Creative Commons Attribution 4.0 International](LICENCE-CC-BY-4.0) (CC BY 4.0). © 2026 Emanuel Silva. See [ADR 0007](docs/adr/0007-licence-cc-by.md).
 
-Third-party material keeps its own licence. The vendored xGov MEM files in `vendor/xgov-mem/` are © Crown copyright under the [Open Government Licence v3.0](vendor/xgov-mem/LICENCE-OGL), and catalogue records, standards and their licences are described as their publishers state them.
+Third-party material keeps its own licence. The compiled API catalogue in `src/generated/api-catalogue.json` is © Crown copyright under the Open Government Licence v3.0, from [co-cddo/api-catalogue](https://github.com/co-cddo/api-catalogue). The vendored xGov MEM files in `vendor/xgov-mem/` are © Crown copyright under the [Open Government Licence v3.0](vendor/xgov-mem/LICENCE-OGL), and catalogue records, standards and their licences are described as their publishers state them.

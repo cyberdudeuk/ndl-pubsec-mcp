@@ -12,10 +12,10 @@ Proto-personas and assumed journeys. Written from the tools, the standard and th
 | Role | Wants to | Tools | Start with |
 |---|---|---|---|
 | Catalogue publisher | Get records complete and correct before a return, an audit or a release, without learning the whole standard first. | `dataset_describe`, `metadata_validate` | Check your first record in two minutes, with nothing to install |
-| Analyst or researcher | Find candidate datasets, judge whether they are fit for the question, and cite them properly. | `catalogue_search`, `dataset_describe`, `standard_explain` | Install the server and connect your assistant |
-| Metadata or standards lead | See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms. | `metadata_validate`, `standard_explain`, `term_lookup` | Fix a catalogue record from start to finish |
-| Developer or AI builder | Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects. | `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list` | Install the server and connect your assistant |
-| Policy or product colleague | Get a plain-English answer they can trust, with a link to the source they can pass on. | `catalogue_search`, `standard_explain`, `term_lookup` | Check your first record in two minutes, with nothing to install |
+| Analyst or researcher | Find candidate datasets, judge whether they are fit for the question, and cite them properly. | `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search` | Install the server and connect your assistant |
+| Metadata or standards lead | See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms. | `metadata_validate`, `standard_explain`, `term_lookup`, `api_search` | Fix a catalogue record from start to finish |
+| Developer or AI builder | Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects. | `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search` | Install the server and connect your assistant |
+| Policy or product colleague | Get a plain-English answer they can trust, with a link to the source they can pass on. | `catalogue_search`, `standard_explain`, `term_lookup`, `api_search` | Check your first record in two minutes, with nothing to install |
 | Data champion | Show colleagues something useful in under an hour and leave them able to carry on alone. | `metadata_validate`, `catalogue_search`, `standard_explain` | Run a 45-minute show-and-tell |
 | Contributor or co-designer | Make a change that is accepted, and see what happened to their idea. | `standard_explain`, `domain_list` | Make a first contribution: add or correct a standard |
 
@@ -39,7 +39,7 @@ For: Developer or AI builder, Analyst or researcher. Time: 10 minutes.
 1. Check you have Node.js 20 or later: run node --version.
 2. Clone, install and build with the four commands in Quick start.
 3. Add the server to your assistant using the snippet for Claude Desktop or VS Code. Replace the path with where you cloned it.
-4. Restart the assistant. It should list six tools.
+4. Restart the assistant. It should list the tools in the data dictionary.
 5. Not working? Run npm run inspector and call a tool by hand. If it works there, the problem is the assistant's settings.
 6. Ask: 'Which standards can you explain?' The answer should come from standard_explain.
 
@@ -83,7 +83,7 @@ For: Data champion, Metadata or standards lead. Time: 45 minutes plus 20 to prep
 
 **Do I need to install anything to try it?**
 
-No. The record checker on this page runs the server's own validator in your browser. To use the six tools from an assistant, you need to install the server.
+No. The record checker on this page runs the server's own validator in your browser. To use the tools from an assistant, you need to install the server.
 
 **What do I need to install it?**
 
@@ -110,6 +110,10 @@ Findings are capped at 100 per call, with a count of how many were left out, so 
 **Can I point it at a different catalogue or vocabulary?**
 
 Yes. NDL_MCP_CKAN_BASE sets the catalogue API (https only) and NDL_MCP_VOCAB_PATH sets the vocabulary term_lookup reads. See the README for details.
+
+**Does it call the APIs it finds?**
+
+No. api_search and server_search list APIs and servers with where each entry came from; this server never calls them, holds no keys and passes no data.
 
 ### Trust and safety
 
@@ -148,6 +152,7 @@ Check the class is right and attribute names are spelt as the model spells them 
 - **Prompting:** Name the tool in your prompt when you need a specific one.
 - **Prompting:** Ask for a table with the catalogue link in every row, so each answer can be checked.
 - **Prompting:** Ask the assistant to say how sure it is, and which tool each fact came from.
+- **Searching:** Use api_search to check whether an API already exists before you build or buy one.
 - **Searching:** Use organisation, limit and offset with catalogue_search to page through one publisher's records.
 - **Checking:** A missing attribute next to an unknown one with a similar name is usually a spelling difference.
 - **Checking:** Values in the model's lists are exact, including capitals: OPEN, not Open.

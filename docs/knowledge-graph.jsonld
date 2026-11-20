@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+683b1334c9f5",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+b02ad3f8c807",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -37,6 +37,12 @@
         },
         {
           "@id": "ndl:tool/domain_list"
+        },
+        {
+          "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/server_search"
         }
       ],
       "schema:audience": [
@@ -114,6 +120,20 @@
       "@type": "schema:EntryPoint",
       "schema:name": "domain_list",
       "schema:description": "List the MCP servers that work alongside this one (for example the Public Sector Data Quality Commons), with what each is for, its tools, its safety statement and where its manifest came from. This server does not call them.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:tool/api_search",
+      "@type": "schema:EntryPoint",
+      "schema:name": "api_search",
+      "schema:description": "Search UK public sector APIs by words in their name, provider or description, optionally for one provider. Draws on the UK public sector API catalogue at a pinned commit, plus APIs added by name after checking them at the publisher's page (each says which). Returns name, provider, description, endpoint and documentation links, and the source of each entry. Read-only: this server lists APIs and never calls them, holds no keys and passes no data. Listing is not endorsement, and using an API may need its own sign-up or a legal basis.",
+      "dct:references": []
+    },
+    {
+      "@id": "ndl:tool/server_search",
+      "@type": "schema:EntryPoint",
+      "schema:name": "server_search",
+      "schema:description": "List or search MCP servers an agent might use alongside this one: the estate's own servers (with their manifests or repositories) and public candidates awaiting the owner's review. Each entry says its status, where it was checked and when. Candidates are not endorsed. This server never calls any of them.",
       "dct:references": []
     },
     {
@@ -248,6 +268,15 @@
       "skos:prefLabel": "Glossary"
     },
     {
+      "@id": "ndl:term/api-catalogue",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "API catalogue",
+      "skos:definition": "A list of APIs with what each does, who provides it and where its documentation is. The UK public sector API catalogue is at api.gov.uk; api_search reads it at a pinned commit.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/ckan",
       "@type": "skos:Concept",
       "skos:prefLabel": "CKAN",
@@ -306,6 +335,15 @@
       "@type": "skos:Concept",
       "skos:prefLabel": "Data champion",
       "skos:definition": "Someone who promotes good data practice in their own organisation, often alongside their main job.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/data-service",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Data service",
+      "skos:definition": "In DCAT, a set of operations, such as an API, that gives access to datasets or data processing. DCAT-AP-UK describes APIs this way, so they can be catalogued like datasets.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -414,6 +452,15 @@
       "@type": "skos:Concept",
       "skos:prefLabel": "Service blueprint",
       "skos:definition": "A diagram of a journey in lanes: what the person does and sees (front stage), what happens behind it (back stage) and what supports it.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/shared-identifier",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Shared identifier",
+      "skos:definition": "A key two organisations both use for the same thing, such as a company number, VAT number, EORI number, commodity code or address reference, so their data can be joined.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -538,6 +585,9 @@
         },
         {
           "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/api_search"
         }
       ],
       "ndl:journey": {
@@ -559,6 +609,9 @@
         },
         {
           "@id": "ndl:tool/term_lookup"
+        },
+        {
+          "@id": "ndl:tool/api_search"
         }
       ],
       "ndl:journey": {
@@ -589,6 +642,12 @@
         },
         {
           "@id": "ndl:tool/domain_list"
+        },
+        {
+          "@id": "ndl:tool/api_search"
+        },
+        {
+          "@id": "ndl:tool/server_search"
         }
       ],
       "ndl:journey": {
@@ -610,6 +669,9 @@
         },
         {
           "@id": "ndl:tool/term_lookup"
+        },
+        {
+          "@id": "ndl:tool/api_search"
         }
       ],
       "ndl:journey": {
@@ -980,7 +1042,7 @@
         {
           "@type": "schema:HowToStep",
           "schema:position": 4,
-          "schema:text": "Restart the assistant. It should list six tools."
+          "schema:text": "Restart the assistant. It should list the tools in the data dictionary."
         },
         {
           "@type": "schema:HowToStep",
@@ -1186,6 +1248,26 @@
       }
     },
     {
+      "@id": "ndl:example/ex-ukef-hmrc",
+      "@type": "schema:CreativeWork",
+      "schema:name": "What could connect UK Export Finance and HMRC?",
+      "schema:text": "Find HMRC APIs that could help an export finance team check an exporter's VAT and EORI numbers and size a market for a product. For each, give the documentation link, how access works, and whether it is in the government API catalogue.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/builder"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/api_search"
+      }
+    },
+    {
       "@id": "ndl:example/ex-find",
       "@type": "schema:CreativeWork",
       "schema:name": "Find data on a topic",
@@ -1274,6 +1356,23 @@
       ],
       "dct:references": {
         "@id": "ndl:tool/domain_list"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-servers",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Find an MCP server for UK legislation",
+      "schema:text": "Which MCP servers could I use alongside this one for UK legislation? Tell me each one's status and where it was checked.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/builder"
+        },
+        {
+          "@id": "ndl:persona/contributor"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/server_search"
       }
     },
     {
@@ -1663,6 +1762,14 @@
       "schema:name": "D-037",
       "schema:description": "On phones, at the end of the page, the fixed Top button covered the end of the footer barcode",
       "ndl:check": "C-30: the footer keeps at least 72 px below its content",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-038",
+      "@type": "schema:Thing",
+      "schema:name": "D-038",
+      "schema:description": "In light mode the DQ Commons mark in the ecosystem diagram showed only a yellow dot",
+      "ndl:check": "C-31: ecosystem node styles target only the direct `> rect` child",
       "ndl:status": "Fixed"
     }
   ]
