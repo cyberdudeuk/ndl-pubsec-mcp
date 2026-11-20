@@ -139,6 +139,20 @@ export function checkRepo(root) {
       else if (!e.parties.some((p) => p.includes(party))) problems.push(`C-40 src/data/exchanges.json ${e.id}: provider ${q.provider} (${party}) is not a party to the exchange`);
     }
   }
+  // C-41 (defect D-047): publiccode.yml exists and agrees with package.json and CITATION.cff, so the launchpad's discovery can check the card
+  {
+    const pc = existsSync(join(root, "publiccode.yml")) ? readFileSync(join(root, "publiccode.yml"), "utf8") : "";
+    const cff = existsSync(join(root, "CITATION.cff")) ? readFileSync(join(root, "CITATION.cff"), "utf8") : "";
+    const version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
+    const cffLic = [...cff.matchAll(/^\s+-\s+([A-Za-z0-9.-]+)\s*$/gm)].map((m) => m[1]).filter((x) => /^(MIT|CC-BY-4\.0|Apache-2\.0|OGL-UK-3\.0)$/.test(x));
+    if (!pc) problems.push("C-41 publiccode.yml: missing, so the launchpad cannot check this project's card against its licence");
+    else {
+      if (!new RegExp(`^softwareVersion: ${version.replace(/\./g, "\\.")}$`, "m").test(pc)) problems.push(`C-41 publiccode.yml: softwareVersion is not ${version} (package.json)`);
+      const lic = (pc.match(/^\s+license: (.+)$/m) || [])[1] || "";
+      if (lic.split(" AND ").sort().join(",") !== [...cffLic].sort().join(",")) problems.push(`C-41 publiccode.yml: license "${lic}" differs from CITATION.cff (${cffLic.join(", ")})`);
+      if (/@[a-z0-9-]+\.[a-z]/i.test(pc)) problems.push("C-41 publiccode.yml: contains an email address; contact is by the form only");
+    }
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -395,5 +409,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-40)");
+  console.log("repository checks passed (C-01 to C-41)");
 }

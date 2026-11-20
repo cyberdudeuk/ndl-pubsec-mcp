@@ -352,6 +352,12 @@ describe("page structure (D-025)", () => {
     expect(breakFile("src/data/exchanges.json", '"query": "land",\n     "provider": "hm-land-registry"', '"query": "land",\n     "provider": "nhs-digital"').join()).toMatch(/C-40 .*not a party/);
   });
 
+  it("C-41 catches a publiccode.yml that disagrees with package.json or CITATION.cff (D-047)", () => {
+    expect(breakFile("publiccode.yml", "license: MIT AND CC-BY-4.0", "license: MIT AND OGL-UK-3.0").join()).toMatch(/C-41 .*differs from CITATION/);
+    expect(breakFile("publiccode.yml", "softwareVersion: 0.4.0", "softwareVersion: 0.3.0").join()).toMatch(/C-41 .*softwareVersion/);
+    expect(breakFile("publiccode.yml", "contact form only)", "contact form only) someone@example.org").join()).toMatch(/C-41 .*email/);
+  });
+
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {
     expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
   });
