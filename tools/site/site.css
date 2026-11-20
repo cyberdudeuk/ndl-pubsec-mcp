@@ -163,6 +163,7 @@ main { min-width: 0; padding: 18px 0 64px; }
 .findings .sev { font-weight: 800; text-transform: uppercase; font-size: 12px; margin-right: 6px; }
 .findings .sev--error { color: var(--bad); }
 .findings .sev--warning { color: var(--warn); }
+.findings .sev--source { color: var(--ink-2); }
 
 /* charts */
 .chart { width: 100%; min-width: 560px; height: auto; }

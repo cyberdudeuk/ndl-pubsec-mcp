@@ -1,0 +1,36 @@
+{
+  "about": "The single source for the ecosystem view: the masters this server reads, the estate's portals and servers, and who uses them. tools/site/ecosystem.mjs renders it into the page (Estate map, Ecosystem tab) and into docs/ecosystem.html. Solid lines exist today; dashed lines are proposed.",
+  "asOf": "2026-11-20",
+  "title": "One read-only finder for agents, reading the masters the estate already has",
+  "groups": {
+    "master": "Masters outside the estate",
+    "estate": "The owner's estate: independent prototypes",
+    "finder": "This server",
+    "user": "Who uses them"
+  },
+  "nodes": [
+    { "id": "api-catalogue", "group": "master", "x": 24, "y": 70, "w": 228, "h": 70, "icon": "list", "name": "Government API catalogue", "lines": ["co-cddo, 231 APIs", "pinned at 2 Nov 2026"], "url": "https://www.api.gov.uk/", "about": "The UK public sector API catalogue, maintained in co-cddo/api-catalogue. This server compiles it at a pinned commit for api_search, without the maintainer contact field.", "status": "live" },
+    { "id": "hmrc", "group": "master", "x": 266, "y": 70, "w": 228, "h": 70, "icon": "code", "name": "HMRC Developer Hub", "lines": ["VAT check and UK Trade Info", "as named sources"], "url": "https://developer.service.hmrc.gov.uk/api-documentation", "about": "Two HMRC APIs missing from the catalogue, Check a UK VAT number and the UK Trade Info API, are added by name after checking them at HMRC's own pages.", "status": "live" },
+    { "id": "data-gov-uk", "group": "master", "x": 508, "y": 70, "w": 228, "h": 70, "icon": "search", "name": "data.gov.uk", "lines": ["the national data catalogue"], "url": "https://www.data.gov.uk/", "about": "The national catalogue of public sector datasets, searched live by catalogue_search and dataset_describe.", "status": "live" },
+    { "id": "asset-catalogue", "group": "estate", "x": 40, "y": 210, "w": 192, "h": 90, "icon": "code", "name": "Asset Catalogue", "lines": ["harvests the catalogue", "people find code, APIs"], "url": "https://cyberdudeuk.github.io/github-repos-asset-catalogue/", "about": "The GitHub Repos Asset Catalogue: UK public sector code on GitHub, explained in plain English, with a view of the API catalogue for people choosing what to reuse.", "status": "live" },
+    { "id": "ndl-pubsec-mcp", "group": "finder", "x": 284, "y": 210, "w": 192, "h": 150, "icon": "logo", "name": "NDL PubSec MCP", "lines": ["finds data, APIs", "and MCP servers", "checks metadata", "read-only, cited"], "url": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/", "about": "This server. Read-only tools let an AI assistant find data, APIs and MCP servers, check metadata against the model and explain standards. It lists APIs and servers; it never calls them.", "status": "live" },
+    { "id": "dcat-ap-uk", "group": "estate", "x": 528, "y": 210, "w": 192, "h": 90, "icon": "glossary", "name": "DCAT-AP-UK", "lines": ["models data services", "MCP converts OpenAPI"], "url": "https://cyberdudeuk.github.io/dcat-ap-uk/", "about": "The proposed UK DCAT profile, set to supersede xGov MEM. It models APIs as data services, and its own MCP server converts OpenAPI descriptions into data service records. Listed by server_search.", "status": "live" },
+    { "id": "dq-commons", "group": "estate", "x": 528, "y": 320, "w": 192, "h": 50, "logo": "dq-commons", "name": "DQ Commons", "lines": ["quality rules, own MCP"], "url": "https://cyberdudeuk.github.io/dq-commons/", "about": "The Public Sector Data Quality Commons: quality rules, frameworks and its own MCP server, listed by domain_list and server_search.", "status": "live" },
+    { "id": "dam", "group": "estate", "x": 528, "y": 386, "w": 192, "h": 50, "logo": "dam-capability-playbooks", "name": "DAM playbooks", "lines": ["and Policy Explorer"], "url": "https://cyberdudeuk.github.io/dam-capability-playbooks/", "links": [["DAM Policy Explorer", "https://cyberdudeuk.github.io/dam-policy-explorer/"]], "about": "Step-by-step guidance for critical data assets, and the DAM Policy Explorer. A link from their checks to this server's metadata checks is proposed.", "status": "live" },
+    { "id": "people", "group": "user", "x": 40, "y": 480, "w": 192, "h": 52, "icon": "people", "name": "People", "lines": ["teams, publishers"], "url": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#who", "about": "Service teams, publishers, analysts and standards leads, browsing in the portals.", "status": "live" },
+    { "id": "agents", "group": "user", "x": 284, "y": 480, "w": 192, "h": 52, "icon": "spark", "name": "AI assistants", "lines": ["ask one question"], "url": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#use", "about": "Any MCP-capable assistant, asking this server one question across data, APIs and servers.", "status": "live" }
+  ],
+  "edges": [
+    { "from": "api-catalogue", "to": "asset-catalogue", "path": "M136 140V210", "label": "harvests", "lx": 144, "ly": 186 },
+    { "from": "api-catalogue", "to": "ndl-pubsec-mcp", "path": "M220 140V166H312V210", "label": "api_search", "lx": 266, "ly": 160, "anchor": "middle" },
+    { "from": "hmrc", "to": "ndl-pubsec-mcp", "path": "M380 140V210", "label": "named list", "lx": 388, "ly": 186 },
+    { "from": "data-gov-uk", "to": "ndl-pubsec-mcp", "path": "M622 140V166H452V210", "label": "catalogue_search", "lx": 540, "ly": 160, "anchor": "middle" },
+    { "from": "asset-catalogue", "to": "ndl-pubsec-mcp", "path": "M232 255H284", "label": "links", "lx": 258, "ly": 248, "anchor": "middle", "proposed": true },
+    { "from": "dcat-ap-uk", "to": "ndl-pubsec-mcp", "path": "M528 238H476", "label": "profile", "lx": 502, "ly": 231, "anchor": "middle", "proposed": true },
+    { "from": "ndl-pubsec-mcp", "to": "dcat-ap-uk", "path": "M476 278H528", "label": "listed", "lx": 502, "ly": 271, "anchor": "middle" },
+    { "from": "ndl-pubsec-mcp", "to": "dq-commons", "path": "M476 345H528", "label": "listed", "lx": 502, "ly": 338, "anchor": "middle" },
+    { "from": "ndl-pubsec-mcp", "to": "dam", "path": "M440 360V411H528", "label": "links", "lx": 448, "ly": 392, "proposed": true },
+    { "from": "asset-catalogue", "to": "people", "path": "M136 300V480" },
+    { "from": "ndl-pubsec-mcp", "to": "agents", "path": "M380 360V480" }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "about": "MCP servers an agent might use alongside this one, beyond the estate domains in federation.json. Estate servers are the owner's own. Candidates are public servers found in searches; they are listed for review only, are not endorsed, and none is called by this server. A candidate becomes listed only when the owner approves it.",
+  "asOf": "2026-11-20",
+  "estate": [
+    {
+      "id": "dcat-ap-uk",
+      "title": "DCAT-AP-UK MCP server",
+      "repository": "https://github.com/cyberdudeuk/dcat-ap-uk",
+      "path": "integrations/mcp",
+      "commit": "070db5d863844f1d934df5b9d6f53d06632252a5",
+      "transport": "stdio, runs locally",
+      "description": "Read the proposed DCAT-AP-UK profile, and check, score, convert and export metadata records, including converting an OpenAPI description into a data service record. Reads only the generated profile; makes no network requests.",
+      "tools": ["profile_summary", "describe_class", "describe_property", "list_codelist", "search", "validate_record", "convert_mem", "convert_openapi", "export_record"],
+      "checked": "2026-11-20",
+      "provenance": "V"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "uk-legal-mcp",
+      "title": "UK legal research MCP server",
+      "url": "https://pypi.org/project/uk-legal-mcp/",
+      "transport": "remote (streamable HTTP) or local",
+      "description": "Case law, legislation, Parliament, bills, votes, committees, citations and HMRC sources through one connection; the publisher states it is read-only.",
+      "status": "candidate, awaiting owner review; not endorsed",
+      "checked": "2026-11-20",
+      "provenance": "S"
+    },
+    {
+      "id": "gb-eli-mcp",
+      "title": "gb-eli-mcp (legislation.gov.uk)",
+      "url": "https://pypi.org/project/gb-eli-mcp/",
+      "transport": "local",
+      "description": "Legislation.gov.uk, case law and GOV.UK tribunal decisions with persistent identifiers and source links, according to its publisher.",
+      "status": "candidate, awaiting owner review; not endorsed",
+      "checked": "2026-11-20",
+      "provenance": "S"
+    }
+  ]
+}

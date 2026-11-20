@@ -211,6 +211,11 @@ export function checkRepo(root) {
       if (l < 0 || r > vb) problems.push(`C-28 docs/index.html: chart label "${t[3]}" runs past the chart edge (viewBox ${vb})`);
     }
   }
+  // C-31 (defect D-039): ecosystem node styles reach only the node's own box, never the rect inside an inlined logo
+  {
+    const eco = readFileSync(join(root, "tools/site/ecosystem.mjs"), "utf8");
+    for (const rule of eco.match(/\.eco__node[^{}]*\{/g) ?? []) if (/\srect\b/.test(rule.replace(/>\s*rect/g, ""))) problems.push(`C-31 tools/site/ecosystem.mjs: "${rule.trim()}" styles every rect in a node, including the logos inlined there; use "> rect"`);
+  }
   // C-30 (defect D-037): the footer leaves room for the fixed Top button at the end of the page
   const foot = cssRules.filter((r) => !r.media && r.selectors.includes("footer")).map((r) => r.body).join(";");
   const fb = Number((foot.match(/padding-bottom\s*:\s*(\d+)px/) ?? [])[1] ?? 0);
@@ -234,7 +239,7 @@ export function checkRepo(root) {
   };
   for (const [where, text] of Object.entries(ownStatements)) {
     for (const sentence of text.split(/(?<=\.)\s+|\n+/)) {
-      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
+      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem|API catalogue|co-cddo\/api-catalogue/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
     }
   }
   if (!/© 2026 Emanuel Silva/.test(ownStatements["README.md"])) problems.push("C-29 README.md: the licence section does not name the copyright holder (ADR 0007)");
@@ -311,5 +316,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-30)");
+  console.log("repository checks passed (C-01 to C-31)");
 }

@@ -30,7 +30,7 @@ beforeEach(async () => {
 });
 
 describe("MCP server", () => {
-  it("lists exactly the six read-only tools", async () => {
+  it("lists exactly the read-only tools in TOOL_NAMES", async () => {
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([...TOOL_NAMES].sort());
     for (const t of tools) {
@@ -156,5 +156,50 @@ describe("MCP server", () => {
     // D-021: the vendored manifest once listed 12 of the 15 tools dq-commons serves (fixed in dq-commons#41)
     expect(dq?.tools).toHaveLength(15);
     expect(dq?.tools).toEqual(expect.arrayContaining(["playbook", "estimate_effort", "weave_rules"]));
+  });
+
+  it("api_search finds HMRC's VAT check, which the catalogue lacks, and labels its source", async () => {
+    const r = data(await client.callTool({ name: "api_search", arguments: { query: "VAT number" } }));
+    const apis = r.apis as { name: string; inCatalogue: boolean; source: string; documentation: string }[];
+    expect(r.ok).toBe(true);
+    expect(apis[0].name).toBe("Check a UK VAT number");
+    expect(apis[0].inCatalogue).toBe(false);
+    expect(apis[0].source).toMatch(/named source, checked \d{4}-\d{2}-\d{2} \(V\)/);
+    expect(apis[0].documentation).toMatch(/^https:\/\/www\.tax\.service\.gov\.uk\//);
+  });
+
+  it("api_search filters by provider and returns catalogue entries with a pinned source", async () => {
+    const r = data(await client.callTool({ name: "api_search", arguments: { query: "EORI", provider: "hm-revenue-customs" } }));
+    const apis = r.apis as { name: string; provider: string; source: string; inCatalogue: boolean }[];
+    expect(apis.map((a) => a.name)).toEqual(["Check an EORI Number"]);
+    expect(apis[0].provider).toBe("HM Revenue & Customs");
+    expect(apis[0].inCatalogue).toBe(true);
+    expect(apis[0].source).toMatch(/^co-cddo\/api-catalogue@[0-9a-f]{7} \(\d{4}-\d{2}-\d{2}\)$/);
+  });
+
+  it("api_search returns nothing rather than guessing, and rejects bad input", async () => {
+    const none = data(await client.callTool({ name: "api_search", arguments: { query: "zzqx nonexistent" } }));
+    expect(none.total).toBe(0);
+    const bad = await client.callTool({ name: "api_search", arguments: { query: "x" } });
+    expect(bad.isError).toBe(true);
+    const inj = await client.callTool({ name: "api_search", arguments: { query: "tax", provider: "<script>" } });
+    expect(inj.isError).toBe(true);
+  });
+
+  it("no API entry carries an email address (C-01, compile_api_catalogue drops the maintainer field)", async () => {
+    const r = data(await client.callTool({ name: "api_search", arguments: { query: "api", limit: 25 } }));
+    expect(JSON.stringify(r)).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+    const { ALL_APIS } = await import("../src/lib/apis.js");
+    expect(JSON.stringify(ALL_APIS)).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  });
+
+  it("server_search lists estate servers and marks candidates as not endorsed", async () => {
+    const r = data(await client.callTool({ name: "server_search", arguments: {} }));
+    const list = r.servers as { id: string; status: string }[];
+    expect(list.find((s) => s.id === "discoverability")?.status).toBe("this server");
+    expect(list.find((s) => s.id === "dcat-ap-uk")?.status).toBe("estate");
+    for (const c of list.filter((s) => s.status.startsWith("candidate"))) expect(c.status).toMatch(/not endorsed/);
+    const law = data(await client.callTool({ name: "server_search", arguments: { query: "legislation" } }));
+    expect((law.servers as unknown[]).length).toBeGreaterThan(0);
   });
 });

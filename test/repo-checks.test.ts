@@ -300,6 +300,10 @@ describe("page structure (D-025)", () => {
     expect(breakFile("docs/index.html", "</footer>", `${stale}</footer>`).join()).toMatch(/C-29/);
   });
 
+  it("C-31 catches an ecosystem style that recolours logos inside nodes (D-039)", () => {
+    expect(breakFile("tools/site/ecosystem.mjs", ".eco__node > rect {", ".eco__node rect {").join()).toMatch(/C-31/);
+  });
+
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {
     expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
   });
