@@ -37,6 +37,17 @@
     },
     {
       "term_id": "NDL-GLO-004",
+      "preferred_label": "Case study",
+      "alt_labels": "",
+      "definition": "A real exchange of data between public bodies, told with who takes part, what moves, why, and the sources it rests on. Each carries a provenance label.",
+      "status": "draft",
+      "drafted_by": "ai-assisted",
+      "review_level": "unknown",
+      "provenance": "docs/glossary.md, ndl-pubsec-mcp",
+      "semantic_bindings": ""
+    },
+    {
+      "term_id": "NDL-GLO-005",
       "preferred_label": "CKAN",
       "alt_labels": "",
       "definition": "The open-source catalogue software behind data.gov.uk. Its \"action API\" is what this server calls.",
@@ -47,7 +58,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-005",
+      "term_id": "NDL-GLO-006",
       "preferred_label": "Class",
       "alt_labels": "",
       "definition": "A kind of thing in xGov MEM, for example Dataset or DataService.",
@@ -58,7 +69,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-006",
+      "term_id": "NDL-GLO-007",
       "preferred_label": "Co-design",
       "alt_labels": "",
       "definition": "Designing a service with the people who will use it, not only for them: they shape the personas, journeys and changes.",
@@ -69,7 +80,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-007",
+      "term_id": "NDL-GLO-008",
       "preferred_label": "Crosswalk",
       "alt_labels": "",
       "definition": "A mapping from one metadata format to another; here, from a data.gov.uk entry to xGov MEM.",
@@ -80,7 +91,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-008",
+      "term_id": "NDL-GLO-009",
       "preferred_label": "CURIE",
       "alt_labels": "",
       "definition": "A short form of a web address, written prefix:name. For example, `dcat:Dataset`.",
@@ -91,7 +102,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-009",
+      "term_id": "NDL-GLO-010",
       "preferred_label": "DAM policy",
       "alt_labels": "",
       "definition": "The cross-government policy on critical data assets (the successor to the Essential Shared Data Asset policy), with returns to GDS from January 2027.",
@@ -102,7 +113,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-010",
+      "term_id": "NDL-GLO-011",
       "preferred_label": "Data champion",
       "alt_labels": "",
       "definition": "Someone who promotes good data practice in their own organisation, often alongside their main job.",
@@ -113,7 +124,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-011",
+      "term_id": "NDL-GLO-012",
       "preferred_label": "Data exchange",
       "alt_labels": "",
       "definition": "Data passing from one organisation to another for a stated purpose, such as payroll earnings going from HMRC to DWP so Universal Credit can be worked out.",
@@ -124,7 +135,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-012",
+      "term_id": "NDL-GLO-013",
       "preferred_label": "Data service",
       "alt_labels": "",
       "definition": "In DCAT, a set of operations, such as an API, that gives access to datasets or data processing. DCAT-AP-UK describes APIs this way, so they can be catalogued like datasets.",
@@ -135,7 +146,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-013",
+      "term_id": "NDL-GLO-014",
       "preferred_label": "data.gov.uk",
       "alt_labels": "",
       "definition": "The UK's national catalogue of public sector data.",
@@ -146,7 +157,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-014",
+      "term_id": "NDL-GLO-015",
       "preferred_label": "DCAT",
       "alt_labels": "",
       "definition": "Data Catalog Vocabulary, the W3C standard for describing datasets in catalogues. xGov MEM builds on it.",
@@ -157,7 +168,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-015",
+      "term_id": "NDL-GLO-016",
       "preferred_label": "Distribution",
       "alt_labels": "",
       "definition": "One available form of a dataset, such as a CSV file or an API.",
@@ -168,7 +179,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-016",
+      "term_id": "NDL-GLO-017",
       "preferred_label": "Finding",
       "alt_labels": "",
       "definition": "One problem the validator reports, with a severity, a path and a message.",
@@ -179,7 +190,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-017",
+      "term_id": "NDL-GLO-018",
       "preferred_label": "Information sharing agreement",
       "alt_labels": "",
       "definition": "A written agreement between organisations setting out what personal data they share, why, how, for how long and under which law. Agreements under the Digital Economy Act 2017 are listed on a public register.",
@@ -190,7 +201,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-018",
+      "term_id": "NDL-GLO-019",
       "preferred_label": "Legal gateway",
       "alt_labels": "",
       "definition": "The law that allows one public body to share data with another for a particular purpose. Without one, a body may not be allowed to share, even when sharing would help.",
@@ -201,7 +212,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-019",
+      "term_id": "NDL-GLO-020",
       "preferred_label": "LinkML",
       "alt_labels": "",
       "definition": "The modelling language xGov MEM is written in.",
@@ -212,7 +223,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-020",
+      "term_id": "NDL-GLO-021",
       "preferred_label": "MCP",
       "alt_labels": "",
       "definition": "Model Context Protocol: an open standard for connecting AI assistants to tools and data.",
@@ -223,7 +234,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-021",
+      "term_id": "NDL-GLO-022",
       "preferred_label": "MCP prompt",
       "alt_labels": "",
       "definition": "A ready-made task an MCP server offers to an AI assistant, such as 'map the data exchanges behind a journey'. It is text that asks the assistant to use the tools; it does not act by itself.",
@@ -234,7 +245,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-022",
+      "term_id": "NDL-GLO-023",
       "preferred_label": "MCP server",
       "alt_labels": "",
       "definition": "A program that offers tools and resources to an AI assistant using MCP. This repository is one.",
@@ -245,7 +256,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-023",
+      "term_id": "NDL-GLO-024",
       "preferred_label": "Metadata",
       "alt_labels": "",
       "definition": "Data about data: the title, description, publisher, licence, dates and format that tell you what a dataset is and whether you can use it.",
@@ -256,7 +267,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-024",
+      "term_id": "NDL-GLO-025",
       "preferred_label": "National Data Library",
       "alt_labels": "",
       "definition": "The UK government's programme, led by DSIT with GDS, to make public sector data easier to find and use. Since early 2026 the data.gov.uk website has been turning into it. The NDL in this project's name.",
@@ -267,7 +278,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-025",
+      "term_id": "NDL-GLO-026",
       "preferred_label": "Open standard",
       "alt_labels": "",
       "definition": "A published, openly available specification that anyone can use, so that different systems and organisations can work together without being tied to one supplier.",
@@ -278,7 +289,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-026",
+      "term_id": "NDL-GLO-027",
       "preferred_label": "Persona",
       "alt_labels": "",
       "definition": "A short description of a type of user: their context, goals and pain points. A proto-persona is written from assumptions and has not yet been tested with real users.",
@@ -289,7 +300,18 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-027",
+      "term_id": "NDL-GLO-028",
+      "preferred_label": "Practical example",
+      "alt_labels": "",
+      "definition": "A worked example to try with your own assistant: the situation, what to ask, which tool answers and how to check the result.",
+      "status": "draft",
+      "drafted_by": "ai-assisted",
+      "review_level": "unknown",
+      "provenance": "docs/glossary.md, ndl-pubsec-mcp",
+      "semantic_bindings": ""
+    },
+    {
+      "term_id": "NDL-GLO-029",
       "preferred_label": "Provenance label",
       "alt_labels": "",
       "definition": "How sure a stated fact is: V verified at the primary source, S found through search, K background knowledge, U unconfirmed.",
@@ -300,7 +322,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-028",
+      "term_id": "NDL-GLO-030",
       "preferred_label": "Read-only",
       "alt_labels": "",
       "definition": "Only looks at information; never changes, adds or deletes anything. Every tool in this server is read-only.",
@@ -311,7 +333,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-029",
+      "term_id": "NDL-GLO-031",
       "preferred_label": "Recommended attribute",
       "alt_labels": "",
       "definition": "An attribute xGov MEM advises but does not require. Missing ones give warnings, not errors.",
@@ -322,7 +344,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-030",
+      "term_id": "NDL-GLO-032",
       "preferred_label": "Required attribute",
       "alt_labels": "",
       "definition": "An attribute a record must have to meet xGov MEM.",
@@ -333,7 +355,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-031",
+      "term_id": "NDL-GLO-033",
       "preferred_label": "Service blueprint",
       "alt_labels": "",
       "definition": "A diagram of a journey in lanes: what the person does and sees (front stage), what happens behind it (back stage) and what supports it.",
@@ -344,7 +366,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-032",
+      "term_id": "NDL-GLO-034",
       "preferred_label": "Shared identifier",
       "alt_labels": "",
       "definition": "A key two organisations both use for the same thing, such as a company number, VAT number, EORI number, commodity code or address reference, so their data can be joined.",
@@ -355,7 +377,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-033",
+      "term_id": "NDL-GLO-035",
       "preferred_label": "Slot",
       "alt_labels": "",
       "definition": "LinkML's word for an attribute.",
@@ -366,7 +388,18 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-034",
+      "term_id": "NDL-GLO-036",
+      "preferred_label": "Spotlight",
+      "alt_labels": "",
+      "definition": "A short, hand-picked set of use cases, case studies and practical examples at the top of the page. It moves only when you press Play, and stops when you point at it or tab into it.",
+      "status": "draft",
+      "drafted_by": "ai-assisted",
+      "review_level": "unknown",
+      "provenance": "docs/glossary.md, ndl-pubsec-mcp",
+      "semantic_bindings": ""
+    },
+    {
+      "term_id": "NDL-GLO-037",
       "preferred_label": "Tool",
       "alt_labels": "",
       "definition": "A single action an MCP server offers, such as `metadata_validate`.",
@@ -377,7 +410,18 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-035",
+      "term_id": "NDL-GLO-038",
+      "preferred_label": "Use case",
+      "alt_labels": "",
+      "definition": "Who needs something and why: a role, what they are trying to do, what gets in their way, and the tools and examples that help them.",
+      "status": "draft",
+      "drafted_by": "ai-assisted",
+      "review_level": "unknown",
+      "provenance": "docs/glossary.md, ndl-pubsec-mcp",
+      "semantic_bindings": ""
+    },
+    {
+      "term_id": "NDL-GLO-039",
       "preferred_label": "User journey",
       "alt_labels": "",
       "definition": "The stages a person goes through to reach a goal with a service, from first need to done.",
@@ -388,7 +432,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-036",
+      "term_id": "NDL-GLO-040",
       "preferred_label": "Vaccination",
       "alt_labels": "",
       "definition": "Proving a check works by breaking the thing it guards and showing that the check fails.",
@@ -399,7 +443,7 @@
       "semantic_bindings": ""
     },
     {
-      "term_id": "NDL-GLO-037",
+      "term_id": "NDL-GLO-041",
       "preferred_label": "xGov MEM",
       "alt_labels": "",
       "definition": "The UK Cross-Government Metadata Exchange Model: the endorsed model for exchanging metadata about datasets and data services across government.",

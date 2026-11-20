@@ -28,16 +28,19 @@ AUDIT = r"""() => {
  const bgOf = el => { for (let e=el; e; e=e.parentElement) { const cs=getComputedStyle(e); if (cs.backgroundImage!=='none') return 'image'; const l=lum(cs.backgroundColor); if (l && l.a>0.9) return l.L; } return lum(getComputedStyle(document.body).backgroundColor).L; };
  const out = {contrast:[], overflow:[], clipped:[], overlap:[]};
  const W = document.documentElement.clientWidth;
+ // D-050, D-051: the page itself must never scroll sideways. Element checks below skip visually hidden text, which
+ // is how an absolutely positioned label escaped the spotlight strip and made the page 4,508 px wide.
+ if (document.documentElement.scrollWidth > W + 1) out.overflow.push('page scrollWidth=' + document.documentElement.scrollWidth + ' > ' + W);
  const els = [...document.querySelectorAll('body *')].filter(e => { const r=e.getBoundingClientRect(); const cs=getComputedStyle(e); return r.width>0 && r.height>0 && cs.visibility!=='hidden' && !e.closest('[hidden],details:not([open]) > :not(summary),.visually-hidden,svg') });
  for (const e of els) {
    const r = e.getBoundingClientRect();
-   if (r.right > W + 1 && !e.closest('.table-wrap,pre,[role=tablist]')) out.overflow.push((e.id||e.className||e.tagName)+' right='+Math.round(r.right));
+   if (r.right > W + 1 && !e.closest('.table-wrap,pre,[role=tablist],.sp-track')) out.overflow.push((e.id||e.className||e.tagName)+' right='+Math.round(r.right));
    const own = [...e.childNodes].some(n => n.nodeType===3 && n.textContent.trim());
    if (!own) continue;
    const cs = getComputedStyle(e); const fg = lum(cs.color); const bg = bgOf(e);
    if (fg && bg!=='image') { const [a,b]=[fg.L,bg].sort((x,y)=>y-x); const cr=(a+0.05)/(b+0.05); const big = parseFloat(cs.fontSize)>=24 || (parseFloat(cs.fontSize)>=18.66 && +cs.fontWeight>=700);
      if (cr < (big?3:4.5)) out.contrast.push(`${cr.toFixed(2)} ${e.tagName}.${e.className} "${e.textContent.trim().slice(0,40)}"`); }
-   if (cs.overflow==='hidden' && (e.scrollWidth>e.clientWidth+2) ) out.clipped.push(`${e.tagName}.${e.className} "${e.textContent.trim().slice(0,30)}"`);
+   if (cs.overflow==='hidden' && (e.scrollWidth>e.clientWidth+2) && !(r.width<=1 && r.height<=1)) out.clipped.push(`${e.tagName}.${e.className} "${e.textContent.trim().slice(0,30)}"`);
  }
  // overlapping text blocks: leaf text elements in main whose boxes intersect
  const leaves = els.filter(e => e.closest('main') && [...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()) && !e.closest('.chart,.map,.tour-panel'));
@@ -47,7 +50,7 @@ AUDIT = r"""() => {
    if (ix>4 && iy>4) out.overlap.push(`"${a.textContent.trim().slice(0,25)}" x "${b.textContent.trim().slice(0,25)}"`); if (out.overlap.length>15) break; }
  for (const k in out) out[k] = [...new Set(out[k])].slice(0,15);
  return out; }"""
-SECTIONS = ["start", "what", "who", "checker", "conformance", "standards", "exchanges", "map", "safeguards", "tour", "use", "examples", "toolkit",
+SECTIONS = ["start", "spotlight", "showcase", "what", "who", "checker", "conformance", "standards", "exchanges", "map", "safeguards", "tour", "use", "examples", "toolkit",
             "documents", "involve", "journeys", "changes", "open", "defects", "glossary", "accessibility", "about"]
 TABS = ["t-use-tutorials", "t-use-guide", "t-use-tips", "t-live", "t-limits", "t-map-graph", "t-xch-method", "t-xch-power", "t-xch-pairs"]
 
@@ -58,7 +61,7 @@ def main() -> int:
     with sync_playwright() as p:
         kw = {"executable_path": os.environ["CHROME"]} if os.environ.get("CHROME") else {}
         browser = p.chromium.launch(args=["--no-sandbox"], **kw)
-        for width, scheme in [(1280, "light"), (1280, "dark"), (853, "light"), (390, "light"), (390, "dark")]:
+        for width, scheme in [(1280, "light"), (1280, "dark"), (853, "light"), (390, "light"), (390, "dark"), (320, "light")]:
             key = f"{width}-{scheme}"
             page = browser.new_page(viewport={"width": width, "height": 900}, color_scheme=scheme, reduced_motion="reduce")
             errors = []
@@ -67,6 +70,16 @@ def main() -> int:
             page.goto(URL)
             page.evaluate("() => document.querySelectorAll('main details').forEach(d => d.open = true)")
             results = [page.evaluate(AUDIT)]
+            # Spotlight (D-050): reduced motion hides Play; Next moves the current dot; nothing moves on its own.
+            sp = page.evaluate("() => ({ play: document.getElementById('sp-play').hidden, cur: document.querySelector('.sp-dot[aria-current]').dataset.slide })")
+            if not sp["play"]:
+                failures.append(f"{width}-{scheme} spotlight: Play is offered under reduced motion")
+            page.click("#sp-next")
+            page.wait_for_timeout(300)
+            moved = page.evaluate("() => document.querySelector('.sp-dot[aria-current]').dataset.slide")
+            if moved != "1":
+                failures.append(f"{width}-{scheme} spotlight: Next did not move to slide 2 (current {moved})")
+            results.append(page.evaluate(AUDIT))
             for tab in TABS:
                 page.click("#" + tab)
                 results.append(page.evaluate(AUDIT))

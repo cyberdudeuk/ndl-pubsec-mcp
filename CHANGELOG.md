@@ -2,14 +2,21 @@
 
 ## Unreleased
 
-- Fixed (D-049): the website listed ADR 0002 ("one official repository, one personal experiment") without saying that ADR 0006 superseded its wording. A superseded ADR is now labelled wherever it is listed, and check C-42 keeps it that way, with a negative test.
+### Added
+
+- Spotlight, under the hero's "Start here": five hand-picked use cases, case studies and practical examples, each with why it is featured, highlights and two next steps. It is a scroll strip that works without script; previous, next and dots move it, the arrow keys work on it, and it rotates only after you press Play (never under reduced motion), holding still while the pointer or focus is inside it. Every slide is generated from the portal's own data, and an unknown reference stops the build.
+- "Use cases, case studies and examples": all 10 roles, 18 exchanges and 11 worked examples as cards, searchable and filterable by kind, each opening its full entry. New glossary terms: Spotlight, Use case, Case study, Practical example.
+- The related-API rule now lives in one place (`tools/site/related-apis.mjs`), used by the exchange cards, the spotlight and `exchanges.json`, so they cannot disagree.
 
 ### Fixed
 
+- The website listed ADR 0002 ("one official repository, one personal experiment") without saying that ADR 0006 superseded its wording. A superseded ADR is now labelled wherever it is listed, and check C-42 keeps it that way, with a negative test.
 - `api_search` now reads both files of the government API catalogue and holds 269 APIs instead of 231, including DWP's 48 (D-044, check C-37). The ecosystem diagram's API count now comes from the data.
 - The Digital Economy Act register figures are reported with what they do and do not show: 194 of the 667 agreements are still active; each records one main method, so API use is a floor (three Warm Home Discount helpline agreements that record file-based methods also give access to DWP's Citizen API); and the register counts agreements, not volume. Added the prescription charge exemption exchange (DWP and NHS, real-time API).
 - Deliberate-break tests no longer copy git-ignored screenshots (D-045, check C-38).
 - Exchange cards no longer show unrelated APIs as related (for example Bathing Water for water poverty): every suggested query is now scoped to a provider that is a party to the exchange, and queries with no relevant match were removed (D-046, check C-40).
+- The page no longer scrolls sideways: the spotlight's hidden labels widened it to 4,508 px (D-050, check C-43); at 320 px the masthead and a long host name widened it by 56 px (D-051, check C-44). The visual inspection now tests 320 px and the page's own scroll width.
+- "Case studys" corrected; plurals are written out (D-052, check C-45).
 - `publiccode.yml` added, so the Public Good Works launchpad can check its card against this project's licence; its card still said OGL v3.0 and official GDS work (D-047, check C-41).
 
 ### Added

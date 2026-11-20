@@ -316,6 +316,57 @@
     var note = $("#checker-result"); if (note) note.textContent = "The checker needs JavaScript. You can still validate records with the metadata_validate tool.";
   }
 
+  // --- spotlight carousel (D-050): readable and scrollable without this script. Previous, next and the dots move
+  // it; it rotates only after the reader presses Play, never under reduced motion, and holds still while the
+  // pointer or keyboard focus is inside it (WCAG 2.2.2). Off-screen slides are inert so Tab never lands on them.
+  var sp = $("#spotlight"), track = $("#sp-track");
+  if (sp && track) {
+    var slides = $$(".sp-slide", track), dots = $$(".sp-dot", sp), play = $("#sp-play");
+    var cur = 0, timer = null, held = false, ROTATE_MS = 7000;
+    var mark = function (i) {
+      cur = i;
+      slides.forEach(function (s, k) { var off = k !== i; s.setAttribute("aria-hidden", off ? "true" : "false"); if ("inert" in s) s.inert = off; });
+      dots.forEach(function (d, k) { if (k === i) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current"); });
+    };
+    var go = function (i) {
+      i = (i + slides.length) % slides.length;
+      track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduced ? "auto" : "smooth" });
+      mark(i);
+    };
+    var stop = function () {
+      if (timer) window.clearInterval(timer); timer = null;
+      if (play) { play.setAttribute("aria-pressed", "false"); play.textContent = "Play"; }
+      track.setAttribute("aria-live", "polite");
+    };
+    var rotate = function () {
+      stop();
+      timer = window.setInterval(function () { if (!held) go(cur + 1); }, ROTATE_MS);
+      if (play) { play.setAttribute("aria-pressed", "true"); play.textContent = "Pause"; }
+      track.setAttribute("aria-live", "off");
+    };
+    $("#sp-prev").addEventListener("click", function () { stop(); go(cur - 1); });
+    $("#sp-next").addEventListener("click", function () { stop(); go(cur + 1); });
+    dots.forEach(function (d) { d.addEventListener("click", function () { stop(); go(+d.getAttribute("data-slide")); }); });
+    if (play) { if (reduced) play.hidden = true; else play.addEventListener("click", function () { if (timer) stop(); else rotate(); }); }
+    track.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(cur + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(cur - 1); }
+    });
+    // Holding still: hover and focus pause the rotation; leaving lets it carry on if the reader pressed Play.
+    sp.addEventListener("pointerenter", function () { held = true; });
+    sp.addEventListener("pointerleave", function () { held = false; });
+    sp.addEventListener("focusin", function () { held = true; });
+    sp.addEventListener("focusout", function (e) { if (!sp.contains(e.relatedTarget)) held = false; });
+    // A swipe or scroll on the strip itself moves the current slide with it.
+    var settle = null;
+    track.addEventListener("scroll", function () {
+      window.clearTimeout(settle);
+      settle = window.setTimeout(function () { var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); if (i !== cur && slides[i]) mark(i); }, 120);
+    }, { passive: true });
+    $(".sp-ctl", sp).hidden = false;
+    mark(0);
+  }
+
   // --- back to top ---
   var top = $("#totop");
   if (top) {

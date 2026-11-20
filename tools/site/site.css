@@ -364,3 +364,50 @@ dialog.ask::backdrop { background: rgb(10 14 30 / 55%); }
 .btn--outline:hover { background: var(--surface-2); }
 .card.caution { border-left: 4px solid var(--warn); margin: 14px 0; }
 .card.caution ul { margin: 6px 0; }
+
+/* Spotlight carousel and showcase (D-050), modelled on the Public Good Works spotlight. Without script it is a
+   scroll-snap strip; the controls appear only when the script runs. Print shows every slide. */
+.spotlight { min-width: 0; max-width: 100%; }
+.sp-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.sp-head > header { display: flex; align-items: center; gap: 12px; margin: 0; }
+.sp-head > header .icon { width: 34px; height: 34px; padding: 7px; border-radius: 10px; background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--brand); }
+.sp-ctl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sp-ctl[hidden] { display: none; }
+.sp-btn { min-width: 44px; min-height: 44px; justify-content: center; }
+#sp-prev svg { transform: rotate(180deg); }
+.sp-dots { display: inline-flex; flex-wrap: wrap; }
+.sp-dot { width: 24px; height: 44px; border: 0; background: none; padding: 0; cursor: pointer; display: inline-grid; place-items: center; }
+.sp-dot::before { content: ""; width: 10px; height: 10px; border-radius: 999px; background: var(--line); border: 1px solid var(--ink-2); transition: width .2s ease; }
+.sp-dot[aria-current="true"]::before { width: 22px; background: var(--brand); border-color: var(--brand); }
+.sp-dot:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+.sp-track { position: relative; width: 100%; min-width: 0; display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; padding-bottom: 6px; border-radius: 16px; }
+.sp-track:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+.sp-slide { position: relative; flex: 0 0 100%; scroll-snap-align: start; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px; background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--brand); border-radius: 16px; padding: 22px; box-sizing: border-box; }
+.sp-slide.sp-case { border-left-color: var(--brand-2); } .sp-slide.sp-example { border-left-color: var(--accent); } .sp-slide.sp-insight { border-left-color: var(--warn); }
+.sp-meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 8px; }
+.sp-flag { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; margin: 0; }
+.sp-eyebrow { color: var(--ink-2); font-size: .9rem; margin: 0 0 4px; }
+.sp-slide h3 { margin: 0 0 8px; font-size: 1.35rem; }
+.sp-sum { margin: 0 0 8px; }
+.sp-for { margin: 0 0 14px; color: var(--ink-2); }
+.sp-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.sp-art { background: var(--surface-2); border-radius: 12px; padding: 14px 16px; align-self: start; }
+.sp-hls { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sp-hls li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: start; }
+.sp-hls svg { width: 20px; height: 20px; color: var(--ok); }
+.sc-card .sp-flag { margin-bottom: 6px; }
+.sc-card.sp-use { border-top: 4px solid var(--brand); } .sc-card.sp-case { border-top: 4px solid var(--brand-2); } .sc-card.sp-example { border-top: 4px solid var(--accent); }
+@media (max-width: 720px) { .sp-slide { grid-template-columns: 1fr; padding: 16px; } .sp-head { align-items: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .sp-track { scroll-behavior: auto; } .sp-dot::before { transition: none; } }
+@media print { .sp-ctl { display: none !important; } .sp-track { display: block; overflow: visible; } .sp-slide { break-inside: avoid; margin-bottom: 12px; } }
+/* D-051: at 320 px the masthead was 337 px wide and pushed the theme switch off screen. Narrow screens keep every
+   control (each at least 44 px) and drop only the visible "More" label, which stays as the accessible name. */
+@media (max-width: 380px) {
+  .mast__in { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .mast__nav { gap: 2px; }
+  .mast__nav a, .mast__nav summary, .btn-ghost { padding: 8px 10px; min-width: 44px; min-height: 44px; justify-content: center; }
+  .mast__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* D-051: a long host name in a card ("ckan.publishing.service.gov.uk/api/action") cannot wrap at a space and
+   pushed the page 56 px wider than a 320 px screen. Cards and notes may now break such strings anywhere. */
+.card, .note, .lead, td { overflow-wrap: anywhere; }
