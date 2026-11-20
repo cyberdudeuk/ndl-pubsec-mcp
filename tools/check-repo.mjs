@@ -240,6 +240,7 @@ export function checkRepo(root) {
   for (const [where, text] of Object.entries(ownStatements)) {
     for (const sentence of text.split(/(?<=\.)\s+|\n+/)) {
       if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem|API catalogue|co-cddo\/api-catalogue/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
+      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
     }
   }
   if (!/© 2026 Emanuel Silva/.test(ownStatements["README.md"])) problems.push("C-29 README.md: the licence section does not name the copyright holder (ADR 0007)");
@@ -317,4 +318,5 @@ if (isMain) {
     process.exit(1);
   }
   console.log("repository checks passed (C-01 to C-31)");
+  console.log("repository checks passed (C-01 to C-30)");
 }
