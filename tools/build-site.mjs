@@ -3,7 +3,7 @@
 // Never edit those files by hand. Needs `npm run build` first (it lists the tools from the built server).
 // Output is deterministic: the build identifier is a hash of the inputs, not the time or the git commit.
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync, copyFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import QRCode from "qrcode";
@@ -45,62 +45,204 @@ const glossary = read("docs/glossary.md")
 const adrs = readdirSync(join(root, "docs", "adr")).filter((f) => f.endsWith(".md")).sort().map((f) => ({ file: f, title: read(`docs/adr/${f}`).split("\n")[0].replace(/^# /, "") }));
 const defects = read("docs/defect-register.md").split("\n").filter((l) => /^\| D-\d{3}/.test(l)).map((l) => l.split("|").map((x) => x.trim())).map((c) => ({ id: c[1], defect: c[3], check: c[5], status: c[6] }));
 
+// Other repository data the page shows. Each is read from the file that owns it, never retyped here.
+const federation = JSON.parse(read("src/data/federation.json"));
+const live = JSON.parse(read("docs/live-parity-result.json"));
+const strip = (s) => String(s ?? "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+const openItems = read("docs/open-register.md").split("\n").filter((l) => /^\| O-\d{2}/.test(l)).map((l) => l.split("|").map((x) => x.trim())).map((c) => ({ id: c[1], text: strip(c[2]), owner: strip(c[3]), closed: /^\*\*Closed/.test(c[2]) || c[3] === "Done" }));
+const releases = [];
+for (const block of read("CHANGELOG.md").split(/^## /m).slice(1)) {
+  const [head, ...rest] = block.split("\n");
+  const m = head.match(/^(\d+\.\d+\.\d+(?:-[\w.]+)?) \((\d{1,2} \w+ \d{4})\)/);
+  if (!m) continue;
+  const items = rest.filter((l) => /^- /.test(l)).map((l) => strip(l.slice(2)));
+  const anchor = head.toLowerCase().replace(/[^a-z0-9 -]/g, "").replace(/ /g, "-");
+  releases.push({ version: m[1], date: m[2], items, anchor });
+}
+if (!releases.length || releases[0].version !== pkg.version) throw new Error(`CHANGELOG.md has no section for ${pkg.version}: add one before building the page`);
+
+// The examples the in-page checker offers. Each is checked here with the same validator, so the page can
+// never offer an example whose stated verdict is wrong.
+const { validateRecord, CLASS_NAMES } = await import("../dist/lib/mem.js");
+const base = JSON.parse(read("test/parity-base.json")).Dataset;
+const without = (o, ...keys) => Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k)));
+const examples = {
+  complete: { label: "A complete Dataset", className: "Dataset", expectValid: true, record: base },
+  missing: { label: "Two required attributes missing", className: "Dataset", expectValid: false, record: without(base, "version", "updateFrequency") },
+  misspelt: { label: "A misspelt attribute", className: "Dataset", expectValid: false, record: { ...without(base, "licence"), license: base.licence } },
+  badEnum: { label: "A value outside the model's list", className: "Dataset", expectValid: false, record: { ...base, accessRights: "PUBLICISH" } }
+};
+for (const [k, ex] of Object.entries(examples)) {
+  const r = validateRecord(ex.record, ex.className);
+  if (r.valid !== ex.expectValid) throw new Error(`checker example ${k} should be ${ex.expectValid ? "valid" : "invalid"} but the validator says otherwise`);
+  ex.errors = r.errors;
+}
+
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
+// The validator source is an input too, because the page bundles it.
 const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js"];
-const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, model: rules.generatedFrom.commit, glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
+const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
 const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs).digest("hex").slice(0, 12)}`;
 
 // --- assets ---
 mkdirSync(join(root, "docs", "assets"), { recursive: true });
-// GOV.UK Frontend (MIT) without @font-face (GDS Transport is for GOV.UK domains only) and without the crest image,
-// so the page loads nothing it does not ship.
-const css = readFileSync(join(root, "node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.css"), "utf8")
-  .replace(/@font-face\{[^}]*\}/g, "")
-  .replace(/url\(\/assets\/images\/govuk-crest\.svg\)/g, "none");
-if (/url\(\/assets/.test(css)) throw new Error("GOV.UK Frontend CSS still references /assets: update the strip rules");
-writeFileSync(join(root, "docs/assets/govuk-frontend.min.css"), `/* GOV.UK Frontend ${JSON.parse(readFileSync(join(root, "node_modules/govuk-frontend/package.json"), "utf8")).version}, MIT Licence. Font faces and crest removed. */\n${css}\n`);
+rmSync(join(root, "docs", "assets", "govuk-frontend.min.css"), { force: true });
 copyFileSync(join(root, "tools/site/site.css"), join(root, "docs/assets/site.css"));
 copyFileSync(join(root, "tools/site/site.js"), join(root, "docs/assets/site.js"));
+// The browser checker runs the server's own compiled validator with the rules inlined, because the page's
+// Content-Security-Policy allows no fetches. Anything the transform misses stops the build.
+const memJs = read("dist/lib/mem.js")
+  .replace(/^import rulesJson from "\.\.\/generated\/mem-rules\.json" with \{ type: "json" \};$/m, `const rulesJson = ${JSON.stringify(rules)};`)
+  .replace(/^export /gm, "");
+if (/^\s*(import|export)\b/m.test(memJs) || !memJs.includes("const rulesJson = {")) throw new Error("dist/lib/mem.js has changed shape: update the browser bundle transform");
+writeFileSync(join(root, "docs/assets/mem.js"), `// Generated from src/lib/mem.ts by tools/build-site.mjs. Do not edit.\n(function () {\n${memJs}\nwindow.NDLMEM = { validateRecord, inferClass, CLASS_NAMES, MAX_FINDINGS };\n})();\n`);
+// Example records use only reserved example domains (RFC 2606); check C-01 allows them in this one file.
+writeFileSync(join(root, "docs/assets/examples.js"), `// Generated by tools/build-site.mjs from test/parity-base.json. Do not edit.\nwindow.NDL_EXAMPLES = ${JSON.stringify(Object.fromEntries(Object.entries(examples).map(([k, e]) => [k, { className: e.className, record: e.record }])), null, 1)};\n`);
 
 const qr = (await QRCode.toString(REPO, { type: "svg", margin: 1, errorCorrectionLevel: "M" })).replace("<svg ", '<svg role="img" aria-labelledby="qr-title" width="112" height="112" ').replace(/(<svg[^>]*>)/, `$1<title id="qr-title">QR code linking to the repository: ${REPO}</title>`);
-const barcode = bwipjs.toSVG({ bcid: "code128", text: buildId, height: 9, includetext: true, textxalign: "center", textsize: 8 }).replace("<svg ", `<svg role="img" aria-labelledby="bc-title" class="app-barcode" `).replace(/(<svg[^>]*>)/, `$1<title id="bc-title">Barcode of the build identifier ${esc(buildId)}</title>`);
+const barcode = bwipjs.toSVG({ bcid: "code128", text: buildId, height: 9, includetext: true, textxalign: "center", textsize: 8 }).replace("<svg ", `<svg role="img" aria-labelledby="bc-title" class="barcode" `).replace(/(<svg[^>]*>)/, `$1<title id="bc-title">Barcode of the build identifier ${esc(buildId)}</title>`);
 
-// --- page ---
+// --- icons: one inline sprite, stroke icons drawn for this page ---
+const ICONS = {
+  logo: '<path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/>',
+  tools: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/>',
+  map: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5l2.8 8.4M16 7.5l-2.8 8.4M8.5 6h7"/>',
+  terminal: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/>',
+  docs: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  history: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bug: '<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M7 12H3M21 12h-4M7 17l-3 2M17 17l3 2M7 9L4 7M17 9l3-2"/>',
+  list: '<path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',
+  glossary: '<path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/>',
+  access: '<circle cx="12" cy="4.5" r="1.8"/><path d="M5 8l7 2 7-2M12 10v5l-3 6M12 15l3 6"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+  theme: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
+  form: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>',
+  up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  rocket: '<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 12a12 12 0 0 1 11-9 12 12 0 0 1-9 11z"/><path d="M9 12l3 3M14 7.5h.01"/>'
+};
+const icon = (name, label) => `<svg class="icon" ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true" focusable="false"'}><use href="#i-${name}"/></svg>`;
+const sprite = `<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false"><defs>${Object.entries(ICONS).map(([k, p]) => `<symbol id="i-${k}" viewBox="0 0 24 24">${p}</symbol>`).join("")}</defs></svg>`;
+
+// --- glossary terms used in prose get a tooltip; an unknown term stops the build ---
+const gloss = Object.fromEntries(glossary.map((g) => [g.term, g.meaning.replace(/`/g, "")]));
+const term = (t, shown = t) => {
+  if (!gloss[t]) throw new Error(`term(${t}) is not in docs/glossary.md`);
+  return `<dfn class="tip" data-term="${esc(t)}">${esc(shown)}</dfn>`;
+};
+
+// --- charts, drawn here as SVG so they show without the script ---
 const totals = Object.values(conf.byClass).reduce((x, k) => ({ v: x.v + k.valid, i: x.i + k.invalid }), { v: 0, i: 0 });
-const sections = [
-  { id: "what", title: "What it does", count: tools.length },
-  { id: "conformance", title: "How well it follows xGov MEM", count: Object.keys(conf.byClass).length },
-  { id: "use", title: "How to use it" },
-  { id: "standards", title: "Standards it explains", count: standards.standards.length },
-  { id: "documents", title: "Documents", count: adrs.length + 8 },
-  { id: "glossary", title: "Glossary", count: glossary.length },
-  { id: "accessibility", title: "Accessibility statement" },
-  { id: "about", title: "About this page" }
+function barChart(rows, { id, title, max, unit }) {
+  const rowH = 34, left = 170, width = 560, h = rows.length * rowH + 28;
+  const bars = rows.map((r, i) => {
+    const y = 10 + i * rowH;
+    return `<g><text x="${left - 10}" y="${y + 17}" text-anchor="end">${esc(r.label)}</text>` +
+      `<rect class="bar-bg" x="${left}" y="${y + 4}" width="${width - left - 70}" height="18" rx="5"/>` +
+      `<rect class="${r.cls} grow" x="${left}" y="${y + 4}" width="${Math.max(2, ((width - left - 70) * r.value) / (r.of ?? max)).toFixed(1)}" height="18" rx="5"/>` +
+      `<text x="${width - 62}" y="${y + 17}">${r.value} of ${r.of ?? max}${unit ? ` ${unit}` : ""}</text></g>`;
+  }).join("");
+  return `<svg class="chart" viewBox="0 0 ${width} ${h}" role="img" aria-labelledby="${id}-t ${id}-d"><title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(rows.map((r) => `${r.label}: ${r.value} of ${r.of ?? max}`).join("; "))}</desc>${bars}</svg>`;
+}
+const corpusRows = Object.entries(conf.byClass).flatMap(([k, v]) => [
+  ...(v.valid ? [{ label: `${k}, valid`, value: v.validAgree, cls: "bar-v", of: v.valid }] : []),
+  ...(v.invalid ? [{ label: `${k}, invalid`, value: v.invalidAgree, cls: "bar-i", of: v.invalid }] : [])
+]);
+const corpusChart = barChart(corpusRows, { id: "corpus", title: "Examples in the xGov MEM test corpus where this server reaches the same verdict, by class", max: Math.max(...corpusRows.map((r) => r.of)) });
+const liveChart = barChart(Object.entries(live.missingRequired).sort((x, y) => y[1] - x[1]).map(([k, n]) => ({ label: k, value: n, cls: "bar-m" })), { id: "live", title: `Required attributes missing from ${live.records} real data.gov.uk records once crosswalked`, max: live.records, unit: "records" });
+
+// --- estate map: standards, tools, this server and the other domains it lists ---
+const others = federation.domains.filter((d) => !d.self);
+const cols = { std: 250, tool: 500, server: 700, dom: 850 };
+const rowsN = Math.max(standards.standards.length, tools.length, others.length + 1);
+const mapH = 50 + rowsN * 56;
+const yOf = (i, n) => 40 + ((mapH - 80) * (i + 0.5)) / n;
+const nodes = [
+  ...standards.standards.map((s, i) => ({ id: `std-${s.id}`, cls: "n-std", x: cols.std, y: yOf(i, standards.standards.length), label: ((m) => (m && m[1].length <= 10 ? m[1] : ((b) => (b.length > 26 ? `${b.slice(0, 24)}…` : b))(s.name.replace(/ \(.*$/, ""))))(s.name.match(/\(([^)]+)\)/)), anchor: "end", dx: -14, href: s.link })),
+  ...tools.map((t, i) => ({ id: `tool-${t.name}`, cls: "n-tool", x: cols.tool, y: yOf(i, tools.length), label: t.name, anchor: "middle", dy: 22, href: "#what" })),
+  { id: "server", cls: "n-server", x: cols.server, y: mapH / 2, label: "NDL PubSec MCP", anchor: "middle", dy: 26, r: 14, href: "#top" },
+  ...others.map((d, i) => ({ id: `dom-${d.domain}`, cls: "n-domain", x: cols.dom, y: yOf(i, others.length), label: d.domain, anchor: "start", dx: 14, href: d.repository }))
 ];
-const gh = (p) => `${REPO}/blob/main/${p}`;
+const nodeById = Object.fromEntries(nodes.map((n) => [n.id, n]));
+const edges = [
+  ...tools.map((t) => ["server", `tool-${t.name}`]),
+  ...standards.standards.flatMap((s) => s.useWith.filter((u) => nodeById[`tool-${u}`]).map((u) => [`tool-${u}`, `std-${s.id}`])),
+  ...others.map((d) => ["tool-domain_list", `dom-${d.domain}`]).filter(([a]) => nodeById[a])
+];
+const estateMap = `<svg class="map" viewBox="0 0 1000 ${mapH}" role="img" aria-labelledby="map-t map-d"><title id="map-t">How the standards, tools and estate connect</title><desc id="map-d">${esc(edges.map(([a, b]) => `${nodeById[a].label} connects to ${nodeById[b].label}`).join("; "))}</desc>` +
+  edges.map(([a, b]) => `<line class="edge" data-ends="${a} ${b}" x1="${nodeById[a].x}" y1="${nodeById[a].y.toFixed(1)}" x2="${nodeById[b].x}" y2="${nodeById[b].y.toFixed(1)}"/>`).join("") +
+  nodes.map((n) => `<a href="${esc(n.href)}"><g data-node="${n.id}" tabindex="0" aria-label="${esc(n.label)}"><circle class="${n.cls}" cx="${n.x}" cy="${n.y.toFixed(1)}" r="${n.r ?? 9}"/><text x="${n.x + (n.dx ?? 0)}" y="${(n.y + (n.dy ?? 4)).toFixed(1)}" text-anchor="${n.anchor}">${esc(n.label)}</text></g></a>`).join("") + "</svg>";
+
+// --- what each tool is for, by job ---
+const JOB = { catalogue_search: "find", dataset_describe: "find", metadata_validate: "check", standard_explain: "explain", term_lookup: "explain", domain_list: "connect" };
+const JOB_NAME = { find: "Find data", check: "Check metadata", explain: "Explain", connect: "Connect", other: "Other" };
+const jobOf = (t) => JOB[t.name] ?? "other";
+
 const provName = { V: "Verified at the primary source", S: "Found through search; re-verify", K: "Background knowledge", U: "Unconfirmed" };
+const gh = (p) => `${REPO}/blob/main/${p}`;
+const docGroups = [
+  { name: "Product", icon: "rocket", items: [["Product requirements", gh("docs/prd.md")], ["Data dictionary", gh("docs/data-dictionary.md")], ["Glossary (source)", gh("docs/glossary.md")]] },
+  { name: "Architecture", icon: "map", items: [["Architecture (SAD, HLD and LLD)", gh("docs/architecture.md")], ["Knowledge graph (JSON-LD)", "knowledge-graph.jsonld"]] },
+  { name: "Assurance", icon: "shield", items: [["Governance screening", gh("docs/governance.md")], ["Conformance report", gh("docs/conformance.md")], ["Defect register", gh("docs/defect-register.md")], ["Open register", gh("docs/open-register.md")], ["Security policy", gh("SECURITY.md")]] },
+  { name: "Decisions", icon: "book", items: adrs.map((d) => [d.title, gh(`docs/adr/${d.file}`)]) },
+  { name: "Releases", icon: "history", items: [["Changelog", gh("CHANGELOG.md")], ["Releases on GitHub", `${REPO}/releases`]] }
+];
+const docCount = docGroups.reduce((n, g) => n + g.items.length, 0);
+const openCount = openItems.filter((o) => !o.closed).length;
+const NEW = new Set(["checker", "map"]);
+const sections = [
+  { group: "Overview", id: "what", title: "What it does", icon: "tools", count: tools.length },
+  { group: "Overview", id: "checker", title: "Check a record", icon: "check" },
+  { group: "Overview", id: "conformance", title: "How well it follows xGov MEM", icon: "chart" },
+  { group: "Overview", id: "standards", title: "Standards it explains", icon: "book", count: standards.standards.length },
+  { group: "Overview", id: "map", title: "Estate map", icon: "map", count: nodes.length },
+  { group: "Use it", id: "use", title: "How to use it", icon: "terminal" },
+  { group: "Use it", id: "documents", title: "Documents", icon: "docs", count: docCount },
+  { group: "Progress", id: "changes", title: "What has changed", icon: "history", count: releases.length },
+  { group: "Progress", id: "open", title: "Open items and roadmap", icon: "list", count: openCount },
+  { group: "Progress", id: "defects", title: "Defects and their checks", icon: "bug", count: defects.length },
+  { group: "Reference", id: "glossary", title: "Glossary", icon: "glossary", count: glossary.length },
+  { group: "About", id: "accessibility", title: "Accessibility statement", icon: "access" },
+  { group: "About", id: "about", title: "About this page", icon: "info" }
+];
+const drawerList = sections.map((s, i) => `${i === 0 || sections[i - 1].group !== s.group ? `<li class="drawer__group">${esc(s.group)}</li>` : ""}<li><a href="#${s.id}">${icon(s.icon)}<span>${esc(s.title)}</span>${NEW.has(s.id) ? '<span class="pill pill--new">New</span>' : ""}${s.count ? `<span class="count">${s.count}<span class="visually-hidden"> items</span></span>` : ""}</a></li>`).join("\n");
+const head2 = (id) => { const s = sections.find((x) => x.id === id); return `<header>${icon(s.icon)}<h2 id="${id}-h">${esc(s.title)}</h2>${NEW.has(id) ? '<span class="pill pill--new">New in this version</span>' : ""}</header>`; };
+const lower = (...xs) => esc(xs.join(" ").toLowerCase());
+const filterBox = (target, label, chips = []) => `<div class="toolbar" data-filter="${target}"><label class="search">${icon("search")}<span class="visually-hidden">${esc(label)}</span><input type="search" placeholder="${esc(label)}" autocomplete="off"></label>${chips.map(([v, t]) => `<button type="button" class="chip" aria-pressed="false" data-value="${esc(v)}">${esc(t)}</button>`).join("")}<span class="filter-count meta" aria-live="polite"></span></div>`;
+const letters = [...new Set(glossary.map((g) => g.term[0].toUpperCase()))];
+const claudeCfg = JSON.stringify({ mcpServers: { "ndl-pubsec-mcp": { command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
+const vscodeCfg = JSON.stringify({ servers: { "ndl-pubsec-mcp": { type: "stdio", command: "node", args: ["/path/to/ndl-pubsec-mcp/dist/index.js"] } } }, null, 2);
+const STATEMENT = "An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.";
 
 const html = `<!DOCTYPE html>
-<html lang="en-GB" class="govuk-template">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
-<title>NDL PubSec MCP: discoverability server for UK public sector data</title>
-<meta name="description" content="An open-source MCP server that searches data.gov.uk and validates metadata against the UK Cross-Government Metadata Exchange Model.">
+<title>NDL PubSec MCP: an independent prototype for finding UK public sector data</title>
+<meta name="description" content="An independent, open-source MCP server prototype that searches data.gov.uk and checks metadata against the UK Cross-Government Metadata Exchange Model. Not a government service.">
+<meta name="color-scheme" content="light dark">
 <meta name="artefact:id" content="${esc(pkg.name)}">
 <meta name="artefact:version" content="${esc(pkg.version)}">
 <meta name="artefact:class" content="document">
+<meta name="artefact:status" content="independent-prototype">
 <meta name="artefact:as-of" content="${AS_OF}">
 <meta name="artefact:review-date" content="${REVIEW}">
 <meta name="artefact:build" content="${esc(buildId)}">
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/govuk-frontend.min.css">
 <link rel="stylesheet" href="assets/site.css">
 <script type="application/ld+json">${JSON.stringify({
   "@context": "https://schema.org",
   "@type": "SoftwareSourceCode",
   name: "NDL PubSec MCP",
+  alternateName: "NDL PubSec MCP (independent prototype)",
   identifier: buildId,
   version: pkg.version,
   dateModified: AS_OF,
@@ -108,139 +250,246 @@ const html = `<!DOCTYPE html>
   license: "https://opensource.org/license/mit",
   programmingLanguage: "TypeScript",
   description: pkg.description,
-  publisher: { "@type": "GovernmentOrganization", name: "Government Digital Service" },
+  creativeWorkStatus: "Independent prototype, not endorsed",
+  copyrightNotice: "© Crown copyright 2026",
   contactPoint: { "@type": "ContactPoint", url: CONTACT, contactType: "Contact form" }
 }).replace(/</g, "\\u003c")}</script>
+<script type="application/json" id="glossary-data">${JSON.stringify(gloss).replace(/</g, "\\u003c")}</script>
 </head>
-<body class="govuk-template__body">
-<a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-<header class="app-header" role="banner">
-  <div class="govuk-width-container app-header__inner">
-    <span class="app-header__name">NDL PubSec MCP</span>
-    <span class="app-header__org">Data Management Team, Government Data, GDS</span>
-  </div>
-  <div class="app-phase">
-    <div class="govuk-width-container govuk-phase-banner">
-      <p class="govuk-phase-banner__content"><strong class="govuk-tag govuk-phase-banner__content__tag">Alpha</strong>
-        <span class="govuk-phase-banner__text">This is a prototype, not a live service. <a class="govuk-link" href="${CONTACT}">Tell us what you think</a>.</span></p>
-    </div>
+<body id="top">
+${sprite}
+<a href="#main-content" class="skip">Skip to main content</a>
+<div id="live" class="visually-hidden" aria-live="polite"></div>
+<header class="mast" role="banner">
+  <div class="mast__in">
+    <a class="brand" href="#top"><span class="brand__mark">${icon("logo")}</span><span>NDL PubSec MCP<span class="brand__sub">Independent prototype</span></span></a>
+    <nav class="mast__nav" aria-label="Across sites">
+      <a class="wide" href="https://cyberdudeuk.github.io/">Public Good Works</a>
+      <a class="wide" href="${REPO}">${icon("code")}Source</a>
+      <a class="wide" href="${CONTACT}">${icon("form")}Contact form</a>
+      <details class="mast__more"><summary>${icon("menu")}More</summary><ul>
+        <li><a href="https://cyberdudeuk.github.io/">Public Good Works</a></li>
+        <li><a href="${REPO}">Source code</a></li>
+        <li><a href="${REPO}/releases">Releases</a></li>
+        <li><a href="${CONTACT}">Contact form</a></li>
+        <li><a href="${REPO}/security/advisories/new">Report a security problem</a></li>
+        <li><a href="knowledge-graph.jsonld">Knowledge graph</a></li>
+      </ul></details>
+      <button type="button" class="btn-ghost" id="theme-toggle" data-mode="system">${icon("theme")}<span class="theme-label visually-hidden">Theme: system</span></button>
+    </nav>
   </div>
 </header>
-<div class="app-layout govuk-width-container">
-  <nav class="app-drawer" id="drawer" aria-labelledby="drawer-heading">
-    <div class="app-drawer__bar">
-      <h2 class="govuk-heading-s app-drawer__heading" id="drawer-heading">On this page</h2>
-      <button type="button" class="app-switch" id="drawer-toggle" role="switch" aria-checked="true" aria-controls="drawer-list">
-        <span class="app-switch__track" aria-hidden="true"><span class="app-switch__thumb"></span></span>
-        <span class="app-switch__label">Show contents</span>
-      </button>
+<div class="ribbon"><div class="ribbon__in"><span class="pill">Independent prototype</span><span class="pill pill--soft">Version ${esc(pkg.version)}</span><span>${esc(STATEMENT)} <a href="${CONTACT}">Tell me what you think</a>.</span></div></div>
+<div class="layout" id="layout">
+  <nav class="drawer" aria-labelledby="drawer-title">
+    <div class="drawer__bar">
+      <h2 class="drawer__title" id="drawer-title">On this page</h2>
+      <button type="button" class="switch" id="drawer-toggle" role="switch" aria-checked="true" aria-controls="drawer-list"><span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span><span class="switch__label">Hide contents</span></button>
     </div>
-    <ol class="app-drawer__list" id="drawer-list">
-${sections.map((s) => `      <li><a class="govuk-link" href="#${s.id}">${esc(s.title)}</a>${s.count ? ` <span class="app-count">${s.count}<span class="govuk-visually-hidden"> items</span></span>` : ""}</li>`).join("\n")}
+    <ol class="drawer__list" id="drawer-list">
+${drawerList}
     </ol>
   </nav>
-  <main class="govuk-main-wrapper app-main" id="main-content" role="main">
-    <span class="govuk-caption-l">Data discoverability</span>
-    <h1 class="govuk-heading-xl">Find UK public sector data and check its metadata, from your AI assistant</h1>
-    <p class="govuk-body-l">NDL PubSec MCP is an open-source Model Context Protocol server. It lets an AI assistant search data.gov.uk and check metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM).</p>
-    <div class="govuk-inset-text">Every tool is read-only. No personal data is read or returned. Results come from the sources named with them, and the assistant you use may still make mistakes, so check the source before you rely on a result.</div>
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-h">
+      <svg class="hero__art" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><g fill="none" stroke="#fff" stroke-width="1.5"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60" class="pulse"/><circle cx="100" cy="100" r="90"/><path d="M100 10v180M10 100h180M36 36l128 128M164 36L36 164"/></g></svg>
+      <p class="hero__eyebrow">Data discoverability · open source</p>
+      <h1 id="hero-h">Find UK public sector data and check its metadata, from your AI assistant</h1>
+      <p>NDL PubSec MCP is an open-source ${term("MCP server")}. It lets an AI assistant search ${term("data.gov.uk")} and check metadata against the UK Cross-Government Metadata Exchange Model (${term("xGov MEM")}).</p>
+      <div class="hero__cta"><a class="btn btn--light" href="#use">${icon("terminal")}Set it up</a><a class="btn btn--line" href="#checker">${icon("check")}Try the checker</a></div>
+      <ul class="stats">
+        <li><b data-count="${tools.length}">${tools.length}</b><span>read-only tools</span></li>
+        <li><b>${conf.agree}/${conf.cases}</b><span>model test cases agreed</span></li>
+        <li><b>${live.agree}/${live.records}</b><span>real records agreed</span></li>
+        <li><b data-count="${standards.standards.length}">${standards.standards.length}</b><span>standards explained</span></li>
+        <li><b data-count="${defects.length}">${defects.length}</b><span>defects, each with a check</span></li>
+      </ul>
+    </section>
+    <p class="note">Every tool is read-only. No personal data is read or returned. Results come from the sources named with them, and the assistant you use can still make mistakes, so check the source before you rely on a result.</p>
 
-    <h2 class="govuk-heading-l" id="what">What it does</h2>
-    <div class="app-table-scroll" role="region" aria-labelledby="tools-caption" tabindex="0">
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--m" id="tools-caption">The ${tools.length} tools</caption>
-      <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Tool</th><th scope="col" class="govuk-table__header">What it does</th></tr></thead>
-      <tbody class="govuk-table__body">
-${tools.map((t) => `        <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><code>${esc(t.name)}</code><br><span class="govuk-body-s">${esc(t.title ?? "")}</span></th><td class="govuk-table__cell">${esc(t.description)}</td></tr>`).join("\n")}
-      </tbody>
-    </table>
-    </div>
+    <section class="section reveal" id="what" aria-labelledby="what-h">
+      ${head2("what")}
+      <p class="lead">Each ${term("Tool", "tool")} does one job. Filter them by what you want to do.</p>
+      ${filterBox("tool-list", "Search the tools", Object.entries(JOB_NAME).filter(([k]) => tools.some((t) => jobOf(t) === k)).concat([["live", "Uses the live catalogue"], ["offline", "Works offline"]]))}
+      <div class="grid" id="tool-list">
+${tools.map((t) => `        <article class="card tool" data-text="${lower(t.name, t.title, t.description, JOB_NAME[jobOf(t)])}" data-group="${jobOf(t)} ${t.annotations?.openWorldHint ? "live" : "offline"}"><h3>${icon(jobOf(t) === "check" ? "check" : jobOf(t) === "find" ? "search" : jobOf(t) === "connect" ? "map" : "book")}<code class="name">${esc(t.name)}</code></h3><p class="meta">${esc(t.title ?? "")}</p><p>${esc(t.description)}</p><ul class="tags"><li class="tag">${esc(JOB_NAME[jobOf(t)])}</li><li class="tag">${t.annotations?.openWorldHint ? "Uses the live catalogue" : "Works offline"}</li><li class="tag">Read-only</li></ul>${Object.keys(t.inputSchema?.properties ?? {}).length ? `<details><summary>Inputs</summary><ul class="params">${Object.entries(t.inputSchema.properties).map(([k, p]) => `<li><code>${esc(k)}</code>${(t.inputSchema.required ?? []).includes(k) ? " (required)" : ""}${p.description ? `: ${esc(p.description)}` : ""}</li>`).join("")}</ul></details>` : ""}</article>`).join("\n")}
+      </div>
+      <p class="empty" hidden>No tool matches. Clear the search or the filters.</p>
+    </section>
 
-    <h2 class="govuk-heading-l" id="conformance">How well it follows xGov MEM</h2>
-    <p class="govuk-body">The validator is generated from the xGov MEM model at commit <code>${esc(conf.model.commit.slice(0, 7))}</code> (${esc(longDate(conf.model.commitDate))}). It covers ${Object.keys(rules.classes).length} classes. It reaches the same verdict as the model's own tests on <strong>${conf.agree} of ${conf.cases} cases</strong>: ${totals.v} valid and ${totals.i} invalid examples.</p>
-    <div class="app-table-scroll" role="region" aria-labelledby="conf-caption" tabindex="0">
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--s" id="conf-caption">Agreement with the xGov MEM test corpus, by class</caption>
-      <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Class</th><th scope="col" class="govuk-table__header govuk-table__header--numeric">Valid examples accepted</th><th scope="col" class="govuk-table__header govuk-table__header--numeric">Invalid examples rejected</th></tr></thead>
-      <tbody class="govuk-table__body">
-${Object.entries(conf.byClass).map(([k, v]) => `        <tr class="govuk-table__row"><th scope="row" class="govuk-table__header">${esc(k)}</th><td class="govuk-table__cell govuk-table__cell--numeric">${v.validAgree} of ${v.valid}</td><td class="govuk-table__cell govuk-table__cell--numeric">${v.invalidAgree} of ${v.invalid}</td></tr>`).join("\n")}
-      </tbody>
-    </table>
-    </div>
-    <p class="govuk-body">What this does not show: the corpus is small, and some examples break more than one rule. Agreement on real catalogue records has not been measured yet. <a class="govuk-link" href="${gh("docs/conformance.md")}">Read the conformance report</a>.</p>
+    <section class="section reveal" id="checker" aria-labelledby="checker-h">
+      ${head2("checker")}
+      <p class="lead">Paste a metadata record as JSON and check it against ${term("xGov MEM")}. This runs the server's own validator in your browser, compiled from the same model. Nothing you paste is sent anywhere or kept.</p>
+      <form class="checker card" id="checker-form" novalidate>
+        <div>
+          <label for="record">Metadata record (JSON)</label>
+          <textarea id="record" spellcheck="false" aria-describedby="record-hint" placeholder="{ &quot;title&quot;: &quot;…&quot; }"></textarea>
+          <p class="meta" id="record-hint">Try an example: ${Object.entries(examples).map(([k, e]) => `<button type="button" class="chip" data-example="${k}">${esc(e.label)}</button>`).join(" ")}</p>
+        </div>
+        <div>
+          <label for="class">Class</label>
+          <select id="class"><option value="">Work it out from the record</option>${CLASS_NAMES.map((c) => `<option>${esc(c)}</option>`).join("")}</select>
+          <p class="toolbar"><button class="btn btn--brand" type="submit">${icon("check")}Check the record</button><button class="btn btn--quiet" type="button" id="checker-clear">Clear</button></p>
+          <div class="result" id="checker-result" aria-live="polite"></div>
+        </div>
+      </form>
+    </section>
 
-    <h2 class="govuk-heading-l" id="use">How to use it</h2>
-    <p class="govuk-body">You need Node.js 20 or later and an MCP-capable assistant.</p>
-    <pre class="app-code" tabindex="0"><code>git clone ${REPO}.git
+    <section class="section reveal" id="conformance" aria-labelledby="conformance-h">
+      ${head2("conformance")}
+      <p class="lead">The validator is generated from the xGov MEM model at commit <code>${esc(conf.model.commit.slice(0, 7))}</code> (${esc(longDate(conf.model.commitDate))}). It covers ${Object.keys(rules.classes).length} classes.</p>
+      <div class="tabs">
+        <div role="tablist" aria-label="Conformance evidence">
+          <button role="tab" id="t-corpus" aria-controls="p-corpus" type="button">The model's own tests</button>
+          <button role="tab" id="t-live" aria-controls="p-live" type="button">Real catalogue records</button>
+          <button role="tab" id="t-limits" aria-controls="p-limits" type="button">What this does not show</button>
+        </div>
+        <div role="tabpanel" id="p-corpus" aria-labelledby="t-corpus" class="card">
+          <p>It reaches the same verdict as the model's own tests on <strong>${conf.agree} of ${conf.cases} cases</strong>: ${totals.v} valid and ${totals.i} invalid examples.</p>
+          <ul class="legend"><li><i class="k-v"></i>Valid examples accepted</li><li><i class="k-i"></i>Invalid examples rejected</li></ul>
+          ${corpusChart}
+          <div class="table-wrap"><table><caption>Agreement with the xGov MEM test corpus, by class</caption><thead><tr><th scope="col">Class</th><th scope="col" class="num">Valid examples accepted</th><th scope="col" class="num">Invalid examples rejected</th></tr></thead><tbody>
+${Object.entries(conf.byClass).map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td class="num">${v.validAgree} of ${v.valid}</td><td class="num">${v.invalidAgree} of ${v.invalid}</td></tr>`).join("\n")}
+          </tbody></table></div>
+        </div>
+        <div role="tabpanel" id="p-live" aria-labelledby="t-live" class="card" hidden>
+          <p>${live.records} real data.gov.uk records were mapped (a ${term("Crosswalk", "crosswalk")}) and checked by this server and by the model's own LinkML validator: <strong>${live.agree} of ${live.records} agree</strong>. None is valid straight from the catalogue. These are the ${term("Required attribute", "required attributes")} the catalogue records lack.</p>
+          ${liveChart}
+        </div>
+        <div role="tabpanel" id="p-limits" aria-labelledby="t-limits" class="card note--warn" hidden>
+          <p>The corpus is small, and some examples break more than one rule. The real-record sample is ${live.records} records, not the whole catalogue. Agreement means the same verdict and the same missing attributes, not identical messages.</p>
+          <p><a href="${gh("docs/conformance.md")}">Read the conformance report</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="standards" aria-labelledby="standards-h">
+      ${head2("standards")}
+      <p class="lead">Each entry carries a ${term("Provenance label", "provenance label")} saying how sure we are of it. Entries found through search must be re-read at the source before you rely on them. Checked ${esc(longDate(AS_OF))}.</p>
+      ${filterBox("std-list", "Search the standards", Object.keys(provName).filter((p) => standards.standards.some((s) => s.provenance === p)).map((p) => [p, provName[p]]))}
+      <div class="grid" id="std-list">
+${standards.standards.map((s) => `        <article class="card" data-text="${lower(s.name, s.purpose, s.status, s.licence)}" data-group="${esc(s.provenance)}"><h3>${icon("book")}<a href="${esc(s.link)}">${esc(s.name)}</a></h3><p>${esc(s.purpose)}</p><p class="meta">${esc(s.status)} · ${esc(s.licence)}</p><ul class="tags"><li class="tag tag--${esc(s.provenance)}">${esc(s.provenance)}: ${esc(provName[s.provenance])}</li>${s.useWith.map((u) => `<li class="tag">${esc(u)}</li>`).join("")}</ul></article>`).join("\n")}
+      </div>
+      <p class="empty" hidden>No standard matches. Clear the search or the filters.</p>
+    </section>
+
+    <section class="section reveal" id="map" aria-labelledby="map-h">
+      ${head2("map")}
+      <p class="lead">How the standards, the tools, this server and the other servers it lists connect. Hover or tab to a point to see its links. The same graph is published as <a href="knowledge-graph.jsonld">JSON-LD</a>.</p>
+      <ul class="legend"><li><i class="k-std"></i>Standard</li><li><i class="k-tool"></i>Tool</li><li><i class="k-server"></i>This server</li><li><i class="k-dom"></i>Other server in the estate</li></ul>
+      <div class="card">${estateMap}</div>
+    </section>
+
+    <section class="section reveal" id="use" aria-labelledby="use-h">
+      ${head2("use")}
+      <p class="lead">You need Node.js 20 or later and an assistant that supports ${term("MCP")}.</p>
+      <div class="code"><pre tabindex="0"><code>git clone ${REPO}.git
 cd ndl-pubsec-mcp
 npm ci
-npm run build</code></pre>
-    <p class="govuk-body">Then add <code>node /path/to/ndl-pubsec-mcp/dist/index.js</code> to your assistant's MCP servers. <a class="govuk-link" href="${gh("README.md")}">Full instructions</a>.</p>
+npm run build</code></pre></div>
+      <p>Then tell your assistant where the server is. Replace the path with where you cloned it.</p>
+      <div class="tabs">
+        <div role="tablist" aria-label="Assistant">
+          <button role="tab" id="t-claude" aria-controls="p-claude" type="button">Claude Desktop</button>
+          <button role="tab" id="t-vscode" aria-controls="p-vscode" type="button">VS Code</button>
+          <button role="tab" id="t-inspect" aria-controls="p-inspect" type="button">Try it first</button>
+        </div>
+        <div role="tabpanel" id="p-claude" aria-labelledby="t-claude"><p>Add this to <code>claude_desktop_config.json</code>:</p><div class="code"><pre tabindex="0"><code>${esc(claudeCfg)}</code></pre></div></div>
+        <div role="tabpanel" id="p-vscode" aria-labelledby="t-vscode" hidden><p>Add this to <code>.vscode/mcp.json</code> in your workspace:</p><div class="code"><pre tabindex="0"><code>${esc(vscodeCfg)}</code></pre></div></div>
+        <div role="tabpanel" id="p-inspect" aria-labelledby="t-inspect" hidden><p>Open the MCP Inspector against the built server and call each tool by hand:</p><div class="code"><pre tabindex="0"><code>npm run inspector</code></pre></div></div>
+      </div>
+      <p><a href="${gh("README.md")}">Full instructions</a>, including the environment settings.</p>
+    </section>
 
-    <h2 class="govuk-heading-l" id="standards">Standards it explains</h2>
-    <p class="govuk-body">Each entry shows how sure we are of it. Entries found through search must be re-read at the source before you rely on them. Checked ${esc(longDate(AS_OF))}.</p>
-    <div class="app-table-scroll" role="region" aria-labelledby="std-caption" tabindex="0">
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--s" id="std-caption">Open data standards, with provenance</caption>
-      <thead class="govuk-table__head"><tr class="govuk-table__row"><th scope="col" class="govuk-table__header">Standard</th><th scope="col" class="govuk-table__header">Status</th><th scope="col" class="govuk-table__header">How sure</th></tr></thead>
-      <tbody class="govuk-table__body">
-${standards.standards.map((s) => `        <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="${esc(s.link)}">${esc(s.name)}</a></th><td class="govuk-table__cell">${esc(s.status)}</td><td class="govuk-table__cell"><strong class="govuk-tag app-prov app-prov--${esc(s.provenance)}">${esc(s.provenance)}</strong> ${esc(provName[s.provenance])}</td></tr>`).join("\n")}
-      </tbody>
-    </table>
-    </div>
+    <section class="section reveal" id="documents" aria-labelledby="documents-h">
+      ${head2("documents")}
+      ${filterBox("doc-list", "Search the documents", docGroups.map((g) => [g.name.toLowerCase(), g.name]))}
+      <div class="grid" id="doc-list">
+${docGroups.flatMap((g) => g.items.map(([t, href]) => `        <a class="card" href="${esc(href)}" data-text="${lower(t, g.name)}" data-group="${g.name.toLowerCase()}"><h3>${icon(g.icon)}${esc(t)}</h3><p class="meta">${esc(g.name)}</p></a>`)).join("\n")}
+      </div>
+      <p class="empty" hidden>No document matches.</p>
+    </section>
 
-    <h2 class="govuk-heading-l" id="documents">Documents</h2>
-    <ul class="govuk-list govuk-list--bullet">
-      <li><a class="govuk-link" href="${gh("docs/prd.md")}">Product requirements</a></li>
-      <li><a class="govuk-link" href="${gh("docs/architecture.md")}">Architecture (SAD, HLD and LLD)</a></li>
-      <li><a class="govuk-link" href="${gh("docs/data-dictionary.md")}">Data dictionary</a></li>
-      <li><a class="govuk-link" href="knowledge-graph.jsonld">Knowledge graph (JSON-LD)</a></li>
-      <li><a class="govuk-link" href="${gh("docs/governance.md")}">Governance screening (data protection, transparency, accessibility, security)</a></li>
-      <li><a class="govuk-link" href="${gh("docs/conformance.md")}">Conformance report</a></li>
-      <li><a class="govuk-link" href="${gh("docs/open-register.md")}">Open register</a></li>
-      <li><a class="govuk-link" href="${gh("CHANGELOG.md")}">Changelog</a></li>
-${adrs.map((d) => `      <li><a class="govuk-link" href="${gh(`docs/adr/${d.file}`)}">${esc(d.title)}</a></li>`).join("\n")}
-    </ul>
+    <section class="section reveal" id="changes" aria-labelledby="changes-h">
+      ${head2("changes")}
+      <p class="lead">Newest first. Each release links to its full entry in the changelog.</p>
+      <ol class="timeline">
+${releases.map((r) => `        <li><h3><a href="${gh("CHANGELOG.md")}#${r.anchor}">Version ${esc(r.version)}</a></h3><p class="meta">${esc(r.date)} · ${r.items.length} change${r.items.length === 1 ? "" : "s"}</p>${r.items.length ? `<details><summary>Show the changes</summary><ul>${r.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}</li>`).join("\n")}
+      </ol>
+    </section>
 
-    <h2 class="govuk-heading-l" id="glossary">Glossary</h2>
-    <dl class="govuk-summary-list">
-${glossary.map((g) => `      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key"><dfn>${esc(g.term)}</dfn></dt><dd class="govuk-summary-list__value">${esc(g.meaning.replace(/`/g, ""))}</dd></div>`).join("\n")}
-    </dl>
+    <section class="section reveal" id="open" aria-labelledby="open-h">
+      ${head2("open")}
+      <p class="lead">What is still to do, and what has been closed, from the <a href="${gh("docs/open-register.md")}">open register</a>. Work is tracked in <a href="${REPO}/issues">GitHub issues</a>; the page is rebuilt when the register changes.</p>
+      ${filterBox("open-list", "Search the open items", [["open", `Open (${openCount})`], ["closed", `Closed (${openItems.length - openCount})`]])}
+      <div class="grid" id="open-list">
+${openItems.map((o) => `        <article class="card" data-text="${lower(o.id, o.text, o.owner)}" data-group="${o.closed ? "closed" : "open"}"><h3>${icon(o.closed ? "check" : "list")}${esc(o.id)}</h3><p>${esc(o.text)}</p><ul class="tags"><li class="tag${o.closed ? " tag--V" : ""}">${o.closed ? "Closed" : "Open"}</li><li class="tag">${esc(o.owner)}</li></ul></article>`).join("\n")}
+      </div>
+      <p class="empty" hidden>No item matches.</p>
+    </section>
 
-    <h2 class="govuk-heading-l" id="accessibility">Accessibility statement</h2>
-    <p class="govuk-body">We want as many people as possible to be able to use this page. It aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. It has been checked with automated tools only, and manual testing with assistive technology has not been done yet, so we do not claim full compliance. If you find a problem, or need this information in another format, use the <a class="govuk-link" href="${CONTACT}">contact form</a>. If you cannot use the form, ask a colleague to raise it for you.</p>
+    <section class="section reveal" id="defects" aria-labelledby="defects-h">
+      ${head2("defects")}
+      <p class="lead">Every defect found gets a check that would catch it again, and every check is proved to fail on a broken copy of the repository (${term("Vaccination", "vaccination")}). The check suite never shrinks.</p>
+      ${filterBox("defect-list", "Search the defects")}
+      <div class="table-wrap"><table><caption>Defect register</caption><thead><tr><th scope="col">Id</th><th scope="col">Defect</th><th scope="col">Check</th><th scope="col">Status</th></tr></thead><tbody id="defect-list">
+${defects.map((d) => `<tr data-text="${lower(d.id, d.defect, d.check, d.status)}"><th scope="row">${esc(d.id)}</th><td>${esc(strip(d.defect))}</td><td>${esc(strip(d.check))}</td><td>${esc(d.status)}</td></tr>`).join("\n")}
+      </tbody></table></div>
+      <p class="empty" hidden>No defect matches.</p>
+    </section>
 
-    <h2 class="govuk-heading-l" id="about">About this page</h2>
-    <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Owner</dt><dd class="govuk-summary-list__value">Data Management Team, Government Data directorate, GDS</dd></div>
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">First published</dt><dd class="govuk-summary-list__value">8 November 2026</dd></div>
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Last updated</dt><dd class="govuk-summary-list__value">${esc(longDate(AS_OF))}</dd></div>
-      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Review by</dt><dd class="govuk-summary-list__value">${esc(longDate(REVIEW))}</dd></div>
-    </dl>
+    <section class="section reveal" id="glossary" aria-labelledby="glossary-h">
+      ${head2("glossary")}
+      <ul class="az" aria-label="Jump to a letter">${[..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((l) => letters.includes(l) ? `<li><a href="#g-${l}">${l}</a></li>` : `<li><span aria-hidden="true">${l}</span></li>`).join("")}</ul>
+      ${filterBox("gloss-list", "Search the glossary")}
+      <dl class="gloss" id="gloss-list">
+${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${i === glossary.findIndex((x) => x.term[0].toUpperCase() === g.term[0].toUpperCase()) ? ` id="g-${g.term[0].toUpperCase()}"` : ""}><dt><dfn>${esc(g.term)}</dfn></dt><dd>${esc(g.meaning.replace(/`/g, ""))}</dd></div>`).join("\n")}
+      </dl>
+      <p class="empty" hidden>No term matches.</p>
+    </section>
+
+    <section class="section reveal" id="accessibility" aria-labelledby="accessibility-h">
+      ${head2("accessibility")}
+      <p>I want as many people as possible to be able to use this page. It aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. It works without JavaScript, follows your light or dark setting, and stops motion when you ask your device to reduce it. It has been checked with automated tools only, and manual testing with assistive technology has not been done yet, so it does not claim full compliance. If you find a problem, or need this information in another format, use the <a href="${CONTACT}">contact form</a>. If you cannot use the form, ask someone to raise it for you.</p>
+    </section>
+
+    <section class="section reveal" id="about" aria-labelledby="about-h">
+      ${head2("about")}
+      <div class="table-wrap"><table><caption class="visually-hidden">Page details</caption><tbody>
+        <tr><th scope="row">What this is</th><td>${esc(STATEMENT)}</td></tr>
+        <tr><th scope="row">Status</th><td>Prototype, version ${esc(pkg.version)}. Not a live service, and it has not had a service assessment.</td></tr>
+        <tr><th scope="row">First published</th><td>8 November 2026</td></tr>
+        <tr><th scope="row">Last updated</th><td>${esc(longDate(AS_OF))}</td></tr>
+        <tr><th scope="row">Review by</th><td>${esc(longDate(REVIEW))}</td></tr>
+        <tr><th scope="row">How it is built</th><td>Generated from the repository's own data by <a href="${gh("tools/build-site.mjs")}">tools/build-site.mjs</a>. Build <code>${esc(buildId)}</code>.</td></tr>
+      </tbody></table></div>
+    </section>
   </main>
 </div>
-<footer class="govuk-footer" role="contentinfo">
-  <div class="govuk-width-container">
-    <div class="app-colophon">
-      <div>
-        <h2 class="govuk-heading-s">Disclaimer and transparency</h2>
-        <p class="govuk-body-s">An alpha prototype of the Government Digital Service. It is not a live service, has not had a service assessment, and gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code). Changes are reviewed by the owner before they are merged.</p>
-        <p class="govuk-body-s"><a class="govuk-footer__link" href="${CONTACT}">Contact form</a> · <a class="govuk-footer__link" href="${REPO}">Source code</a> · <a class="govuk-footer__link" href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
-        <p class="govuk-body-s">Code: <a class="govuk-footer__link" href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
-        <p class="govuk-body-s">Version ${esc(pkg.version)} · as of ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
-      </div>
-      <div class="app-colophon__codes">
-        ${qr}
-        ${barcode}
-      </div>
+<a class="btn btn--brand totop" id="totop" href="#top" hidden>${icon("up")}Top</a>
+<footer role="contentinfo">
+  <div class="foot">
+    <div>
+      <h2>Disclaimer and transparency</h2>
+      <p>${esc(STATEMENT)} It gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code), and changes are reviewed before they are merged.</p>
+      <p><a href="${CONTACT}">Contact form</a> · <a href="${REPO}">Source code</a> · <a href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
+      <p>Code: <a href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
+      <p>Version ${esc(pkg.version)} · as of ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
+    </div>
+    <div class="foot__codes">
+      ${qr}
+      ${barcode}
     </div>
   </div>
 </footer>
+<script src="assets/mem.js"></script>
+<script src="assets/examples.js"></script>
 <script src="assets/site.js"></script>
 </body>
 </html>
 `;
 writeFileSync(join(root, "docs/index.html"), html);
+
 
 // --- knowledge graph ---
 const kg = {

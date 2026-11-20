@@ -2,9 +2,11 @@
 
 An open-source [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server. It lets any MCP-capable AI assistant find UK public sector data and check that data's metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM).
 
-> **Status: alpha, version 0.2.0 (8 November 2026).** This is official work of the Data Management Team, Government Data directorate, Government Digital Service (GDS). It is a prototype to inform cross-government work on data discoverability. It is not a live service, and it has not been through a service assessment.
+> **Status: independent prototype, version 0.4.0 (20 November 2026).** It is not a government service, is not endorsed by any government department, and does not set or represent government policy. It is a prototype to explore data discoverability across the public sector, and it has not been through a service assessment.
 >
-> Build standard: public-sector profile, UK central government, official work, **grade G3** (shared code others may rely on; no personal data). See [ADR 0002](docs/adr/0002-official-and-personal-repositories.md).
+> Build standard: public-sector profile, UK central government subject matter, independent prototype, **grade G3** (shared code others may rely on; no personal data). See [ADR 0006](docs/adr/0006-independent-prototype.md).
+>
+> Website: [cyberdudeuk.github.io/ndl-pubsec-mcp](https://cyberdudeuk.github.io/ndl-pubsec-mcp/), with an in-browser metadata checker.
 
 ## What it does
 

@@ -41,7 +41,8 @@ export function checkRepo(root) {
     // C-01 (rule COL-02, defect D-003): no email address anywhere; reserved example domains allowed in tests only
     if (TEXT_EXT.has(extname(f).toLowerCase())) {
       const text = readFileSync(join(root, f), "utf8");
-      const emails = findEmails(text, { allowReserved: f.startsWith("test/") });
+      // The page's generated checker examples (docs/assets/examples.js) may use reserved example domains too (D-024).
+      const emails = findEmails(text, { allowReserved: f.startsWith("test/") || f === "docs/assets/examples.js" });
       if (emails.length) problems.push(`C-01 ${f}: email address found (${emails.length})`);
     }
     // C-02 (rule: decks and films stay out of repositories)
@@ -75,7 +76,8 @@ export function checkRepo(root) {
   // C-07 (machinery of government, defect D-007): no stale department claims in published material
   for (const f of files.filter((x) => /\.(md|html)$/.test(x) && !x.startsWith("docs/adr/") && x !== "CHANGELOG.md" && x !== "docs/defect-register.md")) {
     const t = readFileSync(join(root, f), "utf8");
-    if (/as a DSIT officer|Crown Copyright \(Department for Science/i.test(t)) problems.push(`C-07 ${f}: stale department claim`);
+    // A quoted mention (the page republishes the changelog and defect register, which cite the old wording) is not a claim.
+    if (/(?<!"|&quot;|“)as a DSIT officer|Crown Copyright \(Department for Science/i.test(t)) problems.push(`C-07 ${f}: stale department claim`);
   }
   // C-08 (defect D-008): conformance figures in the docs match the recorded run, never typed by hand
   const resPath = join(root, "docs", "conformance-result.json");
@@ -147,6 +149,39 @@ export function checkRepo(root) {
       }
     }
   }
+  // C-16 (defect D-024): nothing published presents this independent prototype as official government work.
+  // The team name is assembled from parts so that the phrase itself appears nowhere in the repository.
+  const TEAM = new RegExp(["Data", "Management", "Team"].join("\\s+"), "i");
+  const PUBLISHED = (x) => /\.(md|html|ya?ml|cff|json|jsonld|css|js)$/.test(x) && !x.startsWith("test/") && !x.startsWith("vendor/") && x !== "package-lock.json";
+  for (const f of files.filter(PUBLISHED)) {
+    const t = readFileSync(join(root, f), "utf8");
+    if (TEAM.test(t)) problems.push(`C-16 ${f}: names the owner's team; this is an independent prototype (ADR 0006)`);
+    const historic = f.startsWith("docs/adr/") || f === "CHANGELOG.md" || f === "docs/defect-register.md";
+    if (!historic && /\bofficial work\b|official (?:GDS|government) (?:prototype|project|service|repository)/i.test(t)) problems.push(`C-16 ${f}: claims official status (ADR 0006)`);
+  }
+  for (const f of ["docs/index.html", "package.json"]) {
+    if (!existsSync(join(root, f))) continue;
+    const t = readFileSync(join(root, f), "utf8");
+    if (/govuk-frontend|GOV\.UK Frontend|govuk-template|GovernmentOrganization/i.test(t)) problems.push(`C-16 ${f}: uses GOV.UK Frontend or names a government publisher (ADR 0006)`);
+  }
+  if (existsSync(join(root, "docs", "assets", "govuk-frontend.min.css"))) problems.push("C-16 docs/assets/govuk-frontend.min.css: GOV.UK Frontend styles are still published");
+  const adr2 = existsSync(join(root, "docs", "adr", "0002-official-and-personal-repositories.md")) ? readFileSync(join(root, "docs", "adr", "0002-official-and-personal-repositories.md"), "utf8") : "";
+  if (adr2 && !/superseded by \[ADR 0006\]/i.test(adr2)) problems.push("C-16 docs/adr/0002: its official-work wording is not marked as superseded by ADR 0006");
+  // C-17 (defect D-024): the page and the README say plainly what this is
+  for (const f of ["README.md", "docs/index.html"]) {
+    const t = existsSync(join(root, f)) ? readFileSync(join(root, f), "utf8") : "";
+    if (!/independent prototype/i.test(t) || !/not endorsed by any government department/i.test(t)) problems.push(`C-17 ${f}: does not state that this is an independent prototype not endorsed by any government department`);
+  }
+  // C-18 (defect D-025): the page has unique ids, and every in-page reference points at one that exists
+  const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
+  const ids = [...page.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+  for (const id of new Set(ids.filter((x, i) => ids.indexOf(x) !== i))) problems.push(`C-18 docs/index.html: id "${id}" is used more than once`);
+  const known = new Set(ids);
+  for (const m of page.matchAll(/(?:aria-controls|aria-labelledby|aria-describedby|href)="#?([^"]*)"/g)) {
+    const raw = m[0].startsWith("href") ? (m[1].startsWith("#") || m[0].includes('="#') ? m[1].replace(/^#/, "") : null) : m[1];
+    if (raw === null || raw === "") continue;
+    for (const ref of raw.split(/\s+/)) if (!known.has(ref)) problems.push(`C-18 docs/index.html: reference to "#${ref}" has no matching id`);
+  }
   return problems;
 }
 
@@ -159,5 +194,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-15)");
+  console.log("repository checks passed (C-01 to C-18)");
 }

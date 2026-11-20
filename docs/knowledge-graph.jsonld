@@ -11,8 +11,8 @@
       "@id": "ndl:server",
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
-      "schema:version": "0.3.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.3.0+83f60dbae991",
+      "schema:version": "0.4.0",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+15b5fadb6a73",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -426,6 +426,12 @@
       "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0005-term-layer-and-federation.md"
     },
     {
+      "@id": "ndl:adr/0006-independent-prototype",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0006: present this repository as an independent prototype",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0006-independent-prototype.md"
+    },
+    {
       "@id": "ndl:defect/D-001",
       "@type": "schema:Thing",
       "schema:name": "D-001",
@@ -607,6 +613,22 @@
       "schema:name": "D-023",
       "schema:description": "The Python tools were never linted (only the TypeScript was): two parity checks paired lists with `zip()`, which silently drops extra items, so a length mismatch would have been reported as parity",
       "ndl:check": "C-15: CI runs `ruff check .` with `ruff.toml`; both pairings now use `zip(..., strict=True)`, so a mismatch fails",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-024",
+      "@type": "schema:Thing",
+      "schema:name": "D-024",
+      "schema:description": "The published page and the README presented an independent prototype as official government work: they named the owner's team and directorate as owner, used GOV.UK Frontend styles and a phase banner, and named a government organisation as publisher in the structured data",
+      "ndl:check": "C-16, C-17",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-025",
+      "@type": "schema:Thing",
+      "schema:name": "D-025",
+      "schema:description": "The rebuilt page gave the checker section and its form the same id, so the drawer link and the form script could each find the wrong element",
+      "ndl:check": "C-18",
       "ndl:status": "Fixed"
     }
   ]

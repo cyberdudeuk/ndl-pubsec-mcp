@@ -4,9 +4,9 @@
 |---|---|
 | Identifier | ndl-pubsec-mcp/prd |
 | Version | 0.2 |
-| Owner | Data Management Team, Government Data, GDS |
+| Owner | Repository owner (independent prototype, see ADR 0006) |
 | First published | 8 November 2026 |
-| Last updated | 8 November 2026 |
+| Last updated | 20 November 2026 |
 | Review by | 8 February 2027 |
 
 ## Problem
