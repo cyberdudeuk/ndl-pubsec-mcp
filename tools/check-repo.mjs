@@ -402,6 +402,19 @@ export function checkRepo(root) {
     const art = (page.match(/<article class="card example" id="ex-describe"[\s\S]*?<\/article>/) ?? [""])[0];
     for (const [k, n] of Object.entries(live.missingRequired)) if (n === max && !art.includes(`<code>${k}</code>`)) problems.push(`C-27 docs/index.html: the ex-describe example leaves out ${k}, which is tied for most often missing (${n} of ${live.records})`);
   }
+  // C-42 (defect D-049): a superseded ADR is labelled as superseded wherever the page lists it
+  {
+    const html = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
+    for (const f of readdirSync(join(root, "docs", "adr")).filter((x) => x.endsWith(".md"))) {
+      const text = readFileSync(join(root, "docs", "adr", f), "utf8");
+      const by = text.match(/^- Status:[^\n]*superseded by \[ADR (\d{4})\]/im);
+      if (!by) continue;
+      const title = text.split("\n")[0].replace(/^# /, "").replace(/&/g, "&amp;");
+      const shown = html.split(title).length - 1;
+      const labelled = html.split(`${title} (wording superseded by ADR ${by[1]})`).length - 1;
+      if (shown === 0 || labelled !== shown) problems.push(`C-42 docs/index.html: ADR ${f} is superseded but is listed ${shown - labelled} time(s) without saying so`);
+    }
+  }
   return problems;
 }
 

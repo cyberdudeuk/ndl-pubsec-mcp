@@ -365,7 +365,7 @@ dialog.ask::backdrop { background: rgb(10 14 30 / 55%); }
 .card.caution { border-left: 4px solid var(--warn); margin: 14px 0; }
 .card.caution ul { margin: 6px 0; }
 
-/* Spotlight carousel and showcase (D-049), modelled on the Public Good Works spotlight. Without script it is a
+/* Spotlight carousel and showcase (D-050), modelled on the Public Good Works spotlight. Without script it is a
    scroll-snap strip; the controls appear only when the script runs. Print shows every slide. */
 .spotlight { min-width: 0; max-width: 100%; }
 .sp-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
@@ -400,7 +400,7 @@ dialog.ask::backdrop { background: rgb(10 14 30 / 55%); }
 @media (max-width: 720px) { .sp-slide { grid-template-columns: 1fr; padding: 16px; } .sp-head { align-items: flex-start; } }
 @media (prefers-reduced-motion: reduce) { .sp-track { scroll-behavior: auto; } .sp-dot::before { transition: none; } }
 @media print { .sp-ctl { display: none !important; } .sp-track { display: block; overflow: visible; } .sp-slide { break-inside: avoid; margin-bottom: 12px; } }
-/* D-050: at 320 px the masthead was 337 px wide and pushed the theme switch off screen. Narrow screens keep every
+/* D-051: at 320 px the masthead was 337 px wide and pushed the theme switch off screen. Narrow screens keep every
    control (each at least 44 px) and drop only the visible "More" label, which stays as the accessible name. */
 @media (max-width: 380px) {
   .mast__in { gap: 8px; padding-left: 12px; padding-right: 12px; }
@@ -408,7 +408,7 @@ dialog.ask::backdrop { background: rgb(10 14 30 / 55%); }
   .mast__nav a, .mast__nav summary, .btn-ghost { padding: 8px 10px; min-width: 44px; min-height: 44px; justify-content: center; }
   .mast__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
-/* D-050: a long host name in a card ("ckan.publishing.service.gov.uk/api/action") cannot wrap at a space and
+/* D-051: a long host name in a card ("ckan.publishing.service.gov.uk/api/action") cannot wrap at a space and
    pushed the page 56 px wider than a 320 px screen. Cards and notes may now break such strings anywhere. */
 .card, .note, .lead, td { overflow-wrap: anywhere; }
 

@@ -10,6 +10,7 @@
 
 ### Fixed
 
+- The website listed ADR 0002 ("one official repository, one personal experiment") without saying that ADR 0006 superseded its wording. A superseded ADR is now labelled wherever it is listed, and check C-42 keeps it that way, with a negative test.
 - `api_search` now reads both files of the government API catalogue and holds 269 APIs instead of 231, including DWP's 48 (D-044, check C-37). The ecosystem diagram's API count now comes from the data.
 - The Digital Economy Act register figures are reported with what they do and do not show: 194 of the 667 agreements are still active; each records one main method, so API use is a floor (three Warm Home Discount helpline agreements that record file-based methods also give access to DWP's Citizen API); and the register counts agreements, not volume. Added the prescription charge exemption exchange (DWP and NHS, real-time API).
 - Deliberate-break tests no longer copy git-ignored screenshots (D-045, check C-38).

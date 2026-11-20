@@ -316,7 +316,7 @@
     var note = $("#checker-result"); if (note) note.textContent = "The checker needs JavaScript. You can still validate records with the metadata_validate tool.";
   }
 
-  // --- spotlight carousel (D-049): readable and scrollable without this script. Previous, next and the dots move
+  // --- spotlight carousel (D-050): readable and scrollable without this script. Previous, next and the dots move
   // it; it rotates only after the reader presses Play, never under reduced motion, and holds still while the
   // pointer or keyboard focus is inside it (WCAG 2.2.2). Off-screen slides are inert so Tab never lands on them.
   var sp = $("#spotlight"), track = $("#sp-track");
