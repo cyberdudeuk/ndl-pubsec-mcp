@@ -548,6 +548,7 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
       <p>${esc(STATEMENT)} It gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code), and changes are reviewed before they are merged.</p>
       <p><a href="${CONTACT}">Contact form</a> · <a href="${REPO}">Source code</a> · <a href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
       <p>Code: <a href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a>. © 2026 Emanuel Silva. Third-party material keeps its own licence: the xGov MEM model is © Crown copyright under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+      <p>Code: <a href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
       <p>Version ${esc(pkg.version)} · updated ${esc(releases[0].date)} · standards checked ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
     </div>
     <div class="foot__codes">

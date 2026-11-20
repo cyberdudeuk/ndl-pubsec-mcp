@@ -312,4 +312,5 @@ if (isMain) {
     process.exit(1);
   }
   console.log("repository checks passed (C-01 to C-30)");
+  console.log("repository checks passed (C-01 to C-28)");
 }
