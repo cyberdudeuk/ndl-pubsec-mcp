@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+40396f6af893",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+59c45dff0d56",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -1768,6 +1768,14 @@
       "@id": "ndl:defect/D-038",
       "@type": "schema:Thing",
       "schema:name": "D-038",
+      "schema:description": "Merging main into the licence branch put the old Crown copyright footer back beside the new one, and duplicated an id on the page",
+      "ndl:check": "Generated files are rebuilt after every merge, never hand-merged; C-29 now reads every footer licence paragraph",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-039",
+      "@type": "schema:Thing",
+      "schema:name": "D-039",
       "schema:description": "In light mode the DQ Commons mark in the ecosystem diagram showed only a yellow dot",
       "ndl:check": "C-31: ecosystem node styles target only the direct `> rect` child",
       "ndl:status": "Fixed"

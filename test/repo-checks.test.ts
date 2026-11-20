@@ -295,7 +295,12 @@ describe("page structure (D-025)", () => {
     expect(breakFile("docs/index.html", /Content: <a href="https:\/\/creativecommons[^<]*<\/a>\. © 2026 Emanuel Silva\. Third-party material keeps its own licence: the xGov MEM model is © Crown copyright under the <a href="[^"]*">Open Government Licence v3\.0<\/a>\./, 'Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.').join()).toMatch(/C-29 docs\/index\.html footer: .*claims Crown copyright or OGL/);
     expect(breakFile("README.md", "© 2026 Emanuel Silva.", "© Crown copyright 2026.").join()).toMatch(/C-29 README\.md: "© Crown copyright 2026\." claims/);
   });
-  it("C-31 catches an ecosystem style that recolours logos inside nodes (D-038)", () => {
+  it("C-29 reads every footer licence paragraph, not just the first (D-038)", () => {
+    const stale = '<p>Code: <a href="x">MIT Licence</a>. Content: <a href="y">Open Government Licence v3.0</a>. © Crown copyright 2026</p>';
+    expect(breakFile("docs/index.html", "</footer>", `${stale}</footer>`).join()).toMatch(/C-29/);
+  });
+
+  it("C-31 catches an ecosystem style that recolours logos inside nodes (D-039)", () => {
     expect(breakFile("tools/site/ecosystem.mjs", ".eco__node > rect {", ".eco__node rect {").join()).toMatch(/C-31/);
   });
 

@@ -211,7 +211,7 @@ export function checkRepo(root) {
       if (l < 0 || r > vb) problems.push(`C-28 docs/index.html: chart label "${t[3]}" runs past the chart edge (viewBox ${vb})`);
     }
   }
-  // C-31 (defect D-038): ecosystem node styles reach only the node's own box, never the rect inside an inlined logo
+  // C-31 (defect D-039): ecosystem node styles reach only the node's own box, never the rect inside an inlined logo
   {
     const eco = readFileSync(join(root, "tools/site/ecosystem.mjs"), "utf8");
     for (const rule of eco.match(/\.eco__node[^{}]*\{/g) ?? []) if (/\srect\b/.test(rule.replace(/>\s*rect/g, ""))) problems.push(`C-31 tools/site/ecosystem.mjs: "${rule.trim()}" styles every rect in a node, including the logos inlined there; use "> rect"`);
@@ -233,7 +233,7 @@ export function checkRepo(root) {
   const ownStatements = {
     "README.md": section("README.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
     "CONTRIBUTING.md": section("CONTRIBUTING.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
-    "docs/index.html footer": (page.match(/<p>Code: <a[\s\S]*?<\/p>/) ?? [""])[0].replace(/<[^>]+>/g, ""),
+    "docs/index.html footer": [...page.matchAll(/<p>Code: <a[\s\S]*?<\/p>/g)].map((p) => [...p[0].matchAll(/>([^<]*)</g)].map((m) => m[1]).join("")).join(" "),
     "docs/index.html metadata": (page.match(/"copyrightNotice":"[^"]*"/) ?? [""])[0],
     "CITATION.cff": section("CITATION.cff", /^license:[\s\S]*?(?=^\S)/m)
   };

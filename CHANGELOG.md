@@ -8,7 +8,7 @@
 - `server_search`: finds MCP servers in the estate and candidates awaiting review, each with its status and the date it was checked.
 - An interactive ecosystem view in the Estate map, also published on its own as `ecosystem.html`: every component links to its home, and hovering or focusing one highlights what it connects to.
 - Worked examples "What could connect UK Export Finance and HMRC?" and "Find an MCP server for UK legislation", with results produced by the tools when the page is built; a tour stop, a tip, a guide answer and glossary terms (API catalogue, Data service, Shared identifier).
-- Check C-31 (defect D-038); the visual inspection now also covers the standalone ecosystem page and the map's hover state.
+- Check C-31 (defect D-039); the visual inspection now also covers the standalone ecosystem page and the map's hover state.
 
 ### Changed
 
