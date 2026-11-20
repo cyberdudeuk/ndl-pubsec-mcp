@@ -5,10 +5,14 @@ import standards from "./data/standards.json" with { type: "json" };
 import federation from "./data/federation.json" with { type: "json" };
 import servers from "./data/servers.json" with { type: "json" };
 import { API_SOURCES, searchApis } from "./lib/apis.js";
+import { EXCHANGE_ABOUT, EXCHANGE_REGISTER, EXCHANGES, searchExchanges } from "./lib/exchanges.js";
 import bundledVocabulary from "./data/vocabulary.json" with { type: "json" };
 import { CatalogueError, CkanClient, crosswalkToMem, summarise, VERSION, type CkanOptions } from "./lib/ckan.js";
 import { CLASS_NAMES, rules, validateRecord } from "./lib/mem.js";
 import { loadVocabulary, parseVocabulary, searchTerms, summariseVocabulary, type Vocabulary } from "./lib/vocab.js";
+
+/** The largest metadata record metadata_validate accepts, in characters of JSON. */
+export const MAX_RECORD_CHARS = 100_000;
 
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true } as const;
 const MAX_TEXT = 4000;
@@ -30,7 +34,10 @@ function clip(text: string | undefined, n = MAX_TEXT): string | undefined {
 const catalogueHint = (e: CatalogueError) =>
   e.kind === "network" ? "Check the network, or set NDL_MCP_CKAN_BASE to a reachable data.gov.uk API base URL." : undefined;
 
-export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list", "api_search", "server_search"] as const;
+export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list", "api_search", "server_search", "exchange_search"] as const;
+
+/** Ready-made tasks (MCP prompts) that chain the tools above. Each is declarative text: it asks, it does not act. */
+export const PROMPT_NAMES = ["journey-exchanges", "standards-for-a-service", "check-a-catalogue-record"] as const;
 
 export interface ServerOptions extends CkanOptions {
   /** A vocabulary file in the R2 register shape. Defaults to NDL_MCP_VOCAB_PATH, then the bundled example. */
@@ -135,7 +142,11 @@ export function createServer(opts: ServerOptions = {}): McpServer {
         7
       )}). Classes: ${CLASS_NAMES.join(", ")}. Returns errors (must fix) and warnings (recommended), each with the attribute path.`,
       inputSchema: {
-        record: z.record(z.string(), z.unknown()).describe("The metadata record as a JSON object, using xGov MEM attribute names"),
+        // Bounded so one oversized record cannot tie up the server (defect D-042, check C-35).
+        record: z
+          .record(z.string(), z.unknown())
+          .refine((r) => JSON.stringify(r).length <= MAX_RECORD_CHARS, { message: `The record is too large: keep it under ${MAX_RECORD_CHARS / 1000} KB of JSON` })
+          .describe("The metadata record as a JSON object, using xGov MEM attribute names (up to 100 KB)"),
         className: z
           .enum(CLASS_NAMES as [string, ...string[]])
           .optional()
@@ -151,15 +162,16 @@ export function createServer(opts: ServerOptions = {}): McpServer {
     {
       title: "Explain an open data standard",
       description:
-        "Explain open data standards used across UK government (xGov MEM, DCAT, ATRS, BODS, CSV, OpenAPI and others): purpose, status, licence and link, each with its provenance label and check date. Leave id out to list them all.",
+        "Explain the open standards recommended or required across UK government and the wider public sector, for data, APIs, identifiers, cyber security, digital services, identity, health and procurement: purpose, how firmly it applies, who it applies to, status, licence and link, each with its provenance label and check date. Leave id out to list them all, optionally for one domain.",
       inputSchema: {
-        id: z.string().trim().max(60).optional().describe("Standard id, for example 'xgov-mem', 'dcat' or 'bods'. Leave out to list all")
+        id: z.string().trim().max(60).optional().describe("Standard id, for example 'xgov-mem', 'dcat' or 'bods'. Leave out to list all"),
+        domain: z.enum(standards.domains as [string, ...string[]]).optional().describe("List only the standards in this domain, for example 'Cyber security'")
       },
       annotations: { ...READ_ONLY, openWorldHint: false }
     },
-    async ({ id }) => {
-      const list = standards.standards;
-      if (!id) return reply({ ok: true, asOf: standards.asOf, note: standards.note, catalogue: standards.catalogue, standards: list });
+    async ({ id, domain }) => {
+      const list = domain ? standards.standards.filter((s) => s.domain === domain) : standards.standards;
+      if (!id) return reply({ ok: true, asOf: standards.asOf, note: standards.note, catalogue: standards.catalogue, domains: standards.domains, domain, standards: list });
       const key = id.toLowerCase();
       const hit = list.find((s) => s.id === key || s.name.toLowerCase().includes(key));
       if (!hit) return failure(`No standard matches "${id}"`, `Known ids: ${list.map((s) => s.id).join(", ")}`);
@@ -257,6 +269,68 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       const hits = q.length ? all.filter((s) => q.every((w) => `${s.title} ${s.description}`.toLowerCase().includes(w))) : all;
       return reply({ ok: true, about: servers.about, asOf: servers.asOf, query, total: hits.length, servers: hits });
     }
+  );
+
+  server.registerTool(
+    "exchange_search",
+    {
+      title: "Find data exchanges between public sector organisations",
+      description:
+        "Find data exchanges between UK public sector organisations by journey (for example 'register a death', 'claim universal credit', 'set up a limited company'), organisation or identifier. Each result gives the parties, what flows, how, the shared identifiers, the standards involved, the legal basis where known, suggested api_search queries and sources with a provenance label. Also returns counts from the Digital Economy Act register of information sharing agreements. Descriptive only: this server never takes part in an exchange.",
+      inputSchema: {
+        query: z.string().trim().min(2).max(200).optional().describe("Words for a journey, organisation, data item or identifier; leave out to list all"),
+        party: z.string().trim().max(80).regex(/^[\p{L}\p{N} &'(),.-]+$/u).optional().describe("Only exchanges involving this organisation, for example 'HMRC'"),
+        audience: z.enum(["Citizen", "Business", "Public body"]).optional().describe("Only journeys for this audience")
+      },
+      annotations: { ...READ_ONLY, openWorldHint: false }
+    },
+    async ({ query, party, audience }) => {
+      const hits = searchExchanges(query, { party, audience });
+      return reply({ ok: true, ...EXCHANGE_ABOUT, query, party, audience, total: hits.length, exchanges: hits, register: EXCHANGE_REGISTER });
+    }
+  );
+
+  server.registerPrompt(
+    "journey-exchanges",
+    {
+      title: "Map the data exchanges behind a journey",
+      description: "Asks the assistant to find the exchanges, APIs and standards behind a citizen or business journey, and to say what is missing.",
+      argsSchema: { journey: z.string().trim().min(3).max(120).describe("The journey, for example 'register a death'") }
+    },
+    ({ journey }) => ({
+      messages: [{ role: "user", content: { type: "text", text: `Using the NDL PubSec MCP tools, map the data exchanges behind this journey: "${journey}".\n1. Call exchange_search with the journey words.\n2. For each exchange, call api_search with its suggested queries and list the APIs that exist, with their documentation links.\n3. Call standard_explain for each standard it names.\n4. Say which steps still rely on email, files or paper, and which identifiers join the data.\nCite every source and provenance label the tools return. Do not claim anything the tools did not return.` } }]
+    })
+  );
+
+  server.registerPrompt(
+    "standards-for-a-service",
+    {
+      title: "List the standards a public sector service must meet",
+      description: "Asks the assistant to list the mandatory, endorsed and recommended standards for a service, grouped by domain.",
+      argsSchema: { service: z.string().trim().min(3).max(160).describe("What the service does and who runs it, for example 'a council website for blue badge applications'") }
+    },
+    ({ service }) => ({
+      messages: [{ role: "user", content: { type: "text", text: `Using standard_explain from the NDL PubSec MCP server, list the standards that apply to this service: "${service}". Group them by domain, put Mandatory first, say who each applies to, and quote the provenance label and check date for each. Flag anything only Proposed or In review. Do not add standards the tool did not return; if you know of others, list them separately as unverified.` } }]
+    })
+  );
+
+  server.registerPrompt(
+    "check-a-catalogue-record",
+    {
+      title: "Check a dataset's metadata against xGov MEM",
+      description: "Asks the assistant to find a dataset, compare its metadata with xGov MEM and draft the fixes.",
+      argsSchema: { dataset: z.string().trim().min(2).max(160).describe("Words to find the dataset on data.gov.uk") }
+    },
+    ({ dataset }) => ({
+      messages: [{ role: "user", content: { type: "text", text: `Using the NDL PubSec MCP tools: search data.gov.uk for "${dataset}" with catalogue_search, pick the best match, run dataset_describe on it, then list each xGov MEM gap with a suggested fix. Mark every suggested value as a draft for the publisher to confirm.` } }]
+    })
+  );
+
+  server.registerResource(
+    "exchanges",
+    "ndl-pubsec-mcp://exchanges",
+    { title: "Public sector data exchanges and journeys", description: "Exchanges between organisations, the journeys they serve, and Digital Economy Act register counts", mimeType: "application/json" },
+    async (uri) => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify({ ...EXCHANGE_ABOUT, register: EXCHANGE_REGISTER, exchanges: EXCHANGES }, null, 2) }] })
   );
 
   server.registerResource(

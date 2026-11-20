@@ -9,6 +9,10 @@
 | Last updated | 20 November 2026 |
 | Review by | 8 February 2027 |
 
+## The name
+
+NDL stands for the **National Data Library**, the UK government's programme to make public sector data easier to find and use; since early 2026 data.gov.uk has been turning into it. PubSec means **public sector**. MCP is the **Model Context Protocol**, an open way for AI assistants to use outside tools.
+
 ## Problem
 
 People who need government data, and the AI assistants they increasingly use, cannot easily find out what data exists, who publishes it, or whether its metadata is good enough to rely on. Catalogues hold metadata of uneven quality. The cross-government standard for exchanging it, xGov MEM, is endorsed but has no easy way to be checked in day-to-day work.
@@ -30,9 +34,12 @@ The aim is to inform GDS work on data discoverability and the DAM (critical data
 | Data publisher or catalogue manager in a department | Check my metadata against xGov MEM before I publish or return it, so that it is accepted first time |
 | Data cataloguing and metadata community | See what fields are missing across catalogue entries, so that we can target support |
 | Analyst or developer using an AI assistant | Find relevant government datasets and their licences, so that I can use the right data legally |
+| Export finance or trade analyst (for example at UK Export Finance) | Know which HMRC and other published APIs could help check exporters and size markets, and which data needs a legal route, so that I can act now rather than wait for a new platform |
+| Researcher, journalist, civil society or any organisation outside government | Understand what public data exists, how it moves between organisations and which rules apply, with sources I can cite |
+| AI model or MCP developer | A ready-made, read-only way to reach UK government data resources, with safeguards, sources and provenance on every answer |
 | Architects working on discoverability | Test what a machine interface over catalogues needs, so that the platform design is grounded in evidence |
 
-These needs are assumed from the team's experience and are **not yet researched with users** (open item O-03).
+These needs have been raised repeatedly in the forums the owner runs or takes part in. The UK Export Finance and HMRC need was raised in one of them, and the person who raised it followed up with the owner on 20 November 2026 asking for it (owner, stated). That makes the need observed and urgent: it cannot wait for future discoverability services. The needs have **not yet been tested in formal user research** (open item O-03).
 
 ## Scope
 

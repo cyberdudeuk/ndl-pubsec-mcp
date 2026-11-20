@@ -47,9 +47,9 @@ AUDIT = r"""() => {
    if (ix>4 && iy>4) out.overlap.push(`"${a.textContent.trim().slice(0,25)}" x "${b.textContent.trim().slice(0,25)}"`); if (out.overlap.length>15) break; }
  for (const k in out) out[k] = [...new Set(out[k])].slice(0,15);
  return out; }"""
-SECTIONS = ["what", "who", "checker", "conformance", "standards", "map", "tour", "use", "examples", "toolkit",
+SECTIONS = ["start", "what", "who", "checker", "conformance", "standards", "exchanges", "map", "safeguards", "tour", "use", "examples", "toolkit",
             "documents", "involve", "journeys", "changes", "open", "defects", "glossary", "accessibility", "about"]
-TABS = ["t-use-tutorials", "t-use-guide", "t-use-tips", "t-live", "t-limits", "t-map-graph"]
+TABS = ["t-use-tutorials", "t-use-guide", "t-use-tips", "t-live", "t-limits", "t-map-graph", "t-xch-method", "t-xch-power", "t-xch-pairs"]
 
 
 def main() -> int:
@@ -72,6 +72,14 @@ def main() -> int:
                 results.append(page.evaluate(AUDIT))
             page.click("#t-use-start")
             page.click("#t-corpus")
+            page.click("#t-xch-list")
+            page.keyboard.press("Escape")
+            page.click(".ask-open")
+            page.fill("#ask-q", "what data moves when someone dies?")
+            page.wait_for_timeout(400)
+            results.append(page.evaluate(AUDIT.replace("e.closest('main') &&", "e.closest('dialog') &&").replace("!e.closest('[hidden],details:not([open]) > :not(summary),.visually-hidden,svg')", "!e.closest('[hidden],.visually-hidden,svg')")))
+            page.screenshot(path=str(OUT / f"ask-{key}.png"))
+            page.evaluate("() => document.getElementById('ask').close()")
             page.click("#t-map-eco")
             page.hover('#map .eco__node[data-node="ndl-pubsec-mcp"]')
             page.locator("#map").screenshot(path=str(OUT / f"map-hover-{key}.png"))

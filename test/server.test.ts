@@ -5,7 +5,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createServer, TOOL_NAMES } from "../src/server.js";
+import { createServer, PROMPT_NAMES, TOOL_NAMES } from "../src/server.js";
 import { ckanPackage, jsonResponse, validDataset } from "./fixtures.js";
 
 let client: Client;
@@ -95,7 +95,7 @@ describe("MCP server", () => {
 
   it("exposes the rule set and standards register as resources", async () => {
     const { resources } = await client.listResources();
-    expect(resources.map((r) => r.uri).sort()).toEqual(["ndl-pubsec-mcp://federation", "ndl-pubsec-mcp://standards", "ndl-pubsec-mcp://xgov-mem/rules"]);
+    expect(resources.map((r) => r.uri).sort()).toEqual(["ndl-pubsec-mcp://exchanges", "ndl-pubsec-mcp://federation", "ndl-pubsec-mcp://standards", "ndl-pubsec-mcp://xgov-mem/rules"]);
     const r = await client.readResource({ uri: "ndl-pubsec-mcp://xgov-mem/rules" });
     expect((r.contents[0] as { text: string }).text).toContain("Dataset");
   });
@@ -191,6 +191,49 @@ describe("MCP server", () => {
     expect(JSON.stringify(r)).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
     const { ALL_APIS } = await import("../src/lib/apis.js");
     expect(JSON.stringify(ALL_APIS)).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  });
+
+  it("exchange_search finds exchanges by journey, party and audience, each with sources", async () => {
+    const death = data(await client.callTool({ name: "exchange_search", arguments: { query: "report a death" } }));
+    expect((death.exchanges as { id: string }[]).map((e) => e.id)).toContain("tell-us-once");
+    const hmrc = data(await client.callTool({ name: "exchange_search", arguments: { party: "HMRC" } }));
+    expect((hmrc.exchanges as { parties: string[] }[]).every((e) => e.parties.some((p) => p.includes("HMRC")))).toBe(true);
+    const biz = data(await client.callTool({ name: "exchange_search", arguments: { audience: "Business" } }));
+    expect((biz.exchanges as { audience: string }[]).every((e) => e.audience.toLowerCase().includes("business"))).toBe(true);
+    const all = data(await client.callTool({ name: "exchange_search", arguments: {} }));
+    for (const e of all.exchanges as { sources: { url: string }[]; provenance: string }[]) {
+      expect(e.sources.length).toBeGreaterThan(0);
+      for (const src of e.sources) expect(src.url).toMatch(/^https:\/\//);
+      expect(["V", "S", "K", "U"]).toContain(e.provenance);
+    }
+    expect((all.register as { agreements: number }).agreements).toBeGreaterThan(0);
+  });
+
+  it("metadata_validate refuses a record larger than the limit (D-042)", async () => {
+    const big = { title: "x".repeat(110_000) };
+    const r = await client.callTool({ name: "metadata_validate", arguments: { record: big } });
+    expect(r.isError).toBe(true);
+  });
+
+  it("exchange_search rejects a party with characters outside the allowlist", async () => {
+    const r = await client.callTool({ name: "exchange_search", arguments: { party: "<script>" } });
+    expect(r.isError).toBe(true);
+  });
+
+  it("standard_explain filters by domain", async () => {
+    const r = data(await client.callTool({ name: "standard_explain", arguments: { domain: "Cyber security" } }));
+    const list = r.standards as { domain: string }[];
+    expect(list.length).toBeGreaterThan(3);
+    expect(list.every((s) => s.domain === "Cyber security")).toBe(true);
+  });
+
+  it("offers exactly the prompts in PROMPT_NAMES, each naming the tools it uses", async () => {
+    const { prompts } = await client.listPrompts();
+    expect(prompts.map((p) => p.name).sort()).toEqual([...PROMPT_NAMES].sort());
+    const p = await client.getPrompt({ name: "journey-exchanges", arguments: { journey: "register a death" } });
+    const text = (p.messages[0]!.content as { text: string }).text;
+    expect(text).toContain("exchange_search");
+    expect(text).toContain("register a death");
   });
 
   it("server_search lists estate servers and marks candidates as not endorsed", async () => {

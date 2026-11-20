@@ -13,12 +13,14 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../dist/server.js";
 import { renderGuide } from "./site/guide-sections.mjs";
 import { ECO_CSS, ECO_JS, loadEcosystem, renderEcosystem } from "./site/ecosystem.mjs";
+import { renderExtras } from "./site/extra-sections.mjs";
 import { searchApis, API_SOURCES } from "../dist/lib/apis.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(root, p), "utf8");
 const pkg = JSON.parse(read("package.json"));
 const standards = JSON.parse(read("src/data/standards.json"));
+const exchangesData = JSON.parse(read("src/data/exchanges.json"));
 const conf = JSON.parse(read("docs/conformance-result.json"));
 const rules = JSON.parse(read("src/generated/mem-rules.json"));
 const REPO = "https://github.com/cyberdudeuk/ndl-pubsec-mcp";
@@ -84,7 +86,7 @@ for (const [k, ex] of Object.entries(examples)) {
 
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
-const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
+const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/extra-sections.mjs", "tools/site/assist.js", "tools/site/ask-rank.js", "src/data/exchanges.json", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
 const eco = loadEcosystem();
 const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
@@ -94,7 +96,7 @@ const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs
 mkdirSync(join(root, "docs", "assets"), { recursive: true });
 rmSync(join(root, "docs", "assets", "govuk-frontend.min.css"), { force: true });
 writeFileSync(join(root, "docs/assets/site.css"), read("tools/site/site.css") + "\n/* ecosystem view (tools/site/ecosystem.mjs) */" + ECO_CSS);
-writeFileSync(join(root, "docs/assets/site.js"), read("tools/site/site.js") + "\n// ecosystem view (tools/site/ecosystem.mjs)\n" + ECO_JS + "\n");
+writeFileSync(join(root, "docs/assets/site.js"), read("tools/site/site.js") + "\n// ecosystem view (tools/site/ecosystem.mjs)\n" + ECO_JS + "\n// search or ask this page (tools/site/ask-rank.js, tools/site/assist.js)\n" + read("tools/site/ask-rank.js") + "\n" + read("tools/site/assist.js"));
 // The browser checker runs the server's own compiled validator with the rules inlined, because the page's
 // Content-Security-Policy allows no fetches. Anything the transform misses stops the build.
 const memJs = read("dist/lib/mem.js")
@@ -128,6 +130,7 @@ const ICONS = {
   code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
   form: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>',
   up: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
@@ -177,11 +180,12 @@ const liveChart = barChart(Object.entries(live.missingRequired).sort((x, y) => y
 // --- estate map: standards, tools, this server and the other domains it lists ---
 const others = federation.domains.filter((d) => !d.self);
 const cols = { std: 250, tool: 500, server: 700, dom: 850 };
-const rowsN = Math.max(standards.standards.length, tools.length, others.length + 1);
+const mapStd = standards.standards.filter((s) => s.useWith.length);
+const rowsN = Math.max(mapStd.length, tools.length, others.length + 1);
 const mapH = 50 + rowsN * 56;
 const yOf = (i, n) => 40 + ((mapH - 80) * (i + 0.5)) / n;
 const nodes = [
-  ...standards.standards.map((s, i) => ({ id: `std-${s.id}`, cls: "n-std", x: cols.std, y: yOf(i, standards.standards.length), label: ((m) => (m && m[1].length <= 10 ? m[1] : ((b) => (b.length > 26 ? `${b.slice(0, 24)}…` : b))(s.name.replace(/ \(.*$/, ""))))(s.name.match(/\(([^)]+)\)/)), anchor: "end", dx: -14, href: s.link })),
+  ...mapStd.map((s, i) => ({ id: `std-${s.id}`, cls: "n-std", x: cols.std, y: yOf(i, mapStd.length), label: ((m) => (m && m[1].length <= 10 ? m[1] : ((b) => (b.length > 26 ? `${b.slice(0, 24)}…` : b))(s.name.replace(/ \(.*$/, ""))))(s.name.match(/\(([^)]+)\)/)), anchor: "end", dx: -14, href: s.link })),
   ...tools.map((t, i) => ({ id: `tool-${t.name}`, cls: "n-tool", x: cols.tool, y: yOf(i, tools.length), label: t.name, anchor: "middle", dy: 22, href: "#what" })),
   { id: "server", cls: "n-server", x: cols.server, y: mapH / 2, label: "NDL PubSec MCP", anchor: "middle", dy: 26, r: 14, href: "#top" },
   ...others.map((d, i) => ({ id: `dom-${d.domain}`, cls: "n-domain", x: cols.dom, y: yOf(i, others.length), label: d.domain, anchor: "start", dx: 14, href: d.repository }))
@@ -189,7 +193,7 @@ const nodes = [
 const nodeById = Object.fromEntries(nodes.map((n) => [n.id, n]));
 const edges = [
   ...tools.map((t) => ["server", `tool-${t.name}`]),
-  ...standards.standards.flatMap((s) => s.useWith.filter((u) => nodeById[`tool-${u}`]).map((u) => [`tool-${u}`, `std-${s.id}`])),
+  ...mapStd.flatMap((s) => s.useWith.filter((u) => nodeById[`tool-${u}`]).map((u) => [`tool-${u}`, `std-${s.id}`])),
   ...others.map((d) => ["tool-domain_list", `dom-${d.domain}`]).filter(([a]) => nodeById[a])
 ];
 const estateMap = `<svg class="map" viewBox="0 0 1000 ${mapH}" role="img" aria-labelledby="map-t map-d"><title id="map-t">How the standards, tools and estate connect</title><desc id="map-d">${esc(edges.map(([a, b]) => `${nodeById[a].label} connects to ${nodeById[b].label}`).join("; "))}</desc>` +
@@ -197,7 +201,8 @@ const estateMap = `<svg class="map" viewBox="0 0 1000 ${mapH}" role="img" aria-l
   nodes.map((n) => `<a href="${esc(n.href)}"><g data-node="${n.id}" tabindex="0" aria-label="${esc(n.label)}"><circle class="${n.cls}" cx="${n.x}" cy="${n.y.toFixed(1)}" r="${n.r ?? 9}"/><text x="${n.x + (n.dx ?? 0)}" y="${(n.y + (n.dy ?? 4)).toFixed(1)}" text-anchor="${n.anchor}">${esc(n.label)}</text></g></a>`).join("") + "</svg>";
 
 // --- what each tool is for, by job ---
-const JOB = { catalogue_search: "find", dataset_describe: "find", metadata_validate: "check", standard_explain: "explain", term_lookup: "explain", domain_list: "connect" };
+// Every tool needs a job here, or the tool filter files it under "Other" (defect D-040, check C-33).
+const JOB = { catalogue_search: "find", dataset_describe: "find", metadata_validate: "check", standard_explain: "explain", term_lookup: "explain", domain_list: "connect", api_search: "find", server_search: "connect", exchange_search: "find" };
 const JOB_NAME = { find: "Find data", check: "Check metadata", explain: "Explain", connect: "Connect", other: "Other" };
 const jobOf = (t) => JOB[t.name] ?? "other";
 
@@ -213,15 +218,18 @@ const docGroups = [
 ];
 const docCount = docGroups.reduce((n, g) => n + g.items.length, 0);
 const openCount = openItems.filter((o) => !o.closed).length;
-const NEW = new Set(["who", "tour", "examples", "toolkit", "involve", "journeys"]);
-const CHANGED = new Set(["use", "documents"]);
+const NEW = new Set(["start", "exchanges", "safeguards"]);
+const CHANGED = new Set(["standards", "what", "examples", "glossary"]);
 const sections = [
+  { group: "Start here", id: "start", title: "New here? Start here", icon: "info" },
   { group: "Overview", id: "what", title: "What it does", icon: "tools", count: tools.length },
   { group: "Overview", id: "who", title: "Who it is for", icon: "people", count: guide.personas.length },
   { group: "Overview", id: "checker", title: "Check a record", icon: "check" },
   { group: "Overview", id: "conformance", title: "How well it follows xGov MEM", icon: "chart" },
   { group: "Overview", id: "standards", title: "Standards it explains", icon: "book", count: standards.standards.length },
+  { group: "Overview", id: "exchanges", title: "Exchanges and journeys", icon: "route", count: exchangesData.exchanges.length },
   { group: "Overview", id: "map", title: "Estate map", icon: "map", count: nodes.length },
+  { group: "Use it", id: "safeguards", title: "Safeguards for AI use", icon: "shield" },
   { group: "Use it", id: "tour", title: "Guided tour", icon: "route", count: guide.tour.length },
   { group: "Use it", id: "use", title: "How to use it", icon: "terminal", count: guide.tutorials.length },
   { group: "Use it", id: "examples", title: "Worked examples", icon: "spark", count: guide.examples.length },
@@ -246,6 +254,7 @@ const vscodeCfg = JSON.stringify({ servers: { "ndl-pubsec-mcp": { type: "stdio",
 const LINKS = { contact: CONTACT, bug: `${REPO}/issues/new?template=bug_report.yml`, feature: `${REPO}/issues/new?template=feature_request.yml`, contributing: gh("CONTRIBUTING.md"), toolkit: "#toolkit" };
 const ecoHtml = renderEcosystem(eco, { esc, iconPaths: ICONS, idPrefix: "eco" });
 const G = renderGuide({ guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links: LINKS, sectionIds: sections.map((x) => x.id), searchApis, apiSources: API_SOURCES, servers: JSON.parse(read("src/data/servers.json")) });
+const X = renderExtras({ esc, icon, term, filterBox, lower, barChart, longDate, standards, exchanges: exchangesData, searchApis, provName, tools, glossary, guide, defects, sections, contact: CONTACT, security: `${REPO}/security/advisories/new` });
 const STATEMENT = "An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.";
 
 const html = `<!DOCTYPE html>
@@ -283,6 +292,8 @@ const html = `<!DOCTYPE html>
   copyrightHolder: { "@type": "Person", name: "Emanuel Silva", identifier: "https://orcid.org/0009-0000-5880-7219" },
   contactPoint: { "@type": "ContactPoint", url: CONTACT, contactType: "Contact form" }
 }).replace(/</g, "\\u003c")}</script>
+${X.searchIndex}
+${X.askDialog}
 <script type="application/json" id="glossary-data">${JSON.stringify(gloss).replace(/</g, "\\u003c")}</script>
 </head>
 <body id="top">
@@ -304,6 +315,7 @@ ${sprite}
         <li><a href="${REPO}/security/advisories/new">Report a security problem</a></li>
         <li><a href="knowledge-graph.jsonld">Knowledge graph</a></li>
       </ul></details>
+      <button type="button" class="btn-ghost ask-open" data-open-ask aria-haspopup="dialog" aria-keyshortcuts="/">${icon("search")}<span class="wide">Search or ask</span><kbd class="wide" aria-hidden="true">/</kbd></button>
       <button type="button" class="btn-ghost" id="theme-toggle" data-mode="system">${icon("theme")}<span class="theme-label visually-hidden">Theme: system</span></button>
     </nav>
   </div>
@@ -324,17 +336,20 @@ ${drawerList}
       <svg class="hero__art" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><g fill="none" stroke="#fff" stroke-width="1.5"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60" class="pulse"/><circle cx="100" cy="100" r="90"/><path d="M100 10v180M10 100h180M36 36l128 128M164 36L36 164"/></g></svg>
       <p class="hero__eyebrow">Data discoverability · open source</p>
       <h1 id="hero-h">Find UK public sector data and check its metadata, from your AI assistant</h1>
-      <p>NDL PubSec MCP is an open-source ${term("MCP server")}. It lets an AI assistant search ${term("data.gov.uk")} and check metadata against the UK Cross-Government Metadata Exchange Model (${term("xGov MEM")}).</p>
-      <div class="hero__cta"><a class="btn btn--light" href="#tour" data-tour-start>${icon("route")}Take the tour</a><a class="btn btn--line" href="#who">${icon("people")}Find your role</a><a class="btn btn--line" href="#checker">${icon("check")}Try the checker</a><a class="btn btn--line" href="#use">${icon("terminal")}Set it up</a></div>
+      <p>NDL PubSec MCP helps people and ${term("AI assistant", "AI assistants")} find UK public sector data, the standards that apply to it, and how it moves between organisations. It is an open-source ${term("MCP server")} for the ${term("National Data Library")}: it searches ${term("data.gov.uk")}, checks ${term("Metadata", "metadata")} against the cross-government model (${term("xGov MEM")}) and explains the rules, all ${term("Read-only", "read-only")}.</p>
+      <div class="hero__cta"><a class="btn btn--light" href="#start">${icon("info")}New here? Start here</a><a class="btn btn--line" href="#tour" data-tour-start>${icon("route")}Take the tour</a><a class="btn btn--line" href="#who">${icon("people")}Find your role</a><a class="btn btn--line" href="#checker">${icon("check")}Try the checker</a><a class="btn btn--line" href="#use">${icon("terminal")}Set it up</a></div>
       <ul class="stats">
         <li><b data-count="${tools.length}">${tools.length}</b><span>read-only tools</span></li>
         <li><b>${conf.agree}/${conf.cases}</b><span>model test cases agreed</span></li>
         <li><b>${live.agree}/${live.records}</b><span>real records agreed</span></li>
         <li><b data-count="${standards.standards.length}">${standards.standards.length}</b><span>standards explained</span></li>
+        <li><b data-count="${exchangesData.exchanges.length}">${exchangesData.exchanges.length}</b><span>data exchanges mapped</span></li>
         <li><b data-count="${defects.length}">${defects.length}</b><span>defects, each with a check</span></li>
       </ul>
     </section>
     <p class="note">Every tool is read-only. No personal data is read or returned. Results come from the sources named with them, and the assistant you use can still make mistakes, so check the source before you rely on a result.</p>
+
+    ${X.start}
 
     <section class="section reveal" id="what" aria-labelledby="what-h">
       ${head2("what")}
@@ -399,12 +414,12 @@ ${Object.entries(conf.byClass).map(([k, v]) => `<tr><th scope="row">${esc(k)}</t
 
     <section class="section reveal" id="standards" aria-labelledby="standards-h">
       ${head2("standards")}
-      <p class="lead">Each entry carries a ${term("Provenance label", "provenance label")} saying how sure we are of it. Entries found through search must be re-read at the source before you rely on them. Checked ${esc(longDate(AS_OF))}.</p>
-      ${filterBox("std-list", "Search the standards", Object.keys(provName).filter((p) => standards.standards.some((s) => s.provenance === p)).map((p) => [p, provName[p]]))}
-      <div class="grid" id="std-list">
-${standards.standards.map((s) => `        <article class="card" data-text="${lower(s.name, s.purpose, s.status, s.licence)}" data-group="${esc(s.provenance)}"><h3>${icon("book")}<a href="${esc(s.link)}">${esc(s.name)}</a></h3><p>${esc(s.purpose)}</p><p class="meta">${esc(s.status)} · ${esc(s.licence)}</p><ul class="tags"><li class="tag tag--${esc(s.provenance)}">${esc(s.provenance)}: ${esc(provName[s.provenance])}</li>${s.useWith.map((u) => `<li class="tag">${esc(u)}</li>`).join("")}</ul></article>`).join("\n")}
-      </div>
-      <p class="empty" hidden>No standard matches. Clear the search or the filters.</p>
+${X.standardsHtml}
+    </section>
+
+    <section class="section reveal" id="exchanges" aria-labelledby="exchanges-h">
+      ${head2("exchanges")}
+${X.exchangesHtml}
     </section>
 
     <section class="section reveal" id="map" aria-labelledby="map-h">
@@ -424,6 +439,11 @@ ${standards.standards.map((s) => `        <article class="card" data-text="${low
           <div class="card scroll-x" role="region" aria-label="Estate map, scrolls sideways on small screens" tabindex="0">${estateMap}</div>
         </div>
       </div>
+    </section>
+
+    <section class="section reveal" id="safeguards" aria-labelledby="safeguards-h">
+      ${head2("safeguards")}
+${X.safeguards}
     </section>
 
     <section class="section reveal" id="tour" aria-labelledby="tour-h">
@@ -638,7 +658,8 @@ const kg = {
   "@graph": [
     { "@id": "ndl:server", "@type": "schema:SoftwareSourceCode", "schema:name": "NDL PubSec MCP", "schema:version": pkg.version, "schema:identifier": buildId, "schema:codeRepository": REPO, "dct:conformsTo": [{ "@id": "ndl:standard/xgov-mem" }], "schema:hasPart": tools.map((t) => ({ "@id": `ndl:tool/${t.name}` })) },
     ...tools.map((t) => ({ "@id": `ndl:tool/${t.name}`, "@type": "schema:EntryPoint", "schema:name": t.name, "schema:description": t.description, "dct:references": standards.standards.filter((s) => s.useWith.includes(t.name)).map((s) => ({ "@id": `ndl:standard/${s.id}` })) })),
-    ...standards.standards.map((s) => ({ "@id": `ndl:standard/${s.id}`, "@type": "schema:CreativeWork", "schema:name": s.name, "schema:url": s.link, "schema:license": s.licence, "schema:creativeWorkStatus": s.status, "ndl:provenance": s.provenance, "dct:date": s.checked })),
+    ...standards.standards.map((s) => ({ "@id": `ndl:standard/${s.id}`, "@type": "schema:CreativeWork", "schema:name": s.name, "schema:url": s.link, "schema:license": s.licence, "schema:creativeWorkStatus": s.status, "schema:about": s.domain, "ndl:obligation": s.obligation, "ndl:appliesTo": s.appliesTo, "schema:publisher": s.publisher, "ndl:provenance": s.provenance, "dct:date": s.checked })),
+    ...exchangesData.exchanges.map((e) => ({ "@id": `ndl:exchange/${e.id}`, "@type": "schema:Action", "schema:name": e.title, "schema:description": e.flows, "ndl:journey": e.journey, "schema:audience": e.audience, "schema:participant": e.parties, "ndl:mechanism": e.mechanism, "ndl:sharedIdentifier": e.sharedIdentifiers, "dct:references": e.standards.map((x) => ({ "@id": `ndl:standard/${x}` })), "dct:source": e.sources.map((x) => x.url), "ndl:provenance": e.provenance, "dct:date": e.checked })),
     { "@id": "ndl:xgov-mem-classes", "@type": "skos:ConceptScheme", "skos:prefLabel": "xGov MEM classes", "dct:source": rules.generatedFrom.repository },
     ...Object.entries(rules.classes).map(([k, c]) => ({ "@id": `ndl:class/${k}`, "@type": "skos:Concept", "skos:prefLabel": k, "skos:exactMatch": c.classUri, "skos:inScheme": { "@id": "ndl:xgov-mem-classes" }, "skos:note": `Required attributes: ${Object.values(c.slots).filter((s) => s.required).map((s) => s.name).join(", ")}` })),
     { "@id": "ndl:glossary", "@type": "skos:ConceptScheme", "skos:prefLabel": "Glossary" },
@@ -650,4 +671,33 @@ const kg = {
 };
 kg["@graph"][0]["schema:audience"] = guide.personas.map((p) => ({ "@id": `ndl:persona/${p.id}` }));
 writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null, 2) + "\n");
+// llms.txt: a plain description of the site for AI agents (llmstxt.org convention), generated from the same data.
+{
+  const site = "https://cyberdudeuk.github.io/ndl-pubsec-mcp/";
+  const lines = [
+    "# NDL PubSec MCP",
+    "",
+    `> An independent, open-source, read-only MCP server and portal for the UK National Data Library (NDL) and the wider public sector: find public sector data on data.gov.uk, check metadata against xGov MEM, find APIs and MCP servers, explain ${standards.standards.length} open standards and map ${exchangesData.exchanges.length} data exchanges between organisations by citizen or business journey. ${STATEMENT}`,
+    "",
+    "## Tools (MCP)",
+    ...tools.map((t) => `- ${t.name}: ${t.title}`),
+    "",
+    "## Prompts (MCP)",
+    "- journey-exchanges: map the data exchanges, APIs and standards behind a journey",
+    "- standards-for-a-service: list the standards a public sector service must meet",
+    "- check-a-catalogue-record: check a dataset's metadata against xGov MEM",
+    "",
+    "## Data",
+    `- [Standards register](${REPO}/blob/main/src/data/standards.json): ${standards.standards.length} standards with obligation, scope and provenance`,
+    `- [Exchanges register](${REPO}/blob/main/src/data/exchanges.json): ${exchangesData.exchanges.length} exchanges with parties, identifiers, legal basis and sources`,
+    `- [Knowledge graph](${site}knowledge-graph.jsonld): JSON-LD of tools, standards, exchanges and terms`,
+    "",
+    "## Docs",
+    `- [Portal](${site}): start with "New here? Start here"`,
+    `- [User guide](${site}user-guide.md)`,
+    `- [Source code](${REPO})`,
+    ""
+  ];
+  writeFileSync(join(root, "docs/llms.txt"), lines.join("\n"));
+}
 console.log(`site built: ${buildId} (${tools.length} tools, ${glossary.length} glossary terms, ${defects.length} defects)`);

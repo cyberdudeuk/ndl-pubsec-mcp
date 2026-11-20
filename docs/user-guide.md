@@ -12,12 +12,15 @@ Proto-personas and assumed journeys. Written from the tools, the standard and th
 | Role | Wants to | Tools | Start with |
 |---|---|---|---|
 | Catalogue publisher | Get records complete and correct before a return, an audit or a release, without learning the whole standard first. | `dataset_describe`, `metadata_validate` | Check your first record in two minutes, with nothing to install |
-| Analyst or researcher | Find candidate datasets, judge whether they are fit for the question, and cite them properly. | `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search` | Install the server and connect your assistant |
-| Metadata or standards lead | See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms. | `metadata_validate`, `standard_explain`, `term_lookup`, `api_search` | Fix a catalogue record from start to finish |
-| Developer or AI builder | Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects. | `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search` | Install the server and connect your assistant |
-| Policy or product colleague | Get a plain-English answer they can trust, with a link to the source they can pass on. | `catalogue_search`, `standard_explain`, `term_lookup`, `api_search` | Check your first record in two minutes, with nothing to install |
+| Analyst or researcher | Find candidate datasets, judge whether they are fit for the question, and cite them properly. | `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search`, `exchange_search` | Install the server and connect your assistant |
+| Metadata or standards lead | See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms. | `metadata_validate`, `standard_explain`, `term_lookup`, `api_search`, `exchange_search` | Fix a catalogue record from start to finish |
+| Developer or AI builder | Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects. | `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search`, `exchange_search` | Install the server and connect your assistant |
+| Policy or product colleague | Get a plain-English answer they can trust, with a link to the source they can pass on. | `catalogue_search`, `standard_explain`, `term_lookup`, `api_search`, `exchange_search` | Check your first record in two minutes, with nothing to install |
 | Data champion | Show colleagues something useful in under an hour and leave them able to carry on alone. | `metadata_validate`, `catalogue_search`, `standard_explain` | Run a 45-minute show-and-tell |
 | Contributor or co-designer | Make a change that is accepted, and see what happened to their idea. | `standard_explain`, `domain_list` | Make a first contribution: add or correct a standard |
+| Export finance or trade analyst | Know today which HMRC and other published APIs could help, how access works, and what needs a legal route, without waiting for a new platform. | `api_search`, `exchange_search`, `standard_explain` | Check your first record in two minutes, with nothing to install |
+| Researcher, journalist or civil society organisation | Find the data, the rules and the exchanges behind a public service, with sources good enough to cite. | `catalogue_search`, `exchange_search`, `standard_explain` | Check your first record in two minutes, with nothing to install |
+| AI model or MCP developer | Connect assistants to government data through a read-only server with clear safeguards, sources and provenance on every answer. | `catalogue_search`, `api_search`, `server_search`, `exchange_search` | Install the server and connect your assistant |
 
 ## Tutorials
 
@@ -80,6 +83,22 @@ For: Data champion, Metadata or standards lead. Time: 45 minutes plus 20 to prep
 ## Questions and answers
 
 ### Getting started
+
+**Do I need to be technical to use this page?**
+
+No. Start with New here? Start here, use Search or ask, and hover over dotted words for their meaning. Only connecting the server to an AI assistant needs some set-up.
+
+**Is there a chatbot?**
+
+Yes, in two ways. On this page, Search or ask (press /) finds the passages that answer your question and can turn them into a prompt for your own AI assistant; no AI runs on the page itself. And any AI assistant that supports MCP can use this server's tools and ready-made prompts directly.
+
+**Why was this project started?**
+
+Because people who need government data, and the AI assistants they use, cannot easily tell what data exists, who publishes it, or whether its description is good enough to rely on. It tests, with working software rather than slides, what a machine-friendly front door to that data needs.
+
+**What does NDL stand for?**
+
+The National Data Library: the UK government's programme, led by DSIT with GDS, to make public sector data easier to find and use. Since early 2026 data.gov.uk has been turning into it. PubSec means public sector, and MCP is the Model Context Protocol, a way to plug tools into AI assistants.
 
 **Do I need to install anything to try it?**
 
@@ -149,6 +168,7 @@ Check the class is right and attribute names are spelt as the model spells them 
 
 ## Hints and tips
 
+- **Searching:** Press / anywhere on the page to search or ask a question in plain English.
 - **Prompting:** Name the tool in your prompt when you need a specific one.
 - **Prompting:** Ask for a table with the catalogue link in every row, so each answer can be checked.
 - **Prompting:** Ask the assistant to say how sure it is, and which tool each fact came from.

@@ -17,7 +17,8 @@
         "term_lookup",
         "domain_list",
         "api_search",
-        "server_search"
+        "server_search",
+        "exchange_search"
       ],
       "safety": {
         "read_only": true,

@@ -37,7 +37,8 @@
         "catalogue_search",
         "dataset_describe",
         "standard_explain",
-        "api_search"
+        "api_search",
+        "exchange_search"
       ],
       "journey": "find-data",
       "start": "tut-install",
@@ -59,7 +60,8 @@
         "metadata_validate",
         "standard_explain",
         "term_lookup",
-        "api_search"
+        "api_search",
+        "exchange_search"
       ],
       "journey": "assess-estate",
       "start": "tut-fix-record",
@@ -85,7 +87,8 @@
         "term_lookup",
         "domain_list",
         "api_search",
-        "server_search"
+        "server_search",
+        "exchange_search"
       ],
       "journey": "set-up",
       "start": "tut-install",
@@ -107,7 +110,8 @@
         "catalogue_search",
         "standard_explain",
         "term_lookup",
-        "api_search"
+        "api_search",
+        "exchange_search"
       ],
       "journey": "find-data",
       "start": "tut-first-check",
@@ -154,6 +158,70 @@
       "start": "tut-add-standard",
       "contributes": "Joins co-design sessions, improves the standards list, writes tests and checks.",
       "champions": "Brings a second organisation's view, so the work is not shaped by one."
+    },
+    {
+      "id": "trade-analyst",
+      "role": "Export finance or trade analyst",
+      "icon": "chart",
+      "context": "Works on export finance, trade or business support, for example at UK Export Finance or the Department for Business and Trade, and needs to check exporters and size markets.",
+      "goal": "Know today which HMRC and other published APIs could help, how access works, and what needs a legal route, without waiting for a new platform.",
+      "pains": [
+        "Does not know which government APIs exist or where they are documented",
+        "Cannot tell open APIs from restricted data that needs an agreement",
+        "Has to ask colleagues in other departments one by one"
+      ],
+      "tools": [
+        "api_search",
+        "exchange_search",
+        "standard_explain"
+      ],
+      "journey": "find-data",
+      "start": "tut-first-check",
+      "contributes": "Tells us which exchanges and APIs matter for trade and which are missing from the registers.",
+      "champions": "Shares the UKEF and HMRC worked example with others in the trade and export community."
+    },
+    {
+      "id": "researcher",
+      "role": "Researcher, journalist or civil society organisation",
+      "icon": "glossary",
+      "context": "Works in academia, journalism, the media, a charity or any organisation outside government, and wants to understand what public data exists and how it moves.",
+      "goal": "Find the data, the rules and the exchanges behind a public service, with sources good enough to cite.",
+      "pains": [
+        "Government data is spread across many sites and named in insiders' terms",
+        "Hard to know which statements about data sharing are current",
+        "No single place explains the standards in plain English"
+      ],
+      "tools": [
+        "catalogue_search",
+        "exchange_search",
+        "standard_explain"
+      ],
+      "journey": "find-data",
+      "start": "tut-first-check",
+      "contributes": "Points out where an explanation is unclear or a source is out of date.",
+      "champions": "Cites the portal's sources and links to the registers in their own work."
+    },
+    {
+      "id": "ai-developer",
+      "role": "AI model or MCP developer",
+      "icon": "code",
+      "context": "Builds AI models, assistants or MCP servers and wants a ready-made, safe way to reach UK government data resources.",
+      "goal": "Connect assistants to government data through a read-only server with clear safeguards, sources and provenance on every answer.",
+      "pains": [
+        "Scraping government sites is fragile and hard to keep current",
+        "Unclear which sources are authoritative",
+        "Needs guardrails that stop an assistant overstating what it found"
+      ],
+      "tools": [
+        "catalogue_search",
+        "api_search",
+        "server_search",
+        "exchange_search"
+      ],
+      "journey": "set-up",
+      "start": "tut-install",
+      "contributes": "Reports where tool descriptions or results confuse a model, and proposes new read-only tools.",
+      "champions": "Lists the server in their own catalogue of MCP servers and links to its safeguards."
     }
   ],
   "lanes": [
@@ -546,6 +614,18 @@
       "check": "Each finding names the attribute path. Fix the errors; consider the warnings."
     },
     {
+      "id": "ex-journey",
+      "title": "What data moves when someone dies?",
+      "personas": [
+        "analyst",
+        "policy"
+      ],
+      "situation": "You are designing support for bereaved people and want to know which organisations already share data after a death, and how.",
+      "prompt": "Using exchange_search, show the data exchanges behind registering and reporting a death: who is told, what moves, which identifiers join it, the legal basis and sources. Then list what still relies on email or paper.",
+      "tool": "exchange_search",
+      "check": "Each exchange names its sources and a provenance label. Read the source before relying on it; S means found through search."
+    },
+    {
       "id": "ex-misspelt",
       "title": "Catch a misspelt attribute",
       "personas": [
@@ -774,6 +854,22 @@
       "group": "Getting started",
       "items": [
         {
+          "q": "Do I need to be technical to use this page?",
+          "a": "No. Start with New here? Start here, use Search or ask, and hover over dotted words for their meaning. Only connecting the server to an AI assistant needs some set-up."
+        },
+        {
+          "q": "Is there a chatbot?",
+          "a": "Yes, in two ways. On this page, Search or ask (press /) finds the passages that answer your question and can turn them into a prompt for your own AI assistant; no AI runs on the page itself. And any AI assistant that supports MCP can use this server's tools and ready-made prompts directly."
+        },
+        {
+          "q": "Why was this project started?",
+          "a": "Because people who need government data, and the AI assistants they use, cannot easily tell what data exists, who publishes it, or whether its description is good enough to rely on. It tests, with working software rather than slides, what a machine-friendly front door to that data needs."
+        },
+        {
+          "q": "What does NDL stand for?",
+          "a": "The National Data Library: the UK government's programme, led by DSIT with GDS, to make public sector data easier to find and use. Since early 2026 data.gov.uk has been turning into it. PubSec means public sector, and MCP is the Model Context Protocol, a way to plug tools into AI assistants."
+        },
+        {
           "q": "Do I need to install anything to try it?",
           "a": "No. The record checker on this page runs the server's own validator in your browser. To use the tools from an assistant, you need to install the server."
         },
@@ -852,6 +948,10 @@
     }
   ],
   "tips": [
+    {
+      "tip": "Press / anywhere on the page to search or ask a question in plain English.",
+      "kind": "Searching"
+    },
     {
       "tip": "Name the tool in your prompt when you need a specific one.",
       "kind": "Prompting"
@@ -1044,9 +1144,19 @@
   ],
   "tour": [
     {
+      "target": "start",
+      "title": "Start here",
+      "text": "What this is, in plain English, with the words you will meet explained."
+    },
+    {
       "target": "what",
       "title": "What it does",
       "text": "Read-only tools, each with one job. Filter them by what you want to do."
+    },
+    {
+      "target": "exchanges",
+      "title": "Exchanges and journeys",
+      "text": "What data moves between organisations when you register a death, claim a benefit or set up a company, and how."
     },
     {
       "target": "who",
