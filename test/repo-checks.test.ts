@@ -226,4 +226,28 @@ describe("page structure (D-025)", () => {
     });
     expect(dangling.join()).toMatch(/C-18 .*#p-nowhere/);
   });
+  it("C-19 catches code blocks that inherit the light inline-code background (D-026)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "tools", "site", "site.css");
+      writeFileSync(p, readFileSync(p, "utf8").replace(/^pre code \{[^}]*\}\n/m, ""));
+    });
+    expect(out.join()).toMatch(/C-19 tools\/site\/site\.css/);
+  });
+
+  it("C-20 catches a narrow-screen override placed before its base rule (D-027)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "tools", "site", "site.css");
+      const css = readFileSync(p, "utf8");
+      const mq = css.match(/^@media \(max-width: 960px\) \{ \.layout.*$/m)![0];
+      writeFileSync(p, mq + "\n" + css.replace(mq, ""));
+    });
+    expect(out.join()).toMatch(/C-20 .*"\.drawer" in @media \(max-width: 960px\)/);
+  });
+  it("C-21 catches a bug report form that leaves out a tool (D-028)", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, ".github", "ISSUE_TEMPLATE", "bug_report.yml");
+      writeFileSync(p, readFileSync(p, "utf8").replace(" domain_list,", ""));
+    });
+    expect(out.join()).toMatch(/C-21 .*domain_list/);
+  });
 });

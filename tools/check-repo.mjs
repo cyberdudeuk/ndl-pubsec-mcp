@@ -182,7 +182,47 @@ export function checkRepo(root) {
     if (raw === null || raw === "") continue;
     for (const ref of raw.split(/\s+/)) if (!known.has(ref)) problems.push(`C-18 docs/index.html: reference to "#${ref}" has no matching id`);
   }
+  // C-21 (defect D-028): the bug report form offers every tool the server registers
+  const bug = existsSync(join(root, ".github", "ISSUE_TEMPLATE", "bug_report.yml")) ? readFileSync(join(root, ".github", "ISSUE_TEMPLATE", "bug_report.yml"), "utf8") : "";
+  const bugOpts = (bug.match(/options:\s*\[([^\]]*)\]/)?.[1] ?? "").split(",").map((x) => x.trim());
+  for (const t of tools) if (!bugOpts.includes(t)) problems.push(`C-21 .github/ISSUE_TEMPLATE/bug_report.yml: does not offer the tool ${t}`);
+  // C-19 (defect D-026): code inside a dark code block must not get the light inline-code background, or
+  // light text lands on a light chip. The pre code reset must exist and come after the inline code rule.
+  const css = existsSync(join(root, "tools", "site", "site.css")) ? readFileSync(join(root, "tools", "site", "site.css"), "utf8") : "";
+  const cssRules = topLevelRules(css);
+  const inlineCode = cssRules.findIndex((r) => !r.media && r.selectors.includes("code") && /background\s*:/.test(r.body));
+  const preCode = cssRules.findIndex((r) => !r.media && r.selectors.includes("pre code") && /background\s*:\s*(none|transparent)/.test(r.body) && /color\s*:\s*inherit/.test(r.body));
+  if (inlineCode >= 0 && (preCode < 0 || preCode < inlineCode)) problems.push("C-19 tools/site/site.css: code inside pre is not reset (background none, color inherit) after the inline code rule");
+  // C-20 (defect D-027): a narrow-screen override must come after the base rule it overrides, or the base
+  // rule wins the cascade and the override never applies.
+  for (const [i, r] of cssRules.entries()) {
+    if (!r.media || !/max-width/.test(r.media)) continue;
+    for (const inner of topLevelRules(r.body)) for (const sel of inner.selectors) {
+      const later = cssRules.findIndex((b, j) => j > i && !b.media && b.selectors.includes(sel));
+      if (later >= 0) problems.push(`C-20 tools/site/site.css: "${sel}" in ${r.media} comes before its base rule, so the override never applies`);
+    }
+  }
   return problems;
+}
+
+// Splits CSS into top-level rules in source order: { selectors, body, media }. Comments are dropped.
+export function topLevelRules(text) {
+  const src = text.replace(/\/\*[\s\S]*?\*\//g, "");
+  const out = [];
+  let depth = 0, start = 0, head = "";
+  for (let i = 0; i < src.length; i++) {
+    if (src[i] === "{") { if (depth === 0) { head = src.slice(start, i).trim(); start = i + 1; } depth++; }
+    else if (src[i] === "}") {
+      depth--;
+      if (depth === 0) {
+        const body = src.slice(start, i);
+        const media = head.startsWith("@media") ? head : null;
+        out.push({ selectors: media ? [] : head.split(",").map((x) => x.trim().replace(/\s+/g, " ")), body, media });
+        start = i + 1;
+      }
+    }
+  }
+  return out;
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
@@ -194,5 +234,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-18)");
+  console.log("repository checks passed (C-01 to C-21)");
 }

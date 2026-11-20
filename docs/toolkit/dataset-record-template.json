@@ -1,0 +1,20 @@
+{
+  "accessRights": "REPLACE with one of: INTERNAL, OPEN, COMMERCIAL",
+  "contactPoint": {
+    "contactName": "REPLACE with a team or role name",
+    "email": "REPLACE with a team mailbox, never a personal one"
+  },
+  "creator": [
+    "REPLACE: The business entity responsible for creating or compiling the original content of an information resource."
+  ],
+  "description": "REPLACE: A concise narrative of the content of an information resource.",
+  "identifier": "REPLACE: A unique number, code, or reference value assigned to an information resource within a given context.",
+  "licence": "REPLACE: Reference to the legal document outlining access and usage rights for an information resource.",
+  "modified": "REPLACE: The date, or date and time, on which the content of an information resource is changed.",
+  "publisher": "REPLACE: The business entity responsible for making an information resource publicly available.",
+  "securityClassification": "REPLACE with one of: OFFICIAL, SECRET, TOP_SECRET, NOT_APPLICABLE",
+  "title": "REPLACE: The full and formal name given to an information resource.",
+  "type": "REPLACE: The type of the resource being defined",
+  "version": "REPLACE: The version indicator (name or identifier) of a resource.",
+  "updateFrequency": "REPLACE with one of: freq:triennial, freq:biennial, freq:annual, freq:semiannual, freq:threeTimesAYear, freq:quarterly, freq:bimonthly, freq:monthly, freq:semimonthly, freq:biweekly, freq:threeTimesAMonth, freq:weekly, freq:semiweekly, freq:threeTimesAWeek, freq:daily, freq:continuous, freq:irregular"
+}

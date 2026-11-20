@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+2cbd2b17ca8a",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+36fd421a3892",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -37,6 +37,29 @@
         },
         {
           "@id": "ndl:tool/domain_list"
+        }
+      ],
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        },
+        {
+          "@id": "ndl:persona/builder"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        },
+        {
+          "@id": "ndl:persona/contributor"
         }
       ]
     },
@@ -243,10 +266,10 @@
       }
     },
     {
-      "@id": "ndl:term/curie",
+      "@id": "ndl:term/co-design",
       "@type": "skos:Concept",
-      "skos:prefLabel": "CURIE",
-      "skos:definition": "A short form of a web address, written prefix:name. For example, dcat:Dataset.",
+      "skos:prefLabel": "Co-design",
+      "skos:definition": "Designing a service with the people who will use it, not only for them: they shape the personas, journeys and changes.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -261,10 +284,28 @@
       }
     },
     {
+      "@id": "ndl:term/curie",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "CURIE",
+      "skos:definition": "A short form of a web address, written prefix:name. For example, dcat:Dataset.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/dam-policy",
       "@type": "skos:Concept",
       "skos:prefLabel": "DAM policy",
       "skos:definition": "The cross-government policy on critical data assets (the successor to the Essential Shared Data Asset policy), with returns to GDS from January 2027.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/data-champion",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Data champion",
+      "skos:definition": "Someone who promotes good data practice in their own organisation, often alongside their main job.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -333,6 +374,15 @@
       }
     },
     {
+      "@id": "ndl:term/persona",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Persona",
+      "skos:definition": "A short description of a type of user: their context, goals and pain points. A proto-persona is written from assumptions and has not yet been tested with real users.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/provenance-label",
       "@type": "skos:Concept",
       "skos:prefLabel": "Provenance label",
@@ -360,6 +410,15 @@
       }
     },
     {
+      "@id": "ndl:term/service-blueprint",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Service blueprint",
+      "skos:definition": "A diagram of a journey in lanes: what the person does and sees (front stage), what happens behind it (back stage) and what supports it.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
       "@id": "ndl:term/slot",
       "@type": "skos:Concept",
       "skos:prefLabel": "Slot",
@@ -373,6 +432,15 @@
       "@type": "skos:Concept",
       "skos:prefLabel": "Tool",
       "skos:definition": "A single action an MCP server offers, such as metadata_validate.",
+      "skos:inScheme": {
+        "@id": "ndl:glossary"
+      }
+    },
+    {
+      "@id": "ndl:term/user-journey",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "User journey",
+      "skos:definition": "The stages a person goes through to reach a goal with a service, from first need to done.",
       "skos:inScheme": {
         "@id": "ndl:glossary"
       }
@@ -430,6 +498,870 @@
       "@type": "schema:CreativeWork",
       "schema:name": "ADR 0006: present this repository as an independent prototype",
       "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0006-independent-prototype.md"
+    },
+    {
+      "@id": "ndl:persona/publisher",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Catalogue publisher",
+      "schema:description": "Get records complete and correct before a return, an audit or a release, without learning the whole standard first.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/dataset_describe"
+        },
+        {
+          "@id": "ndl:tool/metadata_validate"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/fix-a-record"
+      }
+    },
+    {
+      "@id": "ndl:persona/analyst",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Analyst or researcher",
+      "schema:description": "Find candidate datasets, judge whether they are fit for the question, and cite them properly.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/dataset_describe"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/find-data"
+      }
+    },
+    {
+      "@id": "ndl:persona/standards-lead",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Metadata or standards lead",
+      "schema:description": "See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/metadata_validate"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/term_lookup"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/assess-estate"
+      }
+    },
+    {
+      "@id": "ndl:persona/builder",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Developer or AI builder",
+      "schema:description": "Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/dataset_describe"
+        },
+        {
+          "@id": "ndl:tool/metadata_validate"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/term_lookup"
+        },
+        {
+          "@id": "ndl:tool/domain_list"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/set-up"
+      }
+    },
+    {
+      "@id": "ndl:persona/policy",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Policy or product colleague",
+      "schema:description": "Get a plain-English answer they can trust, with a link to the source they can pass on.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/term_lookup"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/find-data"
+      }
+    },
+    {
+      "@id": "ndl:persona/champion",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Data champion",
+      "schema:description": "Show colleagues something useful in under an hour and leave them able to carry on alone.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/metadata_validate"
+        },
+        {
+          "@id": "ndl:tool/catalogue_search"
+        },
+        {
+          "@id": "ndl:tool/standard_explain"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/champion"
+      }
+    },
+    {
+      "@id": "ndl:persona/contributor",
+      "@type": "schema:Audience",
+      "schema:audienceType": "Contributor or co-designer",
+      "schema:description": "Make a change that is accepted, and see what happened to their idea.",
+      "ndl:status": "proto-persona",
+      "ndl:usesTool": [
+        {
+          "@id": "ndl:tool/standard_explain"
+        },
+        {
+          "@id": "ndl:tool/domain_list"
+        }
+      ],
+      "ndl:journey": {
+        "@id": "ndl:journey/champion"
+      }
+    },
+    {
+      "@id": "ndl:journey/set-up",
+      "@type": "schema:HowTo",
+      "schema:name": "Set up and try",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/builder"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:name": "Discover",
+          "schema:text": "Lands on this page from a link or a search"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:name": "Try without installing",
+          "schema:text": "Pastes a record into the checker"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:name": "Install",
+          "schema:text": "Clones, installs and builds"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:name": "Connect",
+          "schema:text": "Adds the server to an assistant's settings"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:name": "First call",
+          "schema:text": "Asks a question that needs a tool"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:name": "Keep using",
+          "schema:text": "Updates to new releases"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:journey/find-data",
+      "@type": "schema:HowTo",
+      "schema:name": "Find and judge data",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:name": "Ask",
+          "schema:text": "Describes what they need in their own words"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:name": "Search",
+          "schema:text": "Narrows by publisher or topic"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:name": "Shortlist",
+          "schema:text": "Picks two or three candidates"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:name": "Describe",
+          "schema:text": "Opens one dataset in detail"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:name": "Judge",
+          "schema:text": "Decides whether it is fit for the question"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:name": "Use and cite",
+          "schema:text": "Uses the data and cites the catalogue entry"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:journey/fix-a-record",
+      "@type": "schema:HowTo",
+      "schema:name": "Fix a catalogue record",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:name": "Pick a record",
+          "schema:text": "Chooses a record due for a return or review"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:name": "See the gaps",
+          "schema:text": "Asks for the record against xGov MEM"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:name": "Fill the gaps",
+          "schema:text": "Finds the missing facts from the people who hold them"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:name": "Check",
+          "schema:text": "Validates the corrected record"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:name": "Publish",
+          "schema:text": "Updates the record in their own catalogue"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:name": "Re-check",
+          "schema:text": "Checks again after the catalogue harvests"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:journey/assess-estate",
+      "@type": "schema:HowTo",
+      "schema:name": "Assess a set of records",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:name": "Sample",
+          "schema:text": "Chooses a publisher or a theme to look at"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:name": "Check each record",
+          "schema:text": "Asks the assistant to describe and check each in turn"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:name": "Find patterns",
+          "schema:text": "Looks for the attributes missing most often"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:name": "Explain",
+          "schema:text": "Explains the gaps and standards to publishers"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:name": "Report",
+          "schema:text": "Writes up findings and actions"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:name": "Re-check",
+          "schema:text": "Repeats the sample after fixes"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:journey/champion",
+      "@type": "schema:HowTo",
+      "schema:name": "Champion and contribute",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/champion"
+        },
+        {
+          "@id": "ndl:persona/contributor"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:name": "Try",
+          "schema:text": "Uses the checker and a few prompts"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:name": "Show others",
+          "schema:text": "Runs a short session for colleagues"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:name": "Gather feedback",
+          "schema:text": "Collects what worked and what did not"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:name": "Raise it",
+          "schema:text": "Sends feedback, a bug or an idea"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:name": "Co-design",
+          "schema:text": "Joins a session to shape a change"
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:name": "Contribute",
+          "schema:text": "Opens a pull request"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tutorial/tut-first-check",
+      "@type": "schema:HowTo",
+      "schema:name": "Check your first record in two minutes, with nothing to install",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:text": "Go to Check a record on this page."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:text": "Choose the example called 'Two required attributes missing'. The record appears in the box."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:text": "Leave Class as 'Work it out from the record' and select Check the record."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:text": "Read the findings. Each one names the attribute and whether it is an error (must fix) or a warning (recommended)."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:text": "Now paste one of your own records, as JSON. Nothing you paste leaves your browser."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:text": "Fix the errors in your source system, not here: this checker only reads."
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tutorial/tut-install",
+      "@type": "schema:HowTo",
+      "schema:name": "Install the server and connect your assistant",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/builder"
+        },
+        {
+          "@id": "ndl:persona/analyst"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:text": "Check you have Node.js 20 or later: run node --version."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:text": "Clone, install and build with the four commands in Quick start."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:text": "Add the server to your assistant using the snippet for Claude Desktop or VS Code. Replace the path with where you cloned it."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:text": "Restart the assistant. It should list six tools."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:text": "Not working? Run npm run inspector and call a tool by hand. If it works there, the problem is the assistant's settings."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:text": "Ask: 'Which standards can you explain?' The answer should come from standard_explain."
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tutorial/tut-fix-record",
+      "@type": "schema:HowTo",
+      "schema:name": "Fix a catalogue record from start to finish",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:text": "Pick one record you are responsible for. Note its data.gov.uk name or id."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:text": "Ask your assistant to describe it and list what its xGov MEM record lacks (worked example: See how ready a catalogue entry is)."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:text": "Download the Dataset record template and the readiness checklist from the toolkit."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:text": "Fill the gaps from the people who hold the facts. Do not invent values: an empty gap is better than a wrong one."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:text": "Validate the finished record with metadata_validate or the in-page checker until there are no errors."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:text": "Update the record in your own catalogue. This server never writes anywhere."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 7,
+          "schema:text": "After the catalogue next harvests, describe the record again to confirm the gaps have closed."
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tutorial/tut-add-standard",
+      "@type": "schema:HowTo",
+      "schema:name": "Make a first contribution: add or correct a standard",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/contributor"
+        },
+        {
+          "@id": "ndl:persona/builder"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:text": "Read the contributing guide and fork the repository."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:text": "Open src/data/standards.json. Each entry has a name, purpose, status, licence, link, provenance label and check date."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:text": "Read the standard at its primary source. Set the provenance to V only if you checked it there, with today's date; otherwise use S, K or U."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:text": "Run npm run verify. It rebuilds the page and runs every check."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:text": "Open a pull request explaining what you checked and where."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:text": "The maintainer reviews it. If it is merged, the page updates on the next build."
+        }
+      ]
+    },
+    {
+      "@id": "ndl:tutorial/tut-show-and-tell",
+      "@type": "schema:HowTo",
+      "schema:name": "Run a 45-minute show-and-tell",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/champion"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "schema:step": [
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 1,
+          "schema:text": "Download the session plan and the champion pack from the toolkit."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 2,
+          "schema:text": "Before the session, run each worked example you plan to show, so you know what to expect."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 3,
+          "schema:text": "Open with the problem, not the tool: ask who has had a record rejected or could not find data."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 4,
+          "schema:text": "Show the in-page checker live. It needs no install and no network."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 5,
+          "schema:text": "Let people try one of their own records, in pairs."
+        },
+        {
+          "@type": "schema:HowToStep",
+          "schema:position": 6,
+          "schema:text": "Close with the feedback questions, then raise what you heard through the contact form."
+        }
+      ]
+    },
+    {
+      "@id": "ndl:example/ex-missing",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Check a record before it goes out",
+      "schema:text": "Check this Dataset record against xGov MEM and list anything I must fix before I publish it: <paste the record>",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/metadata_validate"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-misspelt",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Catch a misspelt attribute",
+      "schema:text": "Validate this record and tell me if any attribute names are not in the model: <paste the record>",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/metadata_validate"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-bad-enum",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Spot a value outside the allowed list",
+      "schema:text": "Check this record and, for any value outside the model's list, show me the allowed values: <paste the record>",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/metadata_validate"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-find",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Find data on a topic",
+      "schema:text": "Search data.gov.uk for road traffic counts. Show the ten most relevant results as a table with title, publisher, licence, formats and last updated, and give me each catalogue link.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/catalogue_search"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-describe",
+      "@type": "schema:CreativeWork",
+      "schema:name": "See how ready a catalogue entry is for xGov MEM",
+      "schema:text": "Describe the data.gov.uk dataset <name or id> and list the xGov MEM attributes its record still lacks, required ones first.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        },
+        {
+          "@id": "ndl:persona/analyst"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/dataset_describe"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-standard",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Explain a standard to a colleague",
+      "schema:text": "Explain Open Referral UK in plain English: what it is for, its status, its licence and where to read it. Tell me how sure you are of each fact.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/policy"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/standard_explain"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-term",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Check whether a business term is certified",
+      "schema:text": "Look up the term 'crosswalk'. Who drafted it, what review level has it passed, and is it certified?",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/standards-lead"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/term_lookup"
+      }
+    },
+    {
+      "@id": "ndl:example/ex-estate",
+      "@type": "schema:CreativeWork",
+      "schema:name": "Find tools that work alongside this one",
+      "schema:text": "List the MCP servers that work alongside this one, what each is for, and where each manifest came from.",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/builder"
+        },
+        {
+          "@id": "ndl:persona/contributor"
+        }
+      ],
+      "dct:references": {
+        "@id": "ndl:tool/domain_list"
+      }
+    },
+    {
+      "@id": "ndl:toolkit/dataset-record-template",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Dataset record template",
+      "schema:url": "toolkit/dataset-record-template.json",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:toolkit/metadata-checklist",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Metadata readiness checklist",
+      "schema:url": "toolkit/metadata-readiness-checklist.md",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:toolkit/prompt-library",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Prompt library",
+      "schema:url": "toolkit/prompt-library.md",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/analyst"
+        },
+        {
+          "@id": "ndl:persona/policy"
+        },
+        {
+          "@id": "ndl:persona/publisher"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:toolkit/session-plan",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Show-and-tell and co-design session plan",
+      "schema:url": "toolkit/show-and-tell-session-plan.md",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/champion"
+        },
+        {
+          "@id": "ndl:persona/contributor"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:toolkit/champion-pack",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Champion pack",
+      "schema:url": "toolkit/champion-pack.md",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/champion"
+        }
+      ]
+    },
+    {
+      "@id": "ndl:toolkit/service-blueprints",
+      "@type": "schema:DigitalDocument",
+      "schema:name": "Proto-personas, journeys and service blueprints",
+      "schema:url": "toolkit/service-blueprints.md",
+      "schema:audience": [
+        {
+          "@id": "ndl:persona/contributor"
+        },
+        {
+          "@id": "ndl:persona/standards-lead"
+        },
+        {
+          "@id": "ndl:persona/champion"
+        }
+      ]
     },
     {
       "@id": "ndl:defect/D-001",
@@ -629,6 +1561,30 @@
       "schema:name": "D-025",
       "schema:description": "The rebuilt page gave the checker section and its form the same id, so the drawer link and the form script could each find the wrong element",
       "ndl:check": "C-18",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-026",
+      "@type": "schema:Thing",
+      "schema:name": "D-026",
+      "schema:description": "Code in the How to use it section was illegible in the light theme: light text on a light chip inside the dark code block (about 1.1:1 contrast)",
+      "ndl:check": "C-19: the `pre code` reset (background none, colour inherit) must exist after the inline rule; deliberate-break test in `test/repo-checks.test.ts`",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-027",
+      "@type": "schema:Thing",
+      "schema:name": "D-027",
+      "schema:description": "Below 961 px the contents drawer floated over the page, so its links lay on top of the section text",
+      "ndl:check": "C-20: no `max-width` override may come before the base rule for the same selector; deliberate-break test",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-028",
+      "@type": "schema:Thing",
+      "schema:name": "D-028",
+      "schema:description": "The bug report form did not offer `term_lookup` or `domain_list`",
+      "ndl:check": "C-21: the form must offer every registered tool; deliberate-break test",
       "ndl:status": "Fixed"
     }
   ]

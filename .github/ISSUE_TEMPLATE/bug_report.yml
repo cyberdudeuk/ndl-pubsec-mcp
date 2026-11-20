@@ -6,7 +6,7 @@ body:
     id: tool
     attributes:
       label: Which tool?
-      options: [catalogue_search, dataset_describe, metadata_validate, standard_explain, Server start-up or other]
+      options: [catalogue_search, dataset_describe, metadata_validate, standard_explain, term_lookup, domain_list, Server start-up or other]
     validations:
       required: true
   - type: textarea
