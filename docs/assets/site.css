@@ -230,6 +230,8 @@ dfn.tip { font-style: normal; border-bottom: 2px dotted var(--brand-2); cursor: 
 
 /* footer */
 footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 40px; }
+/* Room below the footer for the fixed Top button, so it never covers the colophon (defect D-037, check C-30) */
+footer { padding-bottom: 76px; }
 .foot { max-width: var(--max); margin: 0 auto; padding: 28px var(--gap); display: grid; grid-template-columns: 1fr auto; gap: 24px; font-size: 15px; color: var(--ink-2); }
 .foot h2 { font-size: 17px; color: var(--ink); margin: 0 0 6px; }
 .foot__codes { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }

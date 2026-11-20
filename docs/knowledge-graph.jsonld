@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+31d3ce53e4f4",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+8ad78bddb8f6",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -498,6 +498,12 @@
       "@type": "schema:CreativeWork",
       "schema:name": "ADR 0006: present this repository as an independent prototype",
       "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0006-independent-prototype.md"
+    },
+    {
+      "@id": "ndl:adr/0007-licence-cc-by",
+      "@type": "schema:CreativeWork",
+      "schema:name": "ADR 0007: license this repository's own content under CC BY 4.0, © Emanuel Silva",
+      "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0007-licence-cc-by.md"
     },
     {
       "@id": "ndl:persona/publisher",
@@ -1649,6 +1655,22 @@
       "schema:name": "D-036",
       "schema:description": "The green \"verified\" tags (V provenance labels and \"Produced by the validator\" badges) were 4.44:1 in the light theme, below AA; the amber and red tags used the same translucent pattern",
       "ndl:check": "C-22 now covers the solid -soft and -ink tag tokens in both themes and rejects translucent tag tints; `tools/visual_inspect.py` fails on any contrast finding and prints them all",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-037",
+      "@type": "schema:Thing",
+      "schema:name": "D-037",
+      "schema:description": "On phones, at the end of the page, the fixed Top button covered the end of the footer barcode",
+      "ndl:check": "C-30: the footer keeps at least 72 px below its content",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-038",
+      "@type": "schema:Thing",
+      "schema:name": "D-038",
+      "schema:description": "Merging main into the licence branch put the old Crown copyright footer back beside the new one, and duplicated an id on the page",
+      "ndl:check": "Generated files are rebuilt after every merge, never hand-merged; C-29 now reads every footer licence paragraph",
       "ndl:status": "Fixed"
     }
   ]

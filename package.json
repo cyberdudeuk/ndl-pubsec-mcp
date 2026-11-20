@@ -10,8 +10,9 @@
   "files": [
     "dist",
     "LICENCE",
-    "LICENCE-OGL",
-    "README.md"
+    "LICENCE-CC-BY-4.0",
+    "README.md",
+    "vendor/xgov-mem/LICENCE-OGL"
   ],
   "scripts": {
     "compile:mem": "python3 tools/compile_mem.py",
