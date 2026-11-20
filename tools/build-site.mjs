@@ -47,7 +47,12 @@ const glossary = read("docs/glossary.md")
   .map((l) => l.split("|").map((x) => x.trim()))
   .map((c) => ({ term: c[1], meaning: c[2] }));
 
-const adrs = readdirSync(join(root, "docs", "adr")).filter((f) => f.endsWith(".md")).sort().map((f) => ({ file: f, title: read(`docs/adr/${f}`).split("\n")[0].replace(/^# /, "") }));
+// An ADR whose status says it was superseded is labelled so in every list, so a superseded decision is never read as current (D-049, check C-42).
+const adrs = readdirSync(join(root, "docs", "adr")).filter((f) => f.endsWith(".md")).sort().map((f) => {
+  const text = read(`docs/adr/${f}`);
+  const by = text.match(/^- Status:[^\n]*superseded by \[ADR (\d{4})\]/im);
+  return { file: f, title: text.split("\n")[0].replace(/^# /, "") + (by ? ` (wording superseded by ADR ${by[1]})` : "") };
+});
 const defects = read("docs/defect-register.md").split("\n").filter((l) => /^\| D-\d{3}/.test(l)).map((l) => l.split("|").map((x) => x.trim())).map((c) => ({ id: c[1], defect: c[3], check: c[5], status: c[6] }));
 
 // Other repository data the page shows. Each is read from the file that owns it, never retyped here.

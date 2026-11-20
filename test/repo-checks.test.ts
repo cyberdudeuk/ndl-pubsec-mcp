@@ -363,3 +363,13 @@ describe("page structure (D-025)", () => {
   });
 });
 
+
+describe("superseded decisions (D-049)", () => {
+  it("C-42 catches a superseded ADR listed without its label", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "docs", "index.html");
+      writeFileSync(p, readFileSync(p, "utf8").replace(" (wording superseded by ADR 0006)", ""));
+    });
+    expect(out.join()).toMatch(/C-42 docs\/index\.html: ADR 0002-official-and-personal-repositories\.md is superseded/);
+  });
+});

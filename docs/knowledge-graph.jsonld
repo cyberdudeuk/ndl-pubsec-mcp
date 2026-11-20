@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+f6e2bd90a776",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+a2d35cc48acc",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -1671,7 +1671,7 @@
     {
       "@id": "ndl:adr/0002-official-and-personal-repositories",
       "@type": "schema:CreativeWork",
-      "schema:name": "ADR 0002: one official repository, one personal experiment",
+      "schema:name": "ADR 0002: one official repository, one personal experiment (wording superseded by ADR 0006)",
       "schema:url": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/docs/adr/0002-official-and-personal-repositories.md"
     },
     {
@@ -3097,6 +3097,14 @@
       "schema:name": "D-048",
       "schema:description": "CodeQL flagged check C-41 as incomplete escaping (js/incomplete-sanitization, high)",
       "ndl:check": "C-41 compares the line exactly, with no expression built from data; CodeQL runs on every pull request",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-049",
+      "@type": "schema:Thing",
+      "schema:name": "D-049",
+      "schema:description": "The page listed ADR 0002, \"one official repository, one personal experiment\", under Decisions with no sign that ADR 0006 had superseded its wording, so a reader could take the old official-work framing as current",
+      "ndl:check": "C-42",
       "ndl:status": "Fixed"
     }
   ]

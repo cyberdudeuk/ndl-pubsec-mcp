@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed (D-049): the website listed ADR 0002 ("one official repository, one personal experiment") without saying that ADR 0006 superseded its wording. A superseded ADR is now labelled wherever it is listed, and check C-42 keeps it that way, with a negative test.
+
 ### Fixed
 
 - `api_search` now reads both files of the government API catalogue and holds 269 APIs instead of 231, including DWP's 48 (D-044, check C-37). The ecosystem diagram's API count now comes from the data.
