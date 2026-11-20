@@ -362,3 +362,5 @@ dialog.ask::backdrop { background: rgb(10 14 30 / 55%); }
 /* Outline button for light surfaces; .btn--line is for the dark hero only (defect D-041) */
 .btn--outline { background: var(--surface); color: var(--brand); border: 2px solid var(--brand); }
 .btn--outline:hover { background: var(--surface-2); }
+.card.caution { border-left: 4px solid var(--warn); margin: 14px 0; }
+.card.caution ul { margin: 6px 0; }

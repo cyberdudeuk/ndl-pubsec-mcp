@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+10d154722190",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+f6e2bd90a776",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -834,6 +834,37 @@
       "dct:date": "2026-11-20"
     },
     {
+      "@id": "ndl:exchange/prescription-exemption",
+      "@type": "schema:Action",
+      "schema:name": "Free prescriptions: exemption checked in real time",
+      "schema:description": "Whether a person is eligible for free prescriptions, checked against DWP records",
+      "ndl:journey": "Get free prescriptions",
+      "schema:audience": "Citizen",
+      "schema:participant": [
+        "DWP",
+        "NHS"
+      ],
+      "ndl:mechanism": "Real-time API from DWP to the NHS prescription charge exemption service",
+      "ndl:sharedIdentifier": [
+        "NHS number",
+        "National Insurance number"
+      ],
+      "dct:references": [
+        {
+          "@id": "ndl:standard/api-standards"
+        },
+        {
+          "@id": "ndl:standard/nhs-number"
+        }
+      ],
+      "dct:source": [
+        "https://careers.dwp.gov.uk/data-with-power/",
+        "https://github.com/co-cddo/api-catalogue/blob/b239f159ff4806c3fa3619cfc09cfb93067f62c3/data/catalogue-from-json-source.csv"
+      ],
+      "ndl:provenance": "S",
+      "dct:date": "2026-11-20"
+    },
+    {
       "@id": "ndl:exchange/register-to-vote",
       "@type": "schema:Action",
       "schema:name": "Register to vote: identity checked against DWP records",
@@ -924,7 +955,8 @@
       ],
       "dct:source": [
         "https://www.digital-economy-act-register.data.gov.uk/agreements/667",
-        "https://www.digital-economy-act-register.data.gov.uk/agreements/648"
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/648",
+        "https://www.digital-economy-act-register.data.gov.uk/agreements/663"
       ],
       "ndl:provenance": "V",
       "dct:date": "2026-11-20"
@@ -3025,6 +3057,46 @@
       "schema:name": "D-043",
       "schema:description": "\"Search or ask\" missed the Tell Us Once exchange for \"what data moves when someone dies?\" and ranked a glossary entry above it",
       "ndl:check": "C-36: test/ask-rank.test.ts runs plain-English questions against the built index and requires the right passages in the top four",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-044",
+      "@type": "schema:Thing",
+      "schema:name": "D-044",
+      "schema:description": "`api_search` held 231 APIs and missed all 38 DWP APIs, including Get Citizen Income Information and View Earnings; the ecosystem diagram had \"231 APIs\" typed in",
+      "ndl:check": "C-37: the compiled catalogue names both files and the published count matches the data; counts in the diagram come from {placeholders}",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-045",
+      "@type": "schema:Thing",
+      "schema:name": "D-045",
+      "schema:description": "A deliberate-break test timed out (6.7 seconds against 5)",
+      "ndl:check": "C-38: deliberate-break copies skip everything `.gitignore` lists",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-046",
+      "@type": "schema:Thing",
+      "schema:name": "D-046",
+      "schema:description": "Exchange cards showed unrelated APIs as related, for example Bathing Water for water poverty and Individual Benefits for setting up a company",
+      "ndl:check": "C-40: every suggested query names a provider that is a party to the exchange; queries with no relevant match were removed rather than kept",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-047",
+      "@type": "schema:Thing",
+      "schema:name": "D-047",
+      "schema:description": "The Public Good Works launchpad still called this project official GDS work under OGL v3.0, after its content was relicensed CC BY 4.0 on 20 November",
+      "ndl:check": "C-41: `publiccode.yml` exists and agrees with `package.json` and `CITATION.cff`; the card is corrected in the launchpad",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-048",
+      "@type": "schema:Thing",
+      "schema:name": "D-048",
+      "schema:description": "CodeQL flagged check C-41 as incomplete escaping (js/incomplete-sanitization, high)",
+      "ndl:check": "C-41 compares the line exactly, with no expression built from data; CodeQL runs on every pull request",
       "ndl:status": "Fixed"
     }
   ]

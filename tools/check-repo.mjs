@@ -97,6 +97,62 @@ export function checkRepo(root) {
     const t = existsSync(join(root, "test", "ask-rank.test.ts")) ? readFileSync(join(root, "test", "ask-rank.test.ts"), "utf8") : "";
     for (const id of ["#xch-tell-us-once", "#xch-ukef-hmrc"]) if (!t.includes(id)) problems.push(`C-36 test/ask-rank.test.ts: no longer checks that a plain-English question finds ${id}`);
   }
+  // C-37 (defect D-044): the API catalogue reads every catalogue file, and the published count matches the data
+  {
+    const cat = JSON.parse(readFileSync(join(root, "src", "generated", "api-catalogue.json"), "utf8"));
+    const files = cat.source.files ?? [cat.source.file];
+    for (const f of ["data/catalogue.csv", "data/catalogue-from-json-source.csv"]) if (!files.includes(f)) problems.push(`C-37 src/generated/api-catalogue.json: compiled without ${f}`);
+    const eco = existsSync(join(root, "docs", "ecosystem.html")) ? readFileSync(join(root, "docs", "ecosystem.html"), "utf8") : "";
+    const shown = (eco.match(/co-cddo, (\d+) APIs/) ?? [])[1];
+    if (shown && Number(shown) !== cat.count) problems.push(`C-37 docs/ecosystem.html: shows ${shown} APIs but the compiled catalogue holds ${cat.count}`);
+    if (/co-cddo, \d+ APIs/.test(readFileSync(join(root, "tools", "site", "ecosystem.json"), "utf8"))) problems.push("C-37 tools/site/ecosystem.json: an API count is typed in; use {apiCount}");
+  }
+  // C-38 (defect D-045): deliberate-break copies skip everything git ignores, read from .gitignore
+  {
+    const t = existsSync(join(root, "test", "repo-checks.test.ts")) ? readFileSync(join(root, "test", "repo-checks.test.ts"), "utf8") : "";
+    if (!/readFileSync\(join\(ROOT, "\.gitignore"\)/.test(t) || !/function brokenCopy[\s\S]*?cpSync\([^;]*filter: \(s\) => !IGNORED\.test/.test(t)) problems.push("C-38 test/repo-checks.test.ts: brokenCopy does not skip what .gitignore lists, so local output slows every deliberate-break test");
+  }
+  // C-39 (guard for the harvestable feed, PR #39): docs/exchanges.json is generated from the master, complete, and says what "related" means
+  {
+    const fp = join(root, "docs", "exchanges.json");
+    if (!existsSync(fp)) problems.push("C-39 docs/exchanges.json: the harvestable exchanges feed is missing; run npm run site");
+    else {
+      const feed = JSON.parse(readFileSync(fp, "utf8"));
+      const master = JSON.parse(readFileSync(join(root, "src", "data", "exchanges.json"), "utf8"));
+      const want = master.exchanges.map((e) => e.id).join(",");
+      if (feed.exchanges.map((e) => e.id).join(",") !== want) problems.push("C-39 docs/exchanges.json: exchanges differ from src/data/exchanges.json; rebuild, never edit the feed");
+      if (JSON.stringify(feed.register) !== JSON.stringify(master.register)) problems.push("C-39 docs/exchanges.json: register counts differ from the master");
+      if (!/not evidence that the exchange uses it/.test(feed.caution || "")) problems.push("C-39 docs/exchanges.json: the caution on related APIs is missing");
+      for (const e of feed.exchanges) for (const r of e.relatedApis || []) if (!r.providerId) problems.push(`C-39 docs/exchanges.json ${e.id}: related API ${r.name} has no providerId, so catalogues that key providers by id cannot join it`);
+      const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
+      for (const e of feed.exchanges) if (!page.includes(`id="xch-${e.id}"`)) problems.push(`C-39 docs/exchanges.json: ${e.id} links to an anchor the portal does not have`);
+    }
+  }
+  // C-40 (defect D-046): every suggested API query is scoped to a provider that is a party to the exchange
+  {
+    const PARTY = { "hm-revenue-customs": "HMRC", "department-for-work-and-pensions": "DWP", "nhs-digital": "NHS", "driver-and-vehicle-licensing-agency": "DVLA", "companies-house": "Companies House", "hm-land-registry": "HM Land Registry", "department-for-education": "DfE", "department-for-business-and-trade": "Department for Business and Trade", "government-digital-service": "Government Digital Service", "scottish-government": "Scottish Government", "ministry-of-housing-communities-and-local-government": "MHCLG" };
+    const master = JSON.parse(readFileSync(join(root, "src", "data", "exchanges.json"), "utf8"));
+    for (const e of master.exchanges) for (const q of e.apiQueries || []) {
+      if (!q.provider) { problems.push(`C-40 src/data/exchanges.json ${e.id}: api query "${q.query}" names no provider, so it matches any organisation's APIs`); continue; }
+      const party = PARTY[q.provider];
+      if (!party) problems.push(`C-40 src/data/exchanges.json ${e.id}: provider ${q.provider} has no party name in the C-40 table`);
+      else if (!e.parties.some((p) => p.includes(party))) problems.push(`C-40 src/data/exchanges.json ${e.id}: provider ${q.provider} (${party}) is not a party to the exchange`);
+    }
+  }
+  // C-41 (defect D-047): publiccode.yml exists and agrees with package.json and CITATION.cff, so the launchpad's discovery can check the card
+  {
+    const pc = existsSync(join(root, "publiccode.yml")) ? readFileSync(join(root, "publiccode.yml"), "utf8") : "";
+    const cff = existsSync(join(root, "CITATION.cff")) ? readFileSync(join(root, "CITATION.cff"), "utf8") : "";
+    const version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
+    const cffLic = [...cff.matchAll(/^\s+-\s+([A-Za-z0-9.-]+)\s*$/gm)].map((m) => m[1]).filter((x) => /^(MIT|CC-BY-4\.0|Apache-2\.0|OGL-UK-3\.0)$/.test(x));
+    if (!pc) problems.push("C-41 publiccode.yml: missing, so the launchpad cannot check this project's card against its licence");
+    else {
+      if (!pc.split("\n").includes(`softwareVersion: ${version}`)) problems.push(`C-41 publiccode.yml: softwareVersion is not ${version} (package.json)`);
+      const lic = (pc.match(/^\s+license: (.+)$/m) || [])[1] || "";
+      if (lic.split(" AND ").sort().join(",") !== [...cffLic].sort().join(",")) problems.push(`C-41 publiccode.yml: license "${lic}" differs from CITATION.cff (${cffLic.join(", ")})`);
+      if (/@[a-z0-9-]+\.[a-z]/i.test(pc)) problems.push("C-41 publiccode.yml: contains an email address; contact is by the form only");
+    }
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -353,5 +409,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-36)");
+  console.log("repository checks passed (C-01 to C-41)");
 }

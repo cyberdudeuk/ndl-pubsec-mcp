@@ -87,7 +87,7 @@ for (const [k, ex] of Object.entries(examples)) {
 // The page template, styles and script are inputs too, so a change to any of them changes the build id (defect D-013).
 // The validator source is an input too, because the page bundles it.
 const TEMPLATE_FILES = ["tools/build-site.mjs", "tools/site/site.css", "tools/site/site.js", "tools/site/guide-sections.mjs", "tools/site/guide.json", "tools/site/ecosystem.mjs", "tools/catalogue-staleness.mjs", "tools/site/extra-sections.mjs", "tools/site/assist.js", "tools/site/ask-rank.js", "src/data/exchanges.json", "tools/site/ecosystem.json", "src/generated/api-catalogue.json", "src/data/api-sources-extra.json", "src/data/servers.json"];
-const eco = loadEcosystem();
+const eco = loadEcosystem({ apiCount: API_SOURCES.catalogue.count });
 const guide = JSON.parse(read("tools/site/guide.json"));
 const inputs = JSON.stringify({ v: pkg.version, tools, standards, conf, live, federation, openItems, releases, examples, model: rules.generatedFrom.commit, validator: read("src/lib/mem.ts"), glossary, adrs, defects, template: TEMPLATE_FILES.map(read) });
 const buildId = `${pkg.name}@${pkg.version}+${createHash("sha256").update(inputs).digest("hex").slice(0, 12)}`;
@@ -671,6 +671,28 @@ const kg = {
 };
 kg["@graph"][0]["schema:audience"] = guide.personas.map((p) => ({ "@id": `ndl:persona/${p.id}` }));
 writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null, 2) + "\n");
+// Harvestable exchanges feed (docs/exchanges.json): the one machine-readable master that other portals and catalogues
+// link to or harvest, rather than keeping their own copy. Related APIs are what api_search finds for each exchange's
+// suggested queries at build time, chosen exactly as the exchange cards choose them; related is not the same as used in the exchange.
+{
+  const feed = {
+        name: "NDL PubSec MCP data exchanges feed",
+    publisher: "NDL PubSec MCP (independent, open source)",
+    licence: "CC BY 4.0",
+    master: `${REPO}/blob/main/src/data/exchanges.json`,
+    build: buildId,
+    asOf: exchangesData.asOf,
+    about: exchangesData.about,
+    caution: "relatedApis are found by keyword search of the government API catalogue when the feed is built. A related API is not evidence that the exchange uses it. The register counts agreements, not volume, and records one method per agreement, so API use there is a floor.",
+    register: exchangesData.register,
+    exchanges: exchangesData.exchanges.map((e) => ({
+      ...e,
+      portal: `https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-${e.id}`,
+      relatedApis: (e.apiQueries || []).flatMap((q) => searchApis(q.query, { provider: q.provider }).slice(0, 2)).filter((a, i, all) => all.findIndex((b) => b.name === a.name) === i).slice(0, 4).map((a) => ({ name: a.name, provider: a.provider, providerId: a.providerId, url: a.documentation || a.url, inCatalogue: Boolean(a.inCatalogue) }))
+    }))
+  };
+  writeFileSync(join(root, "docs/exchanges.json"), JSON.stringify(feed, null, 1) + "\n");
+}
 // llms.txt: a plain description of the site for AI agents (llmstxt.org convention), generated from the same data.
 {
   const site = "https://cyberdudeuk.github.io/ndl-pubsec-mcp/";
@@ -690,6 +712,7 @@ writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null
     "## Data",
     `- [Standards register](${REPO}/blob/main/src/data/standards.json): ${standards.standards.length} standards with obligation, scope and provenance`,
     `- [Exchanges register](${REPO}/blob/main/src/data/exchanges.json): ${exchangesData.exchanges.length} exchanges with parties, identifiers, legal basis and sources`,
+    `- [Exchanges feed](${site}exchanges.json): every exchange with related APIs and the register counts, to harvest rather than copy`,
     `- [Knowledge graph](${site}knowledge-graph.jsonld): JSON-LD of tools, standards, exchanges and terms`,
     "",
     "## Docs",

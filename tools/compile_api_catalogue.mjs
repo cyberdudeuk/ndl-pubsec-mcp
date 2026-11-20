@@ -45,15 +45,30 @@ const clean = (s, n) => {
 };
 const httpsOrEmpty = (u) => (/^https?:\/\//i.test(u ?? "") && !HAS_EMAIL.test(u) ? u : "");
 
+export const CATALOGUE_FILES = ["catalogue.csv", "catalogue-from-json-source.csv"];
+
 export function compile(clone, commit, date) {
-  const apis = parseCsv(readFileSync(join(clone, "data", "catalogue.csv"), "utf8"));
-  const orgs = Object.fromEntries(parseCsv(readFileSync(join(clone, "data", "organisation.csv"), "utf8")).map((o) => [o.id, o.name]));
+  // Both catalogue files hold APIs: catalogue-from-json-source.csv is the only place DWP's APIs appear (defect D-044).
+  // Rows are de-duplicated by name and URL together, as the GitHub Repos Asset Catalogue does, because many APIs from
+  // one provider share a base URL. The second file names providers in full, so names are mapped back to ids.
+  const orgRows = parseCsv(readFileSync(join(clone, "data", "organisation.csv"), "utf8"));
+  const orgs = Object.fromEntries(orgRows.map((o) => [o.id, o.name]));
+  const idByName = Object.fromEntries(orgRows.map((o) => [o.name.trim().toLowerCase(), o.id]));
+  const seen = new Set();
+  const apis = CATALOGUE_FILES.flatMap((f) => parseCsv(readFileSync(join(clone, "data", f), "utf8")).map((a) => ({ ...a, file: f })))
+    .filter((a) => {
+      const k = `${(a.name ?? "").trim().toLowerCase()}|${(a.url ?? "").trim().toLowerCase()}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
   const out = apis
     .filter((a) => a.name && a.provider)
+    .map((a) => ({ ...a, providerId: orgs[a.provider] ? a.provider : idByName[a.provider.trim().toLowerCase()] ?? a.provider }))
     .map((a) => ({
       name: clean(a.name, 120),
-      provider: orgs[a.provider] ?? a.provider,
-      providerId: a.provider,
+      provider: orgs[a.providerId] ?? a.provider,
+      providerId: a.providerId,
       description: clean(a.description, 400),
       url: httpsOrEmpty(a.url),
       documentation: httpsOrEmpty(a.documentation),
@@ -65,7 +80,7 @@ export function compile(clone, commit, date) {
     source: {
       title: "UK public sector API catalogue",
       repository: "https://github.com/co-cddo/api-catalogue",
-      file: "data/catalogue.csv",
+      files: CATALOGUE_FILES.map((f) => `data/${f}`),
       commit,
       commitDate: date,
       licence: "© Crown copyright, Open Government Licence v3.0",

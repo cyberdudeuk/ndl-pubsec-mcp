@@ -1,0 +1,46 @@
+# publiccode.yml: machine-readable description for public sector software catalogues.
+# Standard: https://yml.publiccode.tools  Version and licence must agree with package.json and CITATION.cff (check C-41).
+# No email address is given: contact is by the contact form only.
+publiccodeYmlVersion: '0'
+name: NDL PubSec MCP
+url: https://github.com/cyberdudeuk/ndl-pubsec-mcp
+landingURL: https://cyberdudeuk.github.io/ndl-pubsec-mcp/
+softwareVersion: 0.4.0
+releaseDate: '2026-11-20'
+platforms:
+- web
+- linux
+- mac
+- windows
+categories:
+- data-collection
+- knowledge-management
+developmentStatus: development
+softwareType: standalone/other
+description:
+  en:
+    shortDescription: A read-only MCP server and portal for finding UK public sector data, APIs, standards and data exchanges.
+    longDescription: 'An independent, open-source Model Context Protocol server and portal. It lets any MCP-capable AI
+      assistant, and anyone with a browser, find public sector data on data.gov.uk, check metadata against the UK
+      Cross-Government Metadata Exchange Model (xGov MEM), find APIs and MCP servers, explain open standards, and map
+      data exchanges between public bodies by citizen and business journey. It is read-only: it never takes part in
+      an exchange. For government and the wider public sector, researchers, journalists, civil society, organisations
+      in every sector, and developers of AI models and MCP servers. Status, as the project states it: Prototype. Not
+      official government guidance or policy.'
+    documentation: https://cyberdudeuk.github.io/ndl-pubsec-mcp/
+    features:
+    - Search data.gov.uk and describe datasets
+    - Check a catalogue record against xGov MEM
+    - Find government APIs and MCP servers
+    - Explain open standards for data, APIs, identity and cyber security
+    - Map data exchanges between public bodies by journey, with a harvestable feed
+legal:
+  license: MIT AND CC-BY-4.0
+maintenance:
+  type: community
+  contacts:
+  - name: NDL PubSec MCP maintainer (contact form only)
+localisation:
+  localisationReady: false
+  availableLanguages:
+  - en

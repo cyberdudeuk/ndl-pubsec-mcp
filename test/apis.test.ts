@@ -19,6 +19,7 @@ describe("api catalogue compiler", () => {
       mkdirSync(join(dir, "data"));
       writeFileSync(join(dir, "data", "catalogue.csv"), 'name,description,url,documentation,maintainer,provider,dateAdded,dateUpdated\nThing,"Ask team@example.org for access",https://a.example.org/,mailto:x@example.org,owner@example.org,org-a,2020-01-01,2021-01-01\n');
       writeFileSync(join(dir, "data", "organisation.csv"), "id,name\norg-a,Org A\n");
+      writeFileSync(join(dir, "data", "catalogue-from-json-source.csv"), "name,description,url,documentation,maintainer,provider,dateAdded,dateUpdated\n");
       const out = compile(dir, "a".repeat(40), "2026-11-02");
       const text = JSON.stringify(out);
       expect(text).not.toMatch(/@example\.org/);
@@ -27,6 +28,28 @@ describe("api catalogue compiler", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+
+  it("reads both catalogue files, de-duplicates by name and URL, and maps provider names to ids (D-044)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "apicat-"));
+    try {
+      mkdirSync(join(dir, "data"));
+      const head = "name,description,url,documentation,maintainer,provider,dateAdded,dateUpdated\n";
+      writeFileSync(join(dir, "data", "catalogue.csv"), `${head}Thing,One,https://a.example.org/,,,org-a,2020-01-01,2021-01-01\n`);
+      writeFileSync(join(dir, "data", "catalogue-from-json-source.csv"), `${head}Thing,One again,https://a.example.org/,,,Org A,2020-01-01,2021-01-01\nOther,Two,https://a.example.org/,,,Org A,2020-01-01,2021-01-01\n`);
+      writeFileSync(join(dir, "data", "organisation.csv"), "id,name\norg-a,Org A\n");
+      const out = compile(dir, "a".repeat(40), "2026-11-02");
+      expect(out.count).toBe(2);
+      expect(out.apis.map((a: { name: string }) => a.name).sort()).toEqual(["Other", "Thing"]);
+      expect(out.apis.every((a: { providerId: string }) => a.providerId === "org-a")).toBe(true);
+      expect(out.source.files).toEqual(["data/catalogue.csv", "data/catalogue-from-json-source.csv"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("the compiled catalogue includes DWP's APIs from the second file (D-044)", () => {
+    expect(compiled.apis.some((a) => a.name === "Get Citizen Income Information API" && a.providerId === "department-for-work-and-pensions")).toBe(true);
   });
 
   it("the compiled file names its pinned source and licence", () => {
