@@ -228,7 +228,7 @@ export function checkRepo(root) {
   const ownStatements = {
     "README.md": section("README.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
     "CONTRIBUTING.md": section("CONTRIBUTING.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
-    "docs/index.html footer": (page.match(/<p>Code: <a[\s\S]*?<\/p>/) ?? [""])[0].replace(/<[^>]+>/g, ""),
+    "docs/index.html footer": [...page.matchAll(/<p>Code: <a[\s\S]*?<\/p>/g)].map((p) => [...p[0].matchAll(/>([^<]*)</g)].map((m) => m[1]).join("")).join(" "),
     "docs/index.html metadata": (page.match(/"copyrightNotice":"[^"]*"/) ?? [""])[0],
     "CITATION.cff": section("CITATION.cff", /^license:[\s\S]*?(?=^\S)/m)
   };
@@ -312,5 +312,4 @@ if (isMain) {
     process.exit(1);
   }
   console.log("repository checks passed (C-01 to C-30)");
-  console.log("repository checks passed (C-01 to C-28)");
 }
