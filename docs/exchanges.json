@@ -3,7 +3,7 @@
  "publisher": "NDL PubSec MCP (independent, open source)",
  "licence": "CC BY 4.0",
  "master": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json",
- "build": "ndl-pubsec-mcp@0.4.0+f6e2bd90a776",
+ "build": "ndl-pubsec-mcp@0.4.0+a2d35cc48acc",
  "asOf": "2026-11-20",
  "about": "Data exchanges between UK public sector organisations, each tied to the journey it serves, with the parties, what flows, how, the shared identifiers and standards involved, and sources. Read-only and descriptive: this server never takes part in any exchange.",
  "caution": "relatedApis are found by keyword search of the government API catalogue when the feed is built. A related API is not evidence that the exchange uses it. The register counts agreements, not volume, and records one method per agreement, so API use there is a floor.",
