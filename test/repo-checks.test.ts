@@ -344,6 +344,7 @@ describe("page structure (D-025)", () => {
     expect(breakFile("docs/exchanges.json", '"id": "ukef-hmrc"', '"id": "ukef-hmrc-copy"').join()).toMatch(/C-39 .*differ from src/);
     expect(breakFile("docs/exchanges.json", "not evidence that the exchange uses it", "evidence").join()).toMatch(/C-39 .*caution/);
     expect(breakFile("docs/index.html", 'id="xch-set-up-a-company"', 'id="xch-gone"').join()).toMatch(/C-39 .*anchor/);
+    expect(breakFile("docs/exchanges.json", '"providerId": "companies-house",', "").join()).toMatch(/C-39 .*no providerId/);
   });
 
   it("C-40 catches an API query that is not scoped to a party to the exchange (D-046)", () => {

@@ -688,7 +688,7 @@ writeFileSync(join(root, "docs/knowledge-graph.jsonld"), JSON.stringify(kg, null
     exchanges: exchangesData.exchanges.map((e) => ({
       ...e,
       portal: `https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-${e.id}`,
-      relatedApis: (e.apiQueries || []).flatMap((q) => searchApis(q.query, { provider: q.provider }).slice(0, 2)).filter((a, i, all) => all.findIndex((b) => b.name === a.name) === i).slice(0, 4).map((a) => ({ name: a.name, provider: a.provider, url: a.documentation || a.url, inCatalogue: Boolean(a.inCatalogue) }))
+      relatedApis: (e.apiQueries || []).flatMap((q) => searchApis(q.query, { provider: q.provider }).slice(0, 2)).filter((a, i, all) => all.findIndex((b) => b.name === a.name) === i).slice(0, 4).map((a) => ({ name: a.name, provider: a.provider, providerId: a.providerId, url: a.documentation || a.url, inCatalogue: Boolean(a.inCatalogue) }))
     }))
   };
   writeFileSync(join(root, "docs/exchanges.json"), JSON.stringify(feed, null, 1) + "\n");

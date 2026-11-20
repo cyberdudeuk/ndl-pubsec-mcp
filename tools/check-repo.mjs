@@ -123,6 +123,7 @@ export function checkRepo(root) {
       if (feed.exchanges.map((e) => e.id).join(",") !== want) problems.push("C-39 docs/exchanges.json: exchanges differ from src/data/exchanges.json; rebuild, never edit the feed");
       if (JSON.stringify(feed.register) !== JSON.stringify(master.register)) problems.push("C-39 docs/exchanges.json: register counts differ from the master");
       if (!/not evidence that the exchange uses it/.test(feed.caution || "")) problems.push("C-39 docs/exchanges.json: the caution on related APIs is missing");
+      for (const e of feed.exchanges) for (const r of e.relatedApis || []) if (!r.providerId) problems.push(`C-39 docs/exchanges.json ${e.id}: related API ${r.name} has no providerId, so catalogues that key providers by id cannot join it`);
       const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
       for (const e of feed.exchanges) if (!page.includes(`id="xch-${e.id}"`)) problems.push(`C-39 docs/exchanges.json: ${e.id} links to an anchor the portal does not have`);
     }

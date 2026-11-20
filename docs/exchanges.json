@@ -3,7 +3,7 @@
  "publisher": "NDL PubSec MCP (independent, open source)",
  "licence": "CC BY 4.0",
  "master": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json",
- "build": "ndl-pubsec-mcp@0.4.0+62d2dfd6673a",
+ "build": "ndl-pubsec-mcp@0.4.0+8063bb227e2e",
  "asOf": "2026-11-20",
  "about": "Data exchanges between UK public sector organisations, each tied to the journey it serves, with the parties, what flows, how, the shared identifiers and standards involved, and sources. Read-only and descriptive: this server never takes part in any exchange.",
  "caution": "relatedApis are found by keyword search of the government API catalogue when the feed is built. A related API is not evidence that the exchange uses it. The register counts agreements, not volume, and records one method per agreement, so API use there is a floor.",
@@ -243,18 +243,21 @@
     {
      "name": "Individual Income",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-income",
      "inCatalogue": true
     },
     {
      "name": "Individual Tax",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-tax",
      "inCatalogue": true
     },
     {
      "name": "Get Citizen Income Information API",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "https://engineering.dwp.gov.uk/apis/docs",
      "inCatalogue": true
     }
@@ -356,12 +359,14 @@
     {
      "name": "Personal Demographics Service - FHIR API",
      "provider": "NHS Digital",
+     "providerId": "nhs-digital",
      "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir",
      "inCatalogue": true
     },
     {
      "name": "Personal Demographics Service - HL7 V3 API",
      "provider": "NHS Digital",
+     "providerId": "nhs-digital",
      "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-hl7-v3",
      "inCatalogue": true
     }
@@ -417,18 +422,21 @@
     {
      "name": "NHS Charge Exemption",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "https://engineering.dwp.gov.uk/apis/docs",
      "inCatalogue": true
     },
     {
      "name": "Electronic Prescription Service - FHIR API",
      "provider": "NHS Digital",
+     "providerId": "nhs-digital",
      "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir",
      "inCatalogue": true
     },
     {
      "name": "Electronic Prescription Service - HL7 V3 API",
      "provider": "NHS Digital",
+     "providerId": "nhs-digital",
      "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3",
      "inCatalogue": true
     }
@@ -527,6 +535,7 @@
     {
      "name": "Access to Driver Data API",
      "provider": "Driver and Vehicle Licensing Agency",
+     "providerId": "driver-and-vehicle-licensing-agency",
      "url": "https://developer-portal.driver-vehicle-licensing.api.gov.uk/apis/driver-view/driver-view-description.html",
      "inCatalogue": true
     }
@@ -582,12 +591,14 @@
     {
      "name": "Citizen API",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "",
      "inCatalogue": true
     },
     {
      "name": "Document Citizen Claims",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "https://engineering.dwp.gov.uk/apis/docs",
      "inCatalogue": true
     }
@@ -633,12 +644,14 @@
     {
      "name": "Citizen Benefit Relationships",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "",
      "inCatalogue": true
     },
     {
      "name": "Award Details",
      "provider": "Department for Work and Pensions",
+     "providerId": "department-for-work-and-pensions",
      "url": "https://engineering.dwp.gov.uk/apis/docs",
      "inCatalogue": true
     }
@@ -840,6 +853,7 @@
     {
      "name": "Access to Driver Data API",
      "provider": "Driver and Vehicle Licensing Agency",
+     "providerId": "driver-and-vehicle-licensing-agency",
      "url": "https://developer-portal.driver-vehicle-licensing.api.gov.uk/apis/driver-view/driver-view-description.html",
      "inCatalogue": true
     }
@@ -892,12 +906,14 @@
     {
      "name": "Land Charges Bankruptcy Search",
      "provider": "HM Land Registry",
+     "providerId": "hm-land-registry",
      "url": "https://landregistry.github.io/bgtechdoc/services/land_charges_bankruptcy_search/",
      "inCatalogue": true
     },
     {
      "name": "Land Charges Full Search",
      "provider": "HM Land Registry",
+     "providerId": "hm-land-registry",
      "url": "https://landregistry.github.io/bgtechdoc/services/land_charges_full_search/",
      "inCatalogue": true
     }
@@ -948,12 +964,14 @@
     {
      "name": "Companies House",
      "provider": "Companies House",
+     "providerId": "companies-house",
      "url": "https://developer.companieshouse.gov.uk/api/docs/",
      "inCatalogue": true
     },
     {
      "name": "Companies House Streaming",
      "provider": "Companies House",
+     "providerId": "companies-house",
      "url": "https://developer-specs.companieshouse.gov.uk/streaming-api/guides/overview",
      "inCatalogue": true
     }
@@ -1015,24 +1033,28 @@
     {
      "name": "Check a UK VAT number",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://www.tax.service.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/1.0",
      "inCatalogue": false
     },
     {
      "name": "Check an EORI Number",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/check-eori-number-api",
      "inCatalogue": true
     },
     {
      "name": "GOV.UK Trade Tariff API",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://api.trade-tariff.service.gov.uk/",
      "inCatalogue": true
     },
     {
      "name": "UK Trade Info API",
      "provider": "HM Revenue & Customs",
+     "providerId": "hm-revenue-customs",
      "url": "https://www.uktradeinfo.com/api-documentation",
      "inCatalogue": false
     }
