@@ -583,9 +583,11 @@ writeFileSync(join(root, "docs/index.html"), html);
 {
   const siteCss = read("tools/site/site.css");
   const tokens = (siteCss.match(/:root \{[^}]*\}/) ?? [""])[0];
-  const dark = (siteCss.match(/:root\[data-theme="dark"\] \{[^}]*\}/) ?? [""])[0].replace(':root[data-theme="dark"]', ":root");
+  // Follows the viewer's choice (data-theme on the root) and otherwise the system setting.
+  const darkBlock = (siteCss.match(/:root\[data-theme="dark"\] \{[^}]*\}/) ?? [""])[0];
   const css = `${tokens}
-@media (prefers-color-scheme: dark) { ${dark} }
+@media (prefers-color-scheme: dark) { ${darkBlock.replace(':root[data-theme="dark"]', ":root:not([data-theme=light])")} }
+${darkBlock}
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 1040px; margin: 0 auto; padding: 24px 20px 64px; }
 h1 { font-size: 26px; margin: 0 0 6px; } a { color: var(--brand); } .meta { color: var(--ink-2); font-size: 14px; } code { font-size: 13px; }
