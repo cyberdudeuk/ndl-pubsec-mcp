@@ -340,6 +340,17 @@ describe("page structure (D-025)", () => {
     expect(breakFile("test/repo-checks.test.ts", "filter: (s) => !IGNORED.test", "filter: (s) => !/node_modules/.test").join()).toMatch(/C-38/);
   });
 
+  it("C-39 catches a stale or hand-edited exchanges feed, or one without its caution", () => {
+    expect(breakFile("docs/exchanges.json", '"id": "ukef-hmrc"', '"id": "ukef-hmrc-copy"').join()).toMatch(/C-39 .*differ from src/);
+    expect(breakFile("docs/exchanges.json", "not evidence that the exchange uses it", "evidence").join()).toMatch(/C-39 .*caution/);
+    expect(breakFile("docs/index.html", 'id="xch-set-up-a-company"', 'id="xch-gone"').join()).toMatch(/C-39 .*anchor/);
+  });
+
+  it("C-40 catches an API query that is not scoped to a party to the exchange (D-046)", () => {
+    expect(breakFile("src/data/exchanges.json", '"query": "benefit",\n     "provider": "department-for-work-and-pensions"', '"query": "water"').join()).toMatch(/C-40 .*names no provider/);
+    expect(breakFile("src/data/exchanges.json", '"query": "land",\n     "provider": "hm-land-registry"', '"query": "land",\n     "provider": "nhs-digital"').join()).toMatch(/C-40 .*not a party/);
+  });
+
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {
     expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
   });

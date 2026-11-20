@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+4f43c0414f42",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+62d2dfd6673a",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -3073,6 +3073,14 @@
       "schema:name": "D-045",
       "schema:description": "A deliberate-break test timed out (6.7 seconds against 5)",
       "ndl:check": "C-38: deliberate-break copies skip everything `.gitignore` lists",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-046",
+      "@type": "schema:Thing",
+      "schema:name": "D-046",
+      "schema:description": "Exchange cards showed unrelated APIs as related, for example Bathing Water for water poverty and Individual Benefits for setting up a company",
+      "ndl:check": "C-40: every suggested query names a provider that is a party to the exchange; queries with no relevant match were removed rather than kept",
       "ndl:status": "Fixed"
     }
   ]

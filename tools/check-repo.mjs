@@ -112,6 +112,32 @@ export function checkRepo(root) {
     const t = existsSync(join(root, "test", "repo-checks.test.ts")) ? readFileSync(join(root, "test", "repo-checks.test.ts"), "utf8") : "";
     if (!/readFileSync\(join\(ROOT, "\.gitignore"\)/.test(t) || !/function brokenCopy[\s\S]*?cpSync\([^;]*filter: \(s\) => !IGNORED\.test/.test(t)) problems.push("C-38 test/repo-checks.test.ts: brokenCopy does not skip what .gitignore lists, so local output slows every deliberate-break test");
   }
+  // C-39 (guard for the harvestable feed, PR #39): docs/exchanges.json is generated from the master, complete, and says what "related" means
+  {
+    const fp = join(root, "docs", "exchanges.json");
+    if (!existsSync(fp)) problems.push("C-39 docs/exchanges.json: the harvestable exchanges feed is missing; run npm run site");
+    else {
+      const feed = JSON.parse(readFileSync(fp, "utf8"));
+      const master = JSON.parse(readFileSync(join(root, "src", "data", "exchanges.json"), "utf8"));
+      const want = master.exchanges.map((e) => e.id).join(",");
+      if (feed.exchanges.map((e) => e.id).join(",") !== want) problems.push("C-39 docs/exchanges.json: exchanges differ from src/data/exchanges.json; rebuild, never edit the feed");
+      if (JSON.stringify(feed.register) !== JSON.stringify(master.register)) problems.push("C-39 docs/exchanges.json: register counts differ from the master");
+      if (!/not evidence that the exchange uses it/.test(feed.caution || "")) problems.push("C-39 docs/exchanges.json: the caution on related APIs is missing");
+      const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
+      for (const e of feed.exchanges) if (!page.includes(`id="xch-${e.id}"`)) problems.push(`C-39 docs/exchanges.json: ${e.id} links to an anchor the portal does not have`);
+    }
+  }
+  // C-40 (defect D-046): every suggested API query is scoped to a provider that is a party to the exchange
+  {
+    const PARTY = { "hm-revenue-customs": "HMRC", "department-for-work-and-pensions": "DWP", "nhs-digital": "NHS", "driver-and-vehicle-licensing-agency": "DVLA", "companies-house": "Companies House", "hm-land-registry": "HM Land Registry", "department-for-education": "DfE", "department-for-business-and-trade": "Department for Business and Trade", "government-digital-service": "Government Digital Service", "scottish-government": "Scottish Government", "ministry-of-housing-communities-and-local-government": "MHCLG" };
+    const master = JSON.parse(readFileSync(join(root, "src", "data", "exchanges.json"), "utf8"));
+    for (const e of master.exchanges) for (const q of e.apiQueries || []) {
+      if (!q.provider) { problems.push(`C-40 src/data/exchanges.json ${e.id}: api query "${q.query}" names no provider, so it matches any organisation's APIs`); continue; }
+      const party = PARTY[q.provider];
+      if (!party) problems.push(`C-40 src/data/exchanges.json ${e.id}: provider ${q.provider} has no party name in the C-40 table`);
+      else if (!e.parties.some((p) => p.includes(party))) problems.push(`C-40 src/data/exchanges.json ${e.id}: provider ${q.provider} (${party}) is not a party to the exchange`);
+    }
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -368,5 +394,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-38)");
+  console.log("repository checks passed (C-01 to C-40)");
 }

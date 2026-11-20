@@ -1,0 +1,1114 @@
+{
+ "name": "NDL PubSec MCP data exchanges feed",
+ "publisher": "NDL PubSec MCP (independent, open source)",
+ "licence": "CC BY 4.0",
+ "master": "https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json",
+ "build": "ndl-pubsec-mcp@0.4.0+62d2dfd6673a",
+ "asOf": "2026-11-20",
+ "about": "Data exchanges between UK public sector organisations, each tied to the journey it serves, with the parties, what flows, how, the shared identifiers and standards involved, and sources. Read-only and descriptive: this server never takes part in any exchange.",
+ "caution": "relatedApis are found by keyword search of the government API catalogue when the feed is built. A related API is not evidence that the exchange uses it. The register counts agreements, not volume, and records one method per agreement, so API use there is a floor.",
+ "register": {
+  "title": "Register of information sharing agreements under chapters 1 to 4 of Part 5 of the Digital Economy Act 2017",
+  "url": "https://www.digital-economy-act-register.data.gov.uk",
+  "read": "2026-11-20",
+  "agreements": 667,
+  "licence": "Open Government Licence v3.0",
+  "limits": "Covers only agreements under the Digital Economy Act 2017, Part 5; 473 of the 667 have ended, many of them 2019 to 2020 pilots, and 204 are near-identical agreements between DWP and individual energy suppliers for one scheme. It counts agreements, not how much data moves or how often. The largest flows, such as payroll data for Universal Credit and Tell Us Once, run under other legal gateways and are not in it, and much cross-government sharing runs over APIs that the register's single method field does not show. Organisation names were grouped by this server (for example, every energy supplier as 'Energy suppliers'). Contact details on the register were not copied.",
+  "byPower": [
+   [
+    "Public service delivery: fuel poverty",
+    326
+   ],
+   [
+    "Debt",
+    135
+   ],
+   [
+    "Fraud",
+    50
+   ],
+   [
+    "Civil registration",
+    50
+   ],
+   [
+    "Public service delivery: water poverty",
+    36
+   ],
+   [
+    "Public service delivery: multiple disadvantages",
+    35
+   ],
+   [
+    "Public service delivery: early learning and childcare",
+    30
+   ],
+   [
+    "Public service delivery: identity verification",
+    5
+   ]
+  ],
+  "byMethod": [
+   [
+    "Encrypted email transfer",
+    193
+   ],
+   [
+    "Within a secure platform",
+    163
+   ],
+   [
+    "Secure file transfer",
+    118
+   ],
+   [
+    "Government secure email",
+    103
+   ],
+   [
+    "Trusted partner transfer",
+    46
+   ],
+   [
+    "Electronic verification",
+    25
+   ],
+   [
+    "API",
+    11
+   ],
+   [
+    "Government secure folders",
+    5
+   ],
+   [
+    "Encrypted hardware",
+    3
+   ]
+  ],
+  "topPairs": [
+   [
+    "DWP and energy suppliers",
+    208
+   ],
+   [
+    "HMRC and local authorities",
+    129
+   ],
+   [
+    "DWP and local authorities",
+    110
+   ],
+   [
+    "DWP and HMRC",
+    101
+   ],
+   [
+    "DESNZ and energy suppliers",
+    70
+   ],
+   [
+    "DWP and water companies",
+    32
+   ],
+   [
+    "Local authorities and Scottish Government",
+    29
+   ]
+  ],
+  "byStatus": [
+   [
+    "Active",
+    194
+   ],
+   [
+    "Complete (ended)",
+    473
+   ]
+  ],
+  "activeByMethod": [
+   [
+    "Secure file transfer",
+    80
+   ],
+   [
+    "Within a secure platform",
+    45
+   ],
+   [
+    "Encrypted email transfer",
+    37
+   ],
+   [
+    "Electronic verification",
+    13
+   ],
+   [
+    "Government secure email",
+    11
+   ],
+   [
+    "API",
+    6
+   ],
+   [
+    "Trusted partner transfer",
+    1
+   ],
+   [
+    "Government secure folders",
+    1
+   ]
+  ],
+  "methodField": "Each agreement records exactly one 'information sharing method'. It is the main method declared for the agreement, not every route used: agreements 205, 284 and 663 (the Warm Home Discount helpline, 2022 to 2027) record trusted partner transfer, encrypted hardware or secure file transfer, yet their disclosed-information text says electronic access to DWP's Citizen Application Programming Interface (CAPI) will also be enabled. So API counts from this field are a floor.",
+  "context": [
+   {
+    "claim": "DWP reported demand for its data from other government departments rising from 4.5 million to over 7.5 million API requests a day at peak, all routed through its API gateway",
+    "source": {
+     "title": "How APIs kept our country running when everything stopped (DWP Digital blog, 8 December 2021)",
+     "url": "https://dwpdigital.blog.gov.uk/2021/12/08/guest-post-how-apis-kept-our-country-running-when-everything-stopped/"
+    },
+    "provenance": "S"
+   },
+   {
+    "claim": "DWP's Citizen API gives other government departments and approved external agencies access to DWP citizen information",
+    "source": {
+     "title": "Citizen API on the UK government API catalogue",
+     "url": "https://api.gov.uk/dwp/citizen-api/"
+    },
+    "provenance": "S"
+   },
+   {
+    "claim": "The government API catalogue lists 48 DWP APIs, including Get Citizen Income Information, View Earnings, Citizen Address and the FINDr Matching Service, added on 23 April 2024",
+    "source": {
+     "title": "co-cddo/api-catalogue, data/catalogue-from-json-source.csv at b239f15",
+     "url": "https://github.com/co-cddo/api-catalogue/blob/b239f159ff4806c3fa3619cfc09cfb93067f62c3/data/catalogue-from-json-source.csv"
+    },
+    "provenance": "V"
+   }
+  ]
+ },
+ "exchanges": [
+  {
+   "id": "rti-universal-credit",
+   "title": "Earnings from payroll to Universal Credit",
+   "journey": "Claim Universal Credit",
+   "audience": "Citizen",
+   "parties": [
+    "HMRC",
+    "DWP",
+    "Local authorities"
+   ],
+   "flows": "Pay As You Earn earnings reported by employers in real time (RTI) for Universal Credit claimants",
+   "purpose": "Calculate each monthly Universal Credit award from actual earnings",
+   "mechanism": "DWP's Real Time Earnings system requests RTI data from HMRC for claimants several times a day; DWP passes some PAYE data on to local authorities for Housing Benefit",
+   "sharedIdentifiers": [
+    "National Insurance number"
+   ],
+   "standards": [
+    "api-standards",
+    "esda"
+   ],
+   "apiQueries": [
+    {
+     "query": "individual income",
+     "provider": "hm-revenue-customs"
+    },
+    {
+     "query": "citizen income",
+     "provider": "department-for-work-and-pensions"
+    }
+   ],
+   "scale": "RTI covers more than 40 million employees and occupational pensioners (HMRC post-implementation review, 2017, as reported)",
+   "legalBasis": "Universal Credit regulations direct DWP to use RTI data for employed earnings (revenuebenefits.org.uk, search-sourced)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Real Time Information, DWP guidance (deposited paper DEP2024-0673)",
+     "url": "https://data.parliament.uk/DepositedPapers/Files/DEP2024-0673/138_Real_Time_Information_V12.0.pdf"
+    },
+    {
+     "title": "HMRC PAYE manual PAYE5001: RTI introduction",
+     "url": "https://www.gov.uk/hmrc-internal-manuals/paye-manual/paye5001"
+    },
+    {
+     "title": "Written evidence UCU0094 to the Work and Pensions Committee",
+     "url": "https://committees.parliament.uk/writtenevidence/79051/html/"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-rti-universal-credit",
+   "relatedApis": [
+    {
+     "name": "Individual Income",
+     "provider": "HM Revenue & Customs",
+     "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-income",
+     "inCatalogue": true
+    },
+    {
+     "name": "Individual Tax",
+     "provider": "HM Revenue & Customs",
+     "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-tax",
+     "inCatalogue": true
+    },
+    {
+     "name": "Get Citizen Income Information API",
+     "provider": "Department for Work and Pensions",
+     "url": "https://engineering.dwp.gov.uk/apis/docs",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "tell-us-once",
+   "title": "Report a death once to many services",
+   "journey": "Report a death",
+   "audience": "Citizen",
+   "parties": [
+    "Registrars (local authorities)",
+    "DWP",
+    "HMRC",
+    "HM Passport Office",
+    "DVLA",
+    "Local authority services",
+    "Social Security Scotland",
+    "Public sector pension schemes"
+   ],
+   "flows": "Notification of a death and the details needed to stop benefits, cancel a passport and driving licence, and update council services",
+   "purpose": "Spare bereaved people from telling each organisation separately",
+   "mechanism": "The registrar gives a Tell Us Once reference; the service, run by DWP, notifies the organisations the informant consents to",
+   "sharedIdentifiers": [
+    "National Insurance number",
+    "Passport number",
+    "Driving licence number"
+   ],
+   "standards": [
+    "uprn-usrn"
+   ],
+   "apiQueries": [],
+   "scale": "2.4 million notifications to partner organisations from 399,000 uses in 2017 to 2018 (Civil Service Local blog, 2018)",
+   "legalBasis": null,
+   "notes": "Not available if the person lived in Northern Ireland or abroad (mygov.scot).",
+   "sources": [
+    {
+     "title": "Tell Us Once on mygov.scot",
+     "url": "https://www.mygov.scot/tell-us-once"
+    },
+    {
+     "title": "A spotlight on Tell Us Once (Civil Service Local blog)",
+     "url": "https://civilservicelocal.blog.gov.uk/2018/11/16/a-spotlight-on-tell-us-once/"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-tell-us-once",
+   "relatedApis": []
+  },
+  {
+   "id": "civil-registration",
+   "title": "Birth, death and marriage registrations shared with services",
+   "journey": "Register a birth or death",
+   "audience": "Citizen",
+   "parties": [
+    "General Register Office",
+    "DWP",
+    "HM Passport Office",
+    "NHS"
+   ],
+   "flows": "Birth, death, marriage and civil partnership registration details, and NHS numbers linked with births and deaths",
+   "purpose": "Keep benefit, passport and health records right without the citizen having to tell each one",
+   "mechanism": "Civil registration powers in Part 5 of the Digital Economy Act; many agreements use electronic verification",
+   "sharedIdentifiers": [
+    "NHS number",
+    "National Insurance number"
+   ],
+   "standards": [
+    "nhs-number"
+   ],
+   "apiQueries": [
+    {
+     "query": "birth",
+     "provider": "nhs-digital"
+    }
+   ],
+   "scale": "50 agreements under the civil registration power on the register",
+   "legalBasis": "Digital Economy Act 2017, Part 5, Chapter 2 (civil registration)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 662: Registrar General and HM Passport Office",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/662"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 88: birth information between GRO and DWP",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/88"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 79: NHS numbers linked with birth and death registrations",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/79"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-civil-registration",
+   "relatedApis": [
+    {
+     "name": "Personal Demographics Service - FHIR API",
+     "provider": "NHS Digital",
+     "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir",
+     "inCatalogue": true
+    },
+    {
+     "name": "Personal Demographics Service - HL7 V3 API",
+     "provider": "NHS Digital",
+     "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-hl7-v3",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "prescription-exemption",
+   "title": "Free prescriptions: exemption checked in real time",
+   "journey": "Get free prescriptions",
+   "audience": "Citizen",
+   "parties": [
+    "DWP",
+    "NHS"
+   ],
+   "flows": "Whether a person is eligible for free prescriptions, checked against DWP records",
+   "purpose": "Check exemption from prescription charges when the medicine is dispensed, instead of relying on paper evidence",
+   "mechanism": "Real-time API from DWP to the NHS prescription charge exemption service",
+   "sharedIdentifiers": [
+    "NHS number",
+    "National Insurance number"
+   ],
+   "standards": [
+    "api-standards",
+    "nhs-number"
+   ],
+   "apiQueries": [
+    {
+     "query": "charge exemption",
+     "provider": "department-for-work-and-pensions"
+    },
+    {
+     "query": "prescription",
+     "provider": "nhs-digital"
+    }
+   ],
+   "scale": null,
+   "legalBasis": null,
+   "notes": "An example of the API-based sharing the Digital Economy Act register's method field does not show.",
+   "sources": [
+    {
+     "title": "Breaking down the silos in data (DWP careers)",
+     "url": "https://careers.dwp.gov.uk/data-with-power/"
+    },
+    {
+     "title": "co-cddo/api-catalogue: NHS Charge Exemption (DWP)",
+     "url": "https://github.com/co-cddo/api-catalogue/blob/b239f159ff4806c3fa3619cfc09cfb93067f62c3/data/catalogue-from-json-source.csv"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-prescription-exemption",
+   "relatedApis": [
+    {
+     "name": "NHS Charge Exemption",
+     "provider": "Department for Work and Pensions",
+     "url": "https://engineering.dwp.gov.uk/apis/docs",
+     "inCatalogue": true
+    },
+    {
+     "name": "Electronic Prescription Service - FHIR API",
+     "provider": "NHS Digital",
+     "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir",
+     "inCatalogue": true
+    },
+    {
+     "name": "Electronic Prescription Service - HL7 V3 API",
+     "provider": "NHS Digital",
+     "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "register-to-vote",
+   "title": "Register to vote: identity checked against DWP records",
+   "journey": "Register to vote",
+   "audience": "Citizen",
+   "parties": [
+    "Electoral registration officers (local authorities)",
+    "MHCLG (digital service)",
+    "DWP"
+   ],
+   "flows": "Name, date of birth, address and National Insurance number of the applicant",
+   "purpose": "Verify that people on the electoral register are who they say they are",
+   "mechanism": "The central Register to vote digital service matches applications against DWP data; results go to the electoral registration officer",
+   "sharedIdentifiers": [
+    "National Insurance number",
+    "UPRN"
+   ],
+   "standards": [
+    "uprn-usrn"
+   ],
+   "apiQueries": [],
+   "scale": "Every online application to register to vote in Great Britain",
+   "legalBasis": "Electoral Registration and Administration Act 2013; Electoral Registration (Digital Service) Regulations 2014 (privacy notice)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Register to vote: privacy notice",
+     "url": "https://www.registertovote.service.gov.uk/register-to-vote/privacy"
+    },
+    {
+     "title": "Using data matching to confirm electors in Great Britain",
+     "url": "https://www.gov.uk/government/publications/using-data-matching-to-confirm-electors-in-great-britain"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-register-to-vote",
+   "relatedApis": []
+  },
+  {
+   "id": "prove-identity",
+   "title": "Prove your identity once to use government services",
+   "journey": "Prove your identity online",
+   "audience": "Citizen",
+   "parties": [
+    "Government Digital Service (GOV.UK One Login)",
+    "HMRC",
+    "DWP",
+    "DVLA",
+    "Ministry of Defence"
+   ],
+   "flows": "The minimum data to check an identity or match a user to an existing record, and credentials such as a driving licence or veteran card for the GOV.UK wallet",
+   "purpose": "Let people prove who they are once and reuse it, to GPG 45 Medium for HMRC services",
+   "mechanism": "API between GOV.UK One Login and each department",
+   "sharedIdentifiers": [
+    "National Insurance number",
+    "Driving licence number"
+   ],
+   "standards": [
+    "gpg-45",
+    "dvs-trust-framework",
+    "api-standards"
+   ],
+   "apiQueries": [
+    {
+     "query": "driving licence",
+     "provider": "driver-and-vehicle-licensing-agency"
+    }
+   ],
+   "scale": "5 agreements under the identity verification power",
+   "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: identity verification services",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 353: HMRC and GDS identity verification",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/353"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 415: DWP and GDS knowledge-based verification",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/415"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 520: GDS and DVLA driving licence credential",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/520"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-prove-identity",
+   "relatedApis": [
+    {
+     "name": "Access to Driver Data API",
+     "provider": "Driver and Vehicle Licensing Agency",
+     "url": "https://developer-portal.driver-vehicle-licensing.api.gov.uk/apis/driver-view/driver-view-description.html",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "warm-home-discount",
+   "title": "Help with energy bills: benefit data matched for suppliers",
+   "journey": "Get help with energy bills",
+   "audience": "Citizen",
+   "parties": [
+    "DWP",
+    "DESNZ",
+    "Energy suppliers"
+   ],
+   "flows": "Whether a customer gets a qualifying benefit, matched against suppliers' customer lists",
+   "purpose": "Give eligible households the Warm Home Discount without them having to apply",
+   "mechanism": "Data matching; agreements use encrypted email and secure platforms",
+   "sharedIdentifiers": [
+    "Name and address",
+    "UPRN"
+   ],
+   "standards": [
+    "uprn-usrn"
+   ],
+   "apiQueries": [
+    {
+     "query": "citizen",
+     "provider": "department-for-work-and-pensions"
+    }
+   ],
+   "scale": "326 agreements under the fuel poverty power: the largest group on the register (204 DWP with energy suppliers, 70 DESNZ with energy suppliers)",
+   "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: fuel poverty",
+   "notes": "The helpline agreements (205, 284, 663) also enable electronic access to DWP's Citizen API, although their recorded method is file-based.",
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 667: benefit eligibility checks for energy suppliers",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/667"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 648: Warm Home Discount helpline and energy suppliers",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/648"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 663: Warm Home Discount Helpline 2026/27",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/663"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-warm-home-discount",
+   "relatedApis": [
+    {
+     "name": "Citizen API",
+     "provider": "Department for Work and Pensions",
+     "url": "",
+     "inCatalogue": true
+    },
+    {
+     "name": "Document Citizen Claims",
+     "provider": "Department for Work and Pensions",
+     "url": "https://engineering.dwp.gov.uk/apis/docs",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "water-poverty",
+   "title": "Help with water bills: benefit data matched for water companies",
+   "journey": "Get help with water bills",
+   "audience": "Citizen",
+   "parties": [
+    "DWP",
+    "Water companies"
+   ],
+   "flows": "Whether a customer gets a qualifying benefit",
+   "purpose": "Put eligible customers on social tariffs",
+   "mechanism": "Data matching by secure file transfer",
+   "sharedIdentifiers": [
+    "Name and address"
+   ],
+   "standards": [
+    "uprn-usrn"
+   ],
+   "apiQueries": [
+    {
+     "query": "benefit",
+     "provider": "department-for-work-and-pensions"
+    }
+   ],
+   "scale": "36 agreements under the water poverty power",
+   "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: water poverty",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 561: data matching for South East Water",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/561"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-water-poverty",
+   "relatedApis": [
+    {
+     "name": "Citizen Benefit Relationships",
+     "provider": "Department for Work and Pensions",
+     "url": "",
+     "inCatalogue": true
+    },
+    {
+     "name": "Award Details",
+     "provider": "Department for Work and Pensions",
+     "url": "https://engineering.dwp.gov.uk/apis/docs",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "public-sector-debt",
+   "title": "Debts owed to the public sector: councils, HMRC and DWP",
+   "journey": "Repay money owed to a council or government",
+   "audience": "Citizen",
+   "parties": [
+    "Local authorities",
+    "HMRC",
+    "DWP"
+   ],
+   "flows": "Contact, income and employment details of people who owe money to more than one body",
+   "purpose": "Recover debt fairly and spot people who are struggling to pay",
+   "mechanism": "Agreements use secure file transfer and secure platforms; many are council by council",
+   "sharedIdentifiers": [
+    "National Insurance number",
+    "Name and address"
+   ],
+   "standards": [],
+   "apiQueries": [],
+   "scale": "135 agreements under the debt power; 93 three-way agreements between a council, HMRC and DWP",
+   "legalBasis": "Digital Economy Act 2017, Part 5, Chapter 3 (debt) and Chapter 4 (fraud)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 628: York Council, HMRC and DWP",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/628"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 525: Westminster City Council and HMRC",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/525"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-public-sector-debt",
+   "relatedApis": []
+  },
+  {
+   "id": "free-school-meals",
+   "title": "Free school meals: eligibility checked once",
+   "journey": "Apply for free school meals",
+   "audience": "Citizen",
+   "parties": [
+    "DfE",
+    "Local authorities",
+    "DWP",
+    "HMRC",
+    "Home Office"
+   ],
+   "flows": "Surname, date of birth and National Insurance number or asylum support number; the answer is eligible or not",
+   "purpose": "Give an immediate eligibility answer instead of asking families for paper evidence",
+   "mechanism": "DfE's eligibility checking service queries DWP, HMRC and Home Office data for local authorities",
+   "sharedIdentifiers": [
+    "National Insurance number",
+    "National Asylum Support Service number"
+   ],
+   "standards": [],
+   "apiQueries": [],
+   "scale": "Immediate answers for over 90% of applications (Strickley, 2013)",
+   "legalBasis": null,
+   "notes": "Councils report it is hard to get the data for automatic enrolment (Food Foundation, 2024).",
+   "sources": [
+    {
+     "title": "Manage eligibility for free school meals (DfE)",
+     "url": "https://check-free-school-meals-admin.education.gov.uk/"
+    },
+    {
+     "title": "Online Free School Meals as a transformational project (Springer)",
+     "url": "https://rd.springer.com/content/pdf/10.1007/978-3-642-38411-0_10.pdf"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-free-school-meals",
+   "relatedApis": []
+  },
+  {
+   "id": "early-learning-scotland",
+   "title": "Funded early learning and childcare in Scotland",
+   "journey": "Get funded childcare (Scotland)",
+   "audience": "Citizen",
+   "parties": [
+    "Scottish Government",
+    "Local authorities (Scotland)",
+    "DWP"
+   ],
+   "flows": "Data to identify and evaluate eligibility for funded early learning and childcare",
+   "purpose": "Reach eligible families and evaluate programmes",
+   "mechanism": "Within a secure platform",
+   "sharedIdentifiers": [
+    "Name and address"
+   ],
+   "standards": [
+    "digital-scotland-service-standard"
+   ],
+   "apiQueries": [],
+   "scale": "30 agreements under the early learning and childcare power",
+   "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: early learning and childcare",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 533: Dundee City Council and Scottish Ministers",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/533"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 532: DWP and Scottish Ministers",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/532"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-early-learning-scotland",
+   "relatedApis": []
+  },
+  {
+   "id": "right-to-work",
+   "title": "Prove your right to work or rent with a share code",
+   "journey": "Prove your right to work or rent",
+   "audience": "Citizen and business",
+   "parties": [
+    "Home Office",
+    "Employers",
+    "Landlords"
+   ],
+   "flows": "A live view of the person's immigration status, shown only with their share code and date of birth",
+   "purpose": "Let employers and landlords check status online instead of paper documents",
+   "mechanism": "Home Office online services; the person generates a share code from their eVisa",
+   "sharedIdentifiers": [
+    "Share code",
+    "Date of birth"
+   ],
+   "standards": [
+    "dvs-trust-framework"
+   ],
+   "apiQueries": [],
+   "scale": "Employers can rely on the online check for a statutory excuse since 28 January 2019",
+   "legalBasis": null,
+   "notes": null,
+   "sources": [
+    {
+     "title": "Prove your right to work to an employer",
+     "url": "https://www.gov.uk/prove-right-to-work/get-a-share-code-online"
+    },
+    {
+     "title": "Employer's guide to right to work checks (8 February 2024)",
+     "url": "https://www.gov.uk/government/publications/right-to-work-checks-employers-guide/employers-guide-to-right-to-work-checks-8-february-2024-accessible"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-right-to-work",
+   "relatedApis": []
+  },
+  {
+   "id": "driving-licence-photo",
+   "title": "Driving licence applications reuse your passport photo",
+   "journey": "Apply for or renew a driving licence",
+   "audience": "Citizen",
+   "parties": [
+    "DVLA",
+    "HM Passport Office"
+   ],
+   "flows": "The passport photo, and identity confirmation from passport records",
+   "purpose": "Avoid sending a new photo and documents",
+   "mechanism": "DVLA's secure link with HM Passport Office, with the applicant's agreement",
+   "sharedIdentifiers": [
+    "Passport number",
+    "Driver number"
+   ],
+   "standards": [],
+   "apiQueries": [
+    {
+     "query": "driving licence",
+     "provider": "driver-and-vehicle-licensing-agency"
+    }
+   ],
+   "scale": null,
+   "legalBasis": null,
+   "notes": null,
+   "sources": [
+    {
+     "title": "Identity documents needed for a driving licence application",
+     "url": "https://www.gov.uk/id-for-driving-licence"
+    },
+    {
+     "title": "DVLA adds 2 more services to its account (news)",
+     "url": "https://www.gov.uk/government/news/dvla-adds-2-more-services-to-its-driver-and-vehicles-account-service"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-driving-licence-photo",
+   "relatedApis": [
+    {
+     "name": "Access to Driver Data API",
+     "provider": "Driver and Vehicle Licensing Agency",
+     "url": "https://developer-portal.driver-vehicle-licensing.api.gov.uk/apis/driver-view/driver-view-description.html",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "buy-a-home",
+   "title": "Buying a home: Stamp Duty return to land registration",
+   "journey": "Buy a home",
+   "audience": "Citizen and business",
+   "parties": [
+    "HMRC",
+    "HM Land Registry",
+    "Conveyancers"
+   ],
+   "flows": "The SDLT5 certificate and Unique Transaction Reference Number showing the Stamp Duty Land Tax return was made",
+   "purpose": "HM Land Registry cannot register most land transactions without evidence the SDLT return was filed",
+   "mechanism": "The conveyancer files the return with HMRC and sends the SDLT5 with the registration application; the link is a document, not a system-to-system exchange",
+   "sharedIdentifiers": [
+    "Unique Transaction Reference Number",
+    "Title number",
+    "UPRN"
+   ],
+   "standards": [
+    "uprn-usrn"
+   ],
+   "apiQueries": [
+    {
+     "query": "land",
+     "provider": "hm-land-registry"
+    }
+   ],
+   "scale": null,
+   "legalBasis": "Finance Act 2003, section 79 (SDLTM50200)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Stamp Duty Land Tax online and paper returns",
+     "url": "https://www.gov.uk/guidance/stamp-duty-land-tax-online-and-paper-returns"
+    },
+    {
+     "title": "SDLTM50200: registration of land transactions",
+     "url": "https://www.gov.uk/hmrc-internal-manuals/stamp-duty-land-tax-manual/sdltm50200"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-buy-a-home",
+   "relatedApis": [
+    {
+     "name": "Land Charges Bankruptcy Search",
+     "provider": "HM Land Registry",
+     "url": "https://landregistry.github.io/bgtechdoc/services/land_charges_bankruptcy_search/",
+     "inCatalogue": true
+    },
+    {
+     "name": "Land Charges Full Search",
+     "provider": "HM Land Registry",
+     "url": "https://landregistry.github.io/bgtechdoc/services/land_charges_full_search/",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "set-up-a-company",
+   "title": "Set up a company and register for Corporation Tax together",
+   "journey": "Set up a limited company",
+   "audience": "Business",
+   "parties": [
+    "Companies House",
+    "HMRC"
+   ],
+   "flows": "Company registration details, passed on so the company is set up for Corporation Tax",
+   "purpose": "One registration instead of two",
+   "mechanism": "Joint service: registering with Companies House usually sets the company up for Corporation Tax too",
+   "sharedIdentifiers": [
+    "Company registration number",
+    "Unique Taxpayer Reference"
+   ],
+   "standards": [
+    "bods"
+   ],
+   "apiQueries": [
+    {
+     "query": "companies house",
+     "provider": "companies-house"
+    }
+   ],
+   "scale": null,
+   "legalBasis": null,
+   "notes": null,
+   "sources": [
+    {
+     "title": "Register your company (GOV.UK)",
+     "url": "https://www.gov.uk/limited-company-formation/register-your-company"
+    },
+    {
+     "title": "Helping hand to set up new businesses (press release)",
+     "url": "https://www.gov.uk/government/news/helping-hand-to-set-up-new-businesses"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-set-up-a-company",
+   "relatedApis": [
+    {
+     "name": "Companies House",
+     "provider": "Companies House",
+     "url": "https://developer.companieshouse.gov.uk/api/docs/",
+     "inCatalogue": true
+    },
+    {
+     "name": "Companies House Streaming",
+     "provider": "Companies House",
+     "url": "https://developer-specs.companieshouse.gov.uk/streaming-api/guides/overview",
+     "inCatalogue": true
+    }
+   ]
+  },
+  {
+   "id": "ukef-hmrc",
+   "title": "Export finance and trade: UK Export Finance and HMRC",
+   "journey": "Export goods with export finance",
+   "audience": "Business",
+   "parties": [
+    "UK Export Finance",
+    "HMRC",
+    "Department for Business and Trade"
+   ],
+   "flows": "VAT and EORI checks on exporters, published trade statistics and commodity codes",
+   "purpose": "Check exporters and size markets using published APIs before asking for restricted data",
+   "mechanism": "Published HMRC APIs; restricted customs data needs a legal route",
+   "sharedIdentifiers": [
+    "VAT registration number",
+    "EORI number",
+    "Commodity code"
+   ],
+   "standards": [
+    "api-standards",
+    "openapi-3"
+   ],
+   "apiQueries": [
+    {
+     "query": "VAT number",
+     "provider": "hm-revenue-customs"
+    },
+    {
+     "query": "EORI",
+     "provider": "hm-revenue-customs"
+    },
+    {
+     "query": "trade",
+     "provider": "hm-revenue-customs"
+    }
+   ],
+   "scale": null,
+   "legalBasis": null,
+   "notes": "The worked example this register grew from.",
+   "sources": [
+    {
+     "title": "HMRC Developer Hub",
+     "url": "https://developer.service.hmrc.gov.uk/api-documentation"
+    },
+    {
+     "title": "UK Trade Info API",
+     "url": "https://www.uktradeinfo.com/api-documentation"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-ukef-hmrc",
+   "relatedApis": [
+    {
+     "name": "Check a UK VAT number",
+     "provider": "HM Revenue & Customs",
+     "url": "https://www.tax.service.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api/1.0",
+     "inCatalogue": false
+    },
+    {
+     "name": "Check an EORI Number",
+     "provider": "HM Revenue & Customs",
+     "url": "https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/check-eori-number-api",
+     "inCatalogue": true
+    },
+    {
+     "name": "GOV.UK Trade Tariff API",
+     "provider": "HM Revenue & Customs",
+     "url": "https://api.trade-tariff.service.gov.uk/",
+     "inCatalogue": true
+    },
+    {
+     "name": "UK Trade Info API",
+     "provider": "HM Revenue & Customs",
+     "url": "https://www.uktradeinfo.com/api-documentation",
+     "inCatalogue": false
+    }
+   ]
+  },
+  {
+   "id": "public-procurement",
+   "title": "Bid for a public contract: one platform, one data standard",
+   "journey": "Find and bid for a public contract",
+   "audience": "Business",
+   "parties": [
+    "Cabinet Office (central digital platform)",
+    "Contracting authorities",
+    "Suppliers"
+   ],
+   "flows": "Procurement notices and supplier information, with unique identifiers for authorities, suppliers, procurements and contracts",
+   "purpose": "Make procurement transparent from planning to contract end",
+   "mechanism": "All notices under the Procurement Act 2023 are published on the central digital platform, structured in OCDS",
+   "sharedIdentifiers": [
+    "Supplier and contracting authority identifiers"
+   ],
+   "standards": [
+    "ocds",
+    "cyber-essentials"
+   ],
+   "apiQueries": [],
+   "scale": "Every regulated procurement notice since 24 February 2025",
+   "legalBasis": "Procurement Act 2023; Procurement Regulations 2024, regulation 5",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Guidance: Central Digital Platform and Publication of Information",
+     "url": "https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-procure-phase/guidance-central-digital-platform-and-publication-of-information-html"
+    },
+    {
+     "title": "How to use the central digital platform",
+     "url": "https://www.gov.uk/government/publications/procurement-act-2023-short-guides/buyers-and-suppliers-how-to-use-the-central-digital-platform-the-enhanced-find-a-tender-service-html"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-public-procurement",
+   "relatedApis": []
+  },
+  {
+   "id": "education-fraud",
+   "title": "Education funding fraud checks by API",
+   "journey": "Apply for education funding",
+   "audience": "Public body",
+   "parties": [
+    "DfE",
+    "HMRC"
+   ],
+   "flows": "Data to prevent fraud in education funding",
+   "purpose": "Stop fraudulent claims",
+   "mechanism": "API",
+   "sharedIdentifiers": [
+    "National Insurance number"
+   ],
+   "standards": [
+    "api-standards"
+   ],
+   "apiQueries": [],
+   "scale": "One of 11 API agreements among 667 on the register",
+   "legalBasis": "Digital Economy Act 2017, Part 5, Chapter 4 (fraud)",
+   "notes": null,
+   "sources": [
+    {
+     "title": "Digital Economy Act register, agreement 279: DfE and HMRC fraud data share",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/279"
+    }
+   ],
+   "provenance": "V",
+   "checked": "2026-11-20",
+   "portal": "https://cyberdudeuk.github.io/ndl-pubsec-mcp/#xch-education-fraud",
+   "relatedApis": []
+  }
+ ]
+}

@@ -21,6 +21,7 @@
 ## Data
 - [Standards register](https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/standards.json): 41 standards with obligation, scope and provenance
 - [Exchanges register](https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json): 18 exchanges with parties, identifiers, legal basis and sources
+- [Exchanges feed](https://cyberdudeuk.github.io/ndl-pubsec-mcp/exchanges.json): every exchange with related APIs and the register counts, to harvest rather than copy
 - [Knowledge graph](https://cyberdudeuk.github.io/ndl-pubsec-mcp/knowledge-graph.jsonld): JSON-LD of tools, standards, exchanges and terms
 
 ## Docs

@@ -205,10 +205,12 @@
    ],
    "apiQueries": [
     {
-     "query": "income"
+     "query": "individual income",
+     "provider": "hm-revenue-customs"
     },
     {
-     "query": "PAYE"
+     "query": "citizen income",
+     "provider": "department-for-work-and-pensions"
     }
    ],
    "scale": "RTI covers more than 40 million employees and occupational pensioners (HMRC post-implementation review, 2017, as reported)",
@@ -257,14 +259,7 @@
    "standards": [
     "uprn-usrn"
    ],
-   "apiQueries": [
-    {
-     "query": "death"
-    },
-    {
-     "query": "bereavement"
-    }
-   ],
+   "apiQueries": [],
    "scale": "2.4 million notifications to partner organisations from 399,000 uses in 2017 to 2018 (Civil Service Local blog, 2018)",
    "legalBasis": null,
    "notes": "Not available if the person lived in Northern Ireland or abroad (mygov.scot).",
@@ -304,10 +299,8 @@
    ],
    "apiQueries": [
     {
-     "query": "birth"
-    },
-    {
-     "query": "registration"
+     "query": "birth",
+     "provider": "nhs-digital"
     }
    ],
    "scale": "50 agreements under the civil registration power on the register",
@@ -352,10 +345,12 @@
    ],
    "apiQueries": [
     {
-     "query": "charge exemption"
+     "query": "charge exemption",
+     "provider": "department-for-work-and-pensions"
     },
     {
-     "query": "prescription"
+     "query": "prescription",
+     "provider": "nhs-digital"
     }
    ],
    "scale": null,
@@ -394,11 +389,7 @@
    "standards": [
     "uprn-usrn"
    ],
-   "apiQueries": [
-    {
-     "query": "elector"
-    }
-   ],
+   "apiQueries": [],
    "scale": "Every online application to register to vote in Great Britain",
    "legalBasis": "Electoral Registration and Administration Act 2013; Electoral Registration (Digital Service) Regulations 2014 (privacy notice)",
    "notes": null,
@@ -441,10 +432,8 @@
    ],
    "apiQueries": [
     {
-     "query": "identity"
-    },
-    {
-     "query": "driving licence"
+     "query": "driving licence",
+     "provider": "driver-and-vehicle-licensing-agency"
     }
    ],
    "scale": "5 agreements under the identity verification power",
@@ -488,9 +477,6 @@
     "uprn-usrn"
    ],
    "apiQueries": [
-    {
-     "query": "energy"
-    },
     {
      "query": "citizen",
      "provider": "department-for-work-and-pensions"
@@ -536,7 +522,8 @@
    ],
    "apiQueries": [
     {
-     "query": "water"
+     "query": "benefit",
+     "provider": "department-for-work-and-pensions"
     }
    ],
    "scale": "36 agreements under the water poverty power",
@@ -569,11 +556,7 @@
     "Name and address"
    ],
    "standards": [],
-   "apiQueries": [
-    {
-     "query": "council tax"
-    }
-   ],
+   "apiQueries": [],
    "scale": "135 agreements under the debt power; 93 three-way agreements between a council, HMRC and DWP",
    "legalBasis": "Digital Economy Act 2017, Part 5, Chapter 3 (debt) and Chapter 4 (fraud)",
    "notes": null,
@@ -610,11 +593,7 @@
     "National Asylum Support Service number"
    ],
    "standards": [],
-   "apiQueries": [
-    {
-     "query": "school"
-    }
-   ],
+   "apiQueries": [],
    "scale": "Immediate answers for over 90% of applications (Strickley, 2013)",
    "legalBasis": null,
    "notes": "Councils report it is hard to get the data for automatic enrolment (Food Foundation, 2024).",
@@ -650,11 +629,7 @@
    "standards": [
     "digital-scotland-service-standard"
    ],
-   "apiQueries": [
-    {
-     "query": "childcare"
-    }
-   ],
+   "apiQueries": [],
    "scale": "30 agreements under the early learning and childcare power",
    "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: early learning and childcare",
    "notes": null,
@@ -691,11 +666,7 @@
    "standards": [
     "dvs-trust-framework"
    ],
-   "apiQueries": [
-    {
-     "query": "immigration"
-    }
-   ],
+   "apiQueries": [],
    "scale": "Employers can rely on the online check for a statutory excuse since 28 January 2019",
    "legalBasis": null,
    "notes": null,
@@ -731,7 +702,8 @@
    "standards": [],
    "apiQueries": [
     {
-     "query": "driving licence"
+     "query": "driving licence",
+     "provider": "driver-and-vehicle-licensing-agency"
     }
    ],
    "scale": null,
@@ -773,10 +745,8 @@
    ],
    "apiQueries": [
     {
-     "query": "land"
-    },
-    {
-     "query": "property"
+     "query": "land",
+     "provider": "hm-land-registry"
     }
    ],
    "scale": null,
@@ -816,7 +786,8 @@
    ],
    "apiQueries": [
     {
-     "query": "company"
+     "query": "companies house",
+     "provider": "companies-house"
     }
    ],
    "scale": null,
@@ -859,10 +830,12 @@
    ],
    "apiQueries": [
     {
-     "query": "VAT number"
+     "query": "VAT number",
+     "provider": "hm-revenue-customs"
     },
     {
-     "query": "EORI"
+     "query": "EORI",
+     "provider": "hm-revenue-customs"
     },
     {
      "query": "trade",
@@ -905,11 +878,7 @@
     "ocds",
     "cyber-essentials"
    ],
-   "apiQueries": [
-    {
-     "query": "procurement"
-    }
-   ],
+   "apiQueries": [],
    "scale": "Every regulated procurement notice since 24 February 2025",
    "legalBasis": "Procurement Act 2023; Procurement Regulations 2024, regulation 5",
    "notes": null,
@@ -944,11 +913,7 @@
    "standards": [
     "api-standards"
    ],
-   "apiQueries": [
-    {
-     "query": "education"
-    }
-   ],
+   "apiQueries": [],
    "scale": "One of 11 API agreements among 667 on the register",
    "legalBasis": "Digital Economy Act 2017, Part 5, Chapter 4 (fraud)",
    "notes": null,
