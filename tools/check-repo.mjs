@@ -211,6 +211,35 @@ export function checkRepo(root) {
       if (l < 0 || r > vb) problems.push(`C-28 docs/index.html: chart label "${t[3]}" runs past the chart edge (viewBox ${vb})`);
     }
   }
+  // C-30 (defect D-037): the footer leaves room for the fixed Top button at the end of the page
+  const foot = cssRules.filter((r) => !r.media && r.selectors.includes("footer")).map((r) => r.body).join(";");
+  const fb = Number((foot.match(/padding-bottom\s*:\s*(\d+)px/) ?? [])[1] ?? 0);
+  if (fb < 72) problems.push("C-30 tools/site/site.css: the footer has no room (padding-bottom under 72px) for the fixed Top button, which then covers the colophon");
+  // C-29 (ADR 0007): the repository's own content is © the owner under CC BY 4.0 and code under MIT; "Crown
+  // copyright" and OGL may appear only for the third-party xGov MEM material they belong to.
+  const licenceText = existsSync(join(root, "LICENCE")) ? readFileSync(join(root, "LICENCE"), "utf8") : "";
+  if (/Crown/i.test((licenceText.match(/^Copyright .*$/m) ?? [""])[0])) problems.push("C-29 LICENCE: the copyright line still names the Crown (ADR 0007)");
+  if (existsSync(join(root, "LICENCE-OGL"))) problems.push("C-29 LICENCE-OGL: the repository's own content is not under OGL; the OGL text belongs in vendor/xgov-mem/ (ADR 0007)");
+  if (!existsSync(join(root, "LICENCE-CC-BY-4.0"))) problems.push("C-29 LICENCE-CC-BY-4.0 is missing (ADR 0007)");
+  // Only the repository's own ownership statements are checked, sentence by sentence: the licence sections of
+  // README and CONTRIBUTING, the page footer's licence paragraph and its metadata, and CITATION.cff. Mentions of
+  // other works' licences (standards, catalogue records) and history (changelog, defect register) are facts, not claims.
+  const section = (f, re) => { const t = existsSync(join(root, f)) ? readFileSync(join(root, f), "utf8") : ""; return (t.match(re) ?? [""])[0]; };
+  const ownStatements = {
+    "README.md": section("README.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
+    "CONTRIBUTING.md": section("CONTRIBUTING.md", /^## Licence[\s\S]*?(?=^## |(?![\s\S]))/m),
+    "docs/index.html footer": (page.match(/<p>Code: <a[\s\S]*?<\/p>/) ?? [""])[0].replace(/<[^>]+>/g, ""),
+    "docs/index.html metadata": (page.match(/"copyrightNotice":"[^"]*"/) ?? [""])[0],
+    "CITATION.cff": section("CITATION.cff", /^license:[\s\S]*?(?=^\S)/m)
+  };
+  for (const [where, text] of Object.entries(ownStatements)) {
+    for (const sentence of text.split(/(?<=\.)\s+|\n+/)) {
+      if (/Crown|Open Government Licence|OGL/i.test(sentence) && !/xGov MEM|vendor\/xgov-mem/.test(sentence)) problems.push(`C-29 ${where}: "${sentence.trim().slice(0, 80)}" claims Crown copyright or OGL for this repository's own content (ADR 0007)`);
+    }
+  }
+  if (!/© 2026 Emanuel Silva/.test(ownStatements["README.md"])) problems.push("C-29 README.md: the licence section does not name the copyright holder (ADR 0007)");
+  if (!/CC-BY-4\.0/.test(ownStatements["CITATION.cff"])) problems.push("C-29 CITATION.cff: the licence list does not include CC-BY-4.0 (ADR 0007)");
+  if (page && !/Content: <a href="https:\/\/creativecommons\.org\/licenses\/by\/4\.0\/">/.test(page)) problems.push("C-29 docs/index.html: the footer does not license content under CC BY 4.0 (ADR 0007)");
   // C-22 (defect D-033): text and background token pairs meet WCAG 2.2 AA contrast in both themes
   const tokenBlock = (re) => Object.fromEntries([...((css.match(re) ?? [""])[0].matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi))].map((m) => [m[1], m[2]]));
   const light = tokenBlock(/:root \{[^}]*\}/);
@@ -282,5 +311,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-28)");
+  console.log("repository checks passed (C-01 to C-30)");
 }

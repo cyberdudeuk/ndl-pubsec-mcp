@@ -290,5 +290,13 @@ describe("page structure (D-025)", () => {
     expect(breakFile("tools/site/site.css", ".tag--V { background: var(--ok-soft); color: var(--ok-ink);", ".tag--V { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok);").join()).toMatch(/C-22 .*translucent tint/);
     expect(breakFile("tools/site/site.css", "--ok-ink: #145c37;", "--ok-ink: #1b7f4b;").join()).toMatch(/C-22 .*light theme --ok-ink on --ok-soft/);
   });
+  it("C-29 catches the repository's own content going back to Crown copyright or OGL (ADR 0007)", () => {
+    expect(breakFile("LICENCE", "Copyright (c) 2026 Emanuel Silva", "Copyright (c) 2026 Crown Copyright (Government Digital Service)").join()).toMatch(/C-29 LICENCE: the copyright line/);
+    expect(breakFile("docs/index.html", /Content: <a href="https:\/\/creativecommons[^<]*<\/a>\. © 2026 Emanuel Silva\. Third-party material keeps its own licence: the xGov MEM model is © Crown copyright under the <a href="[^"]*">Open Government Licence v3\.0<\/a>\./, 'Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.').join()).toMatch(/C-29 docs\/index\.html footer: .*claims Crown copyright or OGL/);
+    expect(breakFile("README.md", "© 2026 Emanuel Silva.", "© Crown copyright 2026.").join()).toMatch(/C-29 README\.md: "© Crown copyright 2026\." claims/);
+  });
+  it("C-30 catches a footer with no room for the Top button (D-037)", () => {
+    expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
+  });
 });
 

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- Licence: the repository's own content (documentation, website, user guide and toolkit) is now © 2026 Emanuel Silva under Creative Commons Attribution 4.0, and code stays under MIT with the owner as copyright holder (ADR 0007, check C-29). The vendored xGov MEM files stay © Crown copyright under OGL v3.0, with their licence text moved to `vendor/xgov-mem/LICENCE-OGL`.
+- The fixed Top button no longer covers the footer colophon on phones (D-037, check C-30).
+- Open item O-18: plan for DCAT-AP-UK superseding xGov MEM.
+
 ### Fixed
 
 - Code in "How to use it" was illegible in the light theme: the inline-code background was painted over the dark code block (D-026, check C-19).

@@ -90,6 +90,6 @@ Use the [contact form](https://github.com/cyberdudeuk/ndl-pubsec-mcp/issues/new?
 
 ## Licence
 
-Code: [MIT Licence](LICENCE). Documentation: [Open Government Licence v3.0](LICENCE-OGL). The vendored xGov MEM files in `vendor/xgov-mem/` are © Crown copyright under the Open Government Licence v3.0.
+Code: [MIT Licence](LICENCE). Documentation, the website and its generated content: [Creative Commons Attribution 4.0 International](LICENCE-CC-BY-4.0) (CC BY 4.0). © 2026 Emanuel Silva. See [ADR 0007](docs/adr/0007-licence-cc-by.md).
 
-© Crown copyright 2026.
+Third-party material keeps its own licence. The vendored xGov MEM files in `vendor/xgov-mem/` are © Crown copyright under the [Open Government Licence v3.0](vendor/xgov-mem/LICENCE-OGL), and catalogue records, standards and their licences are described as their publishers state them.

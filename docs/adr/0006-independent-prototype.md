@@ -4,6 +4,7 @@
 - Date: 20 November 2026
 - Decider: repository owner
 - Supersedes: the "official work" wording of [ADR 0002](0002-official-and-personal-repositories.md). The split between this repository and the private one stands.
+- Partly superseded by: [ADR 0007](0007-licence-cc-by.md), for copyright and the content licence
 
 ## Context
 
