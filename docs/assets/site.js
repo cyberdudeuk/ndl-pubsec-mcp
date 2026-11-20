@@ -323,3 +323,29 @@
     window.addEventListener("scroll", show, { passive: true }); show();
   }
 })();
+
+// ecosystem view (tools/site/ecosystem.mjs)
+(function () {
+  document.querySelectorAll("[data-eco]").forEach(function (wrap) {
+    var about = wrap.querySelector(".eco__about"), base = about ? about.textContent : "";
+    function on(node) {
+      var links = (node.getAttribute("data-links") || "").split(" "), id = node.getAttribute("data-node");
+      wrap.classList.add("is-focused");
+      wrap.querySelectorAll(".eco__node").forEach(function (n) { n.classList.toggle("is-on", links.indexOf(n.getAttribute("data-node")) !== -1); });
+      wrap.querySelectorAll(".eco__edge").forEach(function (e) { e.classList.toggle("is-on", e.getAttribute("data-from") === id || e.getAttribute("data-to") === id); });
+      if (about) about.textContent = node.getAttribute("aria-label") || base;
+    }
+    function off() {
+      wrap.classList.remove("is-focused");
+      wrap.querySelectorAll(".is-on").forEach(function (x) { x.classList.remove("is-on"); });
+      if (about) about.textContent = base;
+    }
+    wrap.querySelectorAll(".eco__node").forEach(function (n) {
+      n.addEventListener("mouseenter", function () { on(n); });
+      n.addEventListener("focus", function () { on(n); });
+      n.addEventListener("mouseleave", off);
+      n.addEventListener("blur", off);
+    });
+    wrap.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { off(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } });
+  });
+})();

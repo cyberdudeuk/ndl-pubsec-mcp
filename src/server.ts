@@ -1,8 +1,10 @@
-// MCP server: six read-only tools (discoverability, standards, terms, federation) and three reference resources.
+// MCP server: read-only tools (data, API and server discoverability, standards, terms, federation) and reference resources.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import standards from "./data/standards.json" with { type: "json" };
 import federation from "./data/federation.json" with { type: "json" };
+import servers from "./data/servers.json" with { type: "json" };
+import { API_SOURCES, searchApis } from "./lib/apis.js";
 import bundledVocabulary from "./data/vocabulary.json" with { type: "json" };
 import { CatalogueError, CkanClient, crosswalkToMem, summarise, VERSION, type CkanOptions } from "./lib/ckan.js";
 import { CLASS_NAMES, rules, validateRecord } from "./lib/mem.js";
@@ -28,7 +30,7 @@ function clip(text: string | undefined, n = MAX_TEXT): string | undefined {
 const catalogueHint = (e: CatalogueError) =>
   e.kind === "network" ? "Check the network, or set NDL_MCP_CKAN_BASE to a reachable data.gov.uk API base URL." : undefined;
 
-export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list"] as const;
+export const TOOL_NAMES = ["catalogue_search", "dataset_describe", "metadata_validate", "standard_explain", "term_lookup", "domain_list", "api_search", "server_search"] as const;
 
 export interface ServerOptions extends CkanOptions {
   /** A vocabulary file in the R2 register shape. Defaults to NDL_MCP_VOCAB_PATH, then the bundled example. */
@@ -204,6 +206,57 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       annotations: { ...READ_ONLY, openWorldHint: false }
     },
     async () => reply({ ok: true, ...federation })
+  );
+
+  server.registerTool(
+    "api_search",
+    {
+      title: "Find UK public sector APIs",
+      description:
+        "Search UK public sector APIs by words in their name, provider or description, optionally for one provider. Draws on the UK public sector API catalogue at a pinned commit, plus APIs added by name after checking them at the publisher's page (each says which). Returns name, provider, description, endpoint and documentation links, and the source of each entry. Read-only: this server lists APIs and never calls them, holds no keys and passes no data. Listing is not endorsement, and using an API may need its own sign-up or a legal basis.",
+      inputSchema: {
+        query: z.string().trim().min(2).max(200).describe("Words to look for, for example 'VAT number', 'trade statistics' or 'EORI'"),
+        provider: z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N} &'(),.-]+$/u).optional().describe("Optional provider name or id, for example 'HM Revenue & Customs' or 'hm-revenue-customs'"),
+        limit: z.number().int().min(1).max(25).default(10).describe("How many APIs to return (1 to 25)")
+      },
+      annotations: { ...READ_ONLY, openWorldHint: false }
+    },
+    async ({ query, provider, limit }) => {
+      const hits = searchApis(query, { provider });
+      return reply({
+        ok: true,
+        query,
+        provider,
+        sources: API_SOURCES,
+        total: hits.length,
+        returned: Math.min(hits.length, limit),
+        apis: hits.slice(0, limit),
+        note: "Entries come from the sources named on each. This server does not call the APIs. Check the documentation link before relying on one."
+      });
+    }
+  );
+
+  server.registerTool(
+    "server_search",
+    {
+      title: "Find MCP servers for UK public sector work",
+      description:
+        "List or search MCP servers an agent might use alongside this one: the estate's own servers (with their manifests or repositories) and public candidates awaiting the owner's review. Each entry says its status, where it was checked and when. Candidates are not endorsed. This server never calls any of them.",
+      inputSchema: {
+        query: z.string().trim().min(2).max(100).optional().describe("Words to look for in a server's name or description; leave out to list all")
+      },
+      annotations: { ...READ_ONLY, openWorldHint: false }
+    },
+    async ({ query }) => {
+      const all = [
+        ...federation.domains.map((d) => ({ id: d.domain, title: d.title, status: d.self ? "this server" : "estate, from its manifest", repository: d.repository, description: d.description, tools: d.tools })),
+        ...servers.estate.map((s) => ({ id: s.id, title: s.title, status: "estate", repository: `${s.repository}/tree/${s.commit.slice(0, 7)}/${s.path}`, description: s.description, tools: s.tools, transport: s.transport, checked: s.checked })),
+        ...servers.candidates.map((s) => ({ id: s.id, title: s.title, status: s.status, url: s.url, description: s.description, transport: s.transport, checked: s.checked, provenance: s.provenance }))
+      ];
+      const q = (query ?? "").toLowerCase().split(/\s+/).filter((w) => w.length > 1);
+      const hits = q.length ? all.filter((s) => q.every((w) => `${s.title} ${s.description}`.toLowerCase().includes(w))) : all;
+      return reply({ ok: true, about: servers.about, asOf: servers.asOf, query, total: hits.length, servers: hits });
+    }
   );
 
   server.registerResource(

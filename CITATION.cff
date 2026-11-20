@@ -6,7 +6,9 @@ authors:
   - given-names: Emanuel
     family-names: Silva
     orcid: "https://orcid.org/0009-0000-5880-7219"
-license: MIT
+license:
+  - MIT
+  - CC-BY-4.0
 version: 0.4.0
 repository-code: https://github.com/cyberdudeuk/ndl-pubsec-mcp
 url: https://cyberdudeuk.github.io/ndl-pubsec-mcp/

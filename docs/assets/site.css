@@ -163,6 +163,7 @@ main { min-width: 0; padding: 18px 0 64px; }
 .findings .sev { font-weight: 800; text-transform: uppercase; font-size: 12px; margin-right: 6px; }
 .findings .sev--error { color: var(--bad); }
 .findings .sev--warning { color: var(--warn); }
+.findings .sev--source { color: var(--ink-2); }
 
 /* charts */
 .chart { width: 100%; min-width: 560px; height: auto; }
@@ -230,6 +231,8 @@ dfn.tip { font-style: normal; border-bottom: 2px dotted var(--brand-2); cursor: 
 
 /* footer */
 footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 40px; }
+/* Room below the footer for the fixed Top button, so it never covers the colophon (defect D-037, check C-30) */
+footer { padding-bottom: 76px; }
 .foot { max-width: var(--max); margin: 0 auto; padding: 28px var(--gap); display: grid; grid-template-columns: 1fr auto; gap: 24px; font-size: 15px; color: var(--ink-2); }
 .foot h2 { font-size: 17px; color: var(--ink); margin: 0 0 6px; }
 .foot__codes { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
@@ -311,3 +314,26 @@ a.card:hover { border-color: var(--brand); }
 @media (max-width: 600px) { .grid--wide { grid-template-columns: 1fr; } .tour-list, .flow { grid-template-columns: 1fr; } }
 @media print { .tour-panel, #tour-start { display: none !important; } details > *:not(summary) { display: block; } }
 .tips .tag { flex: none; min-width: 104px; text-align: center; }
+
+/* ecosystem view (tools/site/ecosystem.mjs) */
+.eco { width: 100%; min-width: 720px; height: auto; font-family: inherit; }
+.eco__title { font-size: 16px; font-weight: 700; fill: var(--ink); }
+.eco__key, .eco__group { font-size: 12px; fill: var(--ink-2); }
+.eco__estate { fill: var(--surface-2); stroke: var(--line); }
+.eco__node > rect { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.25; transition: stroke .15s, fill .15s; }
+.eco__node--finder > rect { fill: color-mix(in srgb, var(--brand) 12%, var(--surface)); stroke: var(--brand); stroke-width: 2; }
+.eco__name { font-size: 13.5px; font-weight: 700; fill: var(--ink); }
+.eco__line { font-size: 12px; fill: var(--ink-2); }
+.eco__icon { color: var(--brand); }
+.eco__node { cursor: pointer; outline: none; }
+.eco__node:hover > rect, .eco__node:focus-visible > rect, .eco__node.is-on > rect { stroke: var(--brand); stroke-width: 2.5; }
+.eco__node:focus-visible > rect { stroke: var(--focus); stroke-width: 3; }
+.eco__edge path { fill: none; stroke: var(--ink-3); stroke-width: 1.3; transition: stroke .15s, opacity .15s; }
+.eco__edge--proposed path { stroke-dasharray: 5 4; }
+.eco__edge text { font-size: 11px; fill: var(--ink-2); }
+.eco__head { fill: var(--ink-3); }
+[data-eco].is-focused .eco__edge, [data-eco].is-focused .eco__node { opacity: .3; }
+[data-eco].is-focused .eco__edge.is-on, [data-eco].is-focused .eco__node.is-on { opacity: 1; }
+.eco__edge.is-on path { stroke: var(--brand); stroke-width: 2; }
+.eco__about { min-height: 3em; margin: 10px 0 14px; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { .eco__node > rect, .eco__edge path { transition: none; } }

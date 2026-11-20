@@ -32,4 +32,4 @@ Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Licence
 
-By contributing, you agree that code is licensed under the MIT Licence and documentation under the Open Government Licence v3.0.
+By contributing, you agree that code is licensed under the MIT Licence and documentation and other content under Creative Commons Attribution 4.0 International (CC BY 4.0). Do not add third-party material unless its licence allows it, and record its licence next to it.

@@ -23,7 +23,7 @@ Answers questions with data and needs to know quickly what exists, who holds it 
 
 - **Wants to:** Find candidate datasets, judge whether they are fit for the question, and cite them properly.
 - **What gets in the way:** Keyword search returns many near-duplicates; Licence, update frequency and format are buried; Hard to tell a maintained dataset from an abandoned one
-- **Tools:** `catalogue_search`, `dataset_describe`, `standard_explain`
+- **Tools:** `catalogue_search`, `dataset_describe`, `standard_explain`, `api_search`
 - **Journey:** Find and judge data
 - **How they can shape it:** Suggests searches that went badly so the tool descriptions and results can improve. Shares the prompt library with their analysis community.
 
@@ -33,7 +33,7 @@ Looks after metadata quality across an organisation or a community of publishers
 
 - **Wants to:** See how far records are from xGov MEM, find the common gaps, and explain the standards in plain terms.
 - **What gets in the way:** Conformance is checked by hand, one record at a time; Colleagues ask what a standard is for and where it stands; Business terms are drafted in many places with no record of review
-- **Tools:** `metadata_validate`, `standard_explain`, `term_lookup`
+- **Tools:** `metadata_validate`, `standard_explain`, `term_lookup`, `api_search`
 - **Journey:** Assess a set of records
 - **How they can shape it:** Checks validation against their own records and reports disagreements with the model. Runs the show-and-tell and the co-design session in their community.
 
@@ -43,7 +43,7 @@ Connects tools to assistants, agents or pipelines and has to answer for what the
 
 - **Wants to:** Add data discovery and metadata checks to an assistant safely, with predictable inputs and no side effects.
 - **What gets in the way:** Needs to know exactly what each tool reads and returns; Must show that nothing writes, sends or stores data; Wants to try tools before wiring them in
-- **Tools:** `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`
+- **Tools:** `catalogue_search`, `dataset_describe`, `metadata_validate`, `standard_explain`, `term_lookup`, `domain_list`, `api_search`, `server_search`
 - **Journey:** Set up and try
 - **How they can shape it:** Opens pull requests with tests, and reports defects with a way to reproduce them. Shows other builders how the server is checked: the defect register and its checks.
 
@@ -53,7 +53,7 @@ Not a data specialist. Uses an AI assistant to understand what data exists and w
 
 - **Wants to:** Get a plain-English answer they can trust, with a link to the source they can pass on.
 - **What gets in the way:** Jargon: DCAT, CURIE, crosswalk; Cannot tell whether an assistant's answer came from a real source; Does not know who to ask
-- **Tools:** `catalogue_search`, `standard_explain`, `term_lookup`
+- **Tools:** `catalogue_search`, `standard_explain`, `term_lookup`, `api_search`
 - **Journey:** Find and judge data
 - **How they can shape it:** Tells us where an answer was unclear, so explanations and the glossary improve. Points colleagues at the glossary and the worked examples.
 
@@ -86,7 +86,7 @@ For: Developer or AI builder.
 | Lane | Discover | Try without installing | Install | Connect | First call | Keep using |
 |---|---|---|---|---|---|---|
 | What the person does | Lands on this page from a link or a search | Pastes a record into the checker | Clones, installs and builds | Adds the server to an assistant's settings | Asks a question that needs a tool | Updates to new releases |
-| What they see (front stage) | What it does, what it is not, the six tools | A verdict with each finding and its path | Four commands | A configuration snippet for each assistant | An answer that names its source | What has changed, newest first |
+| What they see (front stage) | What it does, what it is not, the tools | A verdict with each finding and its path | Four commands | A configuration snippet for each assistant | An answer that names its source | What has changed, newest first |
 | What happens behind the scenes (back stage) | Static page generated from the repository | The server's own validator, compiled into the page | npm ci and the TypeScript build | The assistant starts the server over stdio | One read-only tool call | Release notes generated from the changelog |
 | What supports it | GitHub Pages; the build in CI | xGov MEM model at a pinned commit | Node.js 20 or later | MCP client in the assistant | data.gov.uk catalogue API | GitHub releases; weekly live smoke test |
 | Likely pain point | Is this safe to use? | My record is in another shape | Node version or path mistakes | The tools do not appear | Not sure which tool was used | Breaking changes |

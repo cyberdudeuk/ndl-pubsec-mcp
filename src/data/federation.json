@@ -8,14 +8,16 @@
       "repository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "manifest": "integrations/ndl-mcp-domain.json",
       "self": true,
-      "description": "Find UK public sector data, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
+      "description": "Find UK public sector data, APIs and MCP servers, check metadata against xGov MEM, explain open standards and look up business terms with their certification state.",
       "tools": [
         "catalogue_search",
         "dataset_describe",
         "metadata_validate",
         "standard_explain",
         "term_lookup",
-        "domain_list"
+        "domain_list",
+        "api_search",
+        "server_search"
       ],
       "safety": {
         "read_only": true,

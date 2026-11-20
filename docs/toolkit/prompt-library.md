@@ -35,6 +35,16 @@ Check this record and, for any value outside the model's list, show me the allow
 
 Check it: Choose one of the allowed values exactly as written, including capital letters.
 
+## What could connect UK Export Finance and HMRC?
+
+For: Analyst or researcher, Developer or AI builder, Metadata or standards lead. Tool: `api_search`.
+
+```text
+Find HMRC APIs that could help an export finance team check an exporter's VAT and EORI numbers and size a market for a product. For each, give the documentation link, how access works, and whether it is in the government API catalogue.
+```
+
+Check it: Open each documentation link before relying on it. Customs declarations about a named trader are not open APIs: they need a legal gateway and a data-sharing agreement.
+
 ## Find data on a topic
 
 For: Analyst or researcher, Policy or product colleague. Tool: `catalogue_search`.
@@ -85,9 +95,20 @@ List the MCP servers that work alongside this one, what each is for, and where e
 
 Check it: This server lists the others but never calls them. Each entry names the repository and commit its manifest came from.
 
+## Find an MCP server for UK legislation
+
+For: Developer or AI builder, Contributor or co-designer. Tool: `server_search`.
+
+```text
+Which MCP servers could I use alongside this one for UK legislation? Tell me each one's status and where it was checked.
+```
+
+Check it: Candidates are listed for review only and are not endorsed. Read each server's own documentation and safety statement before connecting it.
+
 ## Tips
 
 - Name the tool in your prompt when you need a specific one.
 - Ask for a table with the catalogue link in every row, so each answer can be checked.
 - Ask the assistant to say how sure it is, and which tool each fact came from.
+- Use api_search to check whether an API already exists before you build or buy one.
 - Use organisation, limit and offset with catalogue_search to page through one publisher's records.
