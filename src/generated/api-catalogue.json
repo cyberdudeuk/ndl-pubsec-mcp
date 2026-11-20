@@ -2,13 +2,16 @@
   "source": {
     "title": "UK public sector API catalogue",
     "repository": "https://github.com/co-cddo/api-catalogue",
-    "file": "data/catalogue.csv",
+    "files": [
+      "data/catalogue.csv",
+      "data/catalogue-from-json-source.csv"
+    ],
     "commit": "b239f159ff4806c3fa3619cfc09cfb93067f62c3",
     "commitDate": "2026-11-02",
     "licence": "© Crown copyright, Open Government Licence v3.0",
     "site": "https://www.api.gov.uk/"
   },
-  "count": 231,
+  "count": 269,
   "apis": [
     {
       "name": "AGS File Utilities Tool and API",
@@ -201,6 +204,16 @@
       "dateUpdated": "2022-01-07"
     },
     {
+      "name": "Address Lookup",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "DWP single, strategic solution for looking up addresses including fuzzy search and UPRN.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "Address Lookup (Location Service)",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -211,6 +224,46 @@
       "dateUpdated": "2023-02-08"
     },
     {
+      "name": "Award Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Details the amount of benefit awarded to a person within a specified period of time.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Bank Wizard",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Verifies and validates bank account details.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Calculate Earnings",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Carries out calculation for claimants DWP has an active earning interest for.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Calculate Earnings by Payday",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to determine which earning records are to be excluded or included in calculations for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "Care Homes Information Service",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -219,6 +272,16 @@
       "documentation": "",
       "dateAdded": "2022-08-23",
       "dateUpdated": "2022-08-23"
+    },
+    {
+      "name": "Citizen Address",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Details all current (and optionally historic) address linked to a person.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
     },
     {
       "name": "Citizen API",
@@ -241,6 +304,66 @@
       "dateUpdated": "2022-08-23"
     },
     {
+      "name": "Citizen Claims",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Provides a list of claims (and where relevant, which components) a person is entitled to.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Close Records",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for the closure of document records.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Contact Details Verification",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Verifies if there is a match between the supplied details and DWP records.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Copy Document References",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for the copying of documents to a target benefit area.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Document Citizen Claims",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Document information related to a citizen's claim.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Document Upload",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for the upload of a document and its metadata.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "FINDr Matching Service",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -249,6 +372,66 @@
       "documentation": "",
       "dateAdded": "2020-08-28",
       "dateUpdated": "2022-08-23"
+    },
+    {
+      "name": "FINDr Matching Service",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Identifies the correct service identifier for a given set of biographic data.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Case Status",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves a range of case details relating to a claimant record.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Citizen Income Information API",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves current and historical information regarding a citizen's income.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Communications",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves communication list with a customer about their PIP.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Determination Decision",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves decision details for all cases related to a PIP claim.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Entitlement",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves the benefit award details related to a PIP claim.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
     },
     {
       "name": "Get Interest Details",
@@ -261,6 +444,56 @@
       "dateUpdated": "2022-08-23"
     },
     {
+      "name": "Get Interest Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows users to update a citizen's interest record.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Medical Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves a range of medical details for a person.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Payment Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves payment details related to a claimant record.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Personal Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves a range of personal details for a person.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Get Tasks",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Retrieves all tasks listed against a claimant's record.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "GOVUK Notify",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -269,6 +502,16 @@
       "documentation": "",
       "dateAdded": "2022-08-23",
       "dateUpdated": "2022-08-23"
+    },
+    {
+      "name": "Include Exclude Earnings",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to determine which earning records are to be excluded or included in calculations for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
     },
     {
       "name": "Maintain Interest Details",
@@ -281,6 +524,56 @@
       "dateUpdated": "2022-08-23"
     },
     {
+      "name": "Maintain Interest Details",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows users to update a citizen's interest record.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Manage Earnings Threshold",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to set and update different earnings thresholds for for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Manage Interests",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to set, unset and query an interest for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Multiple Document Metadata Update",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for metadata update for multiple documents.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "NHS Charge Exemption",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Checks if a citizen is eligible for free prescriptions.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "Organisations",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -291,6 +584,66 @@
       "dateUpdated": "2023-02-08"
     },
     {
+      "name": "Payment Dates",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Payment Dates provides regional calendar information required for banking and in particular when sending payments.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Register External Content",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for the registration of external content and its metadata.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Rescan",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows for the submission of a rescan request for a document.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Retrieve Metadata",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to request metadata for a document.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Search",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to search for a document in the Document Repository System.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Self Reported Earnings",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to view earnings data, within the supplied date period, for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
       "name": "Subscription Service API",
       "provider": "Department for Work and Pensions",
       "providerId": "department-for-work-and-pensions",
@@ -299,6 +652,36 @@
       "documentation": "",
       "dateAdded": "2023-05-16",
       "dateUpdated": "2023-05-16"
+    },
+    {
+      "name": "Update Metadata",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to update metadata for a document in the Document Repository System.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "Update Retention Date",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to apply or lift a hold on closed document records in the Document Repository System.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
+    },
+    {
+      "name": "View Earnings",
+      "provider": "Department for Work and Pensions",
+      "providerId": "department-for-work-and-pensions",
+      "description": "Allows to view earnings data, within the supplied date period, for a claimant.",
+      "url": "https://api.engineering.dwp.gov.uk",
+      "documentation": "https://engineering.dwp.gov.uk/apis/docs",
+      "dateAdded": "2024-04-23",
+      "dateUpdated": "2024-04-23"
     },
     {
       "name": "Access to Driver Data API",

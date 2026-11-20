@@ -59,7 +59,10 @@ ${standards.standards.filter((s) => s.domain === d).map(stdCard).join("\n")}
   // --- exchanges and journeys ---
   const reg = exchanges.register;
   const api = reg.byMethod.find(([m]) => m === "API")?.[1] ?? 0;
-  const methodChart = barChart(reg.byMethod.map(([label, value]) => ({ label, value, cls: label === "API" ? "bar-v" : "bar-m", of: reg.agreements })), { id: "dea-method", title: `How data moves: the ${reg.agreements} agreements on the Digital Economy Act register, by method`, max: reg.agreements });
+  const active = reg.byStatus.find(([s]) => s === "Active")[1];
+  const activeApi = reg.activeByMethod.find(([m]) => m === "API")?.[1] ?? 0;
+  const methodChart = barChart(reg.byMethod.map(([label, value]) => ({ label, value, cls: label === "API" ? "bar-v" : "bar-m", of: reg.agreements })), { id: "dea-method", title: `Recorded method: all ${reg.agreements} agreements on the Digital Economy Act register`, max: reg.agreements });
+  const activeChart = barChart(reg.activeByMethod.map(([label, value]) => ({ label, value, cls: label === "API" ? "bar-v" : "bar-m", of: active })), { id: "dea-method-active", title: `Recorded method: the ${active} agreements still active`, max: active });
   const powerChart = barChart(reg.byPower.map(([label, value]) => ({ label, value, cls: "bar-i", of: reg.agreements })), { id: "dea-power", title: `Why data moves: the ${reg.agreements} agreements by legal power`, max: reg.agreements });
   const audiences = ["Citizen", "Business", "Public body"];
   const xCard = (e) => {
@@ -77,9 +80,16 @@ ${standards.standards.filter((s) => s.domain === d).map(stdCard).join("\n")}
   };
   const exchangesHtml = `      <p class="lead">When you register a death, claim a benefit or set up a company, data often moves between organisations behind the scenes. Here are ${exchanges.exchanges.length} of those ${term("Data exchange", "data exchanges")}, the journey each one serves, who is involved, what moves and how, the ${term("Shared identifier", "identifiers")} that join the data, and the law that allows it.</p>
       <div class="insights">
-        <div class="card insight"><b>${reg.agreements}</b><span>${term("Information sharing agreement", "information sharing agreements")} on the Digital Economy Act register, read ${esc(ctx.longDate(reg.read))}</span></div>
-        <div class="card insight"><b>${api}</b><span>of them use an ${term("API", "API")}. Most move data by encrypted email, secure file transfer or a shared platform</span></div>
+        <div class="card insight"><b>${reg.agreements}</b><span>${term("Information sharing agreement", "information sharing agreements")} on the Digital Economy Act register, read ${esc(ctx.longDate(reg.read))}; ${active} are still active</span></div>
+        <div class="card insight"><b>${api}</b><span>record an ${term("API", "API")} as their method (${activeApi} of the active ones). Most record secure file transfer, a shared platform or encrypted email</span></div>
         <div class="card insight"><b>${reg.byPower[0][1]}</b><span>are about ${esc(reg.byPower[0][0].replace(/^Public service delivery: /, "").toLowerCase())}: the largest single purpose</span></div>
+      </div>
+      <div class="card plain caution">
+        <h3>${icon("info")}What these numbers do and do not show</h3>
+        <p>${esc(reg.methodField)}</p>
+        <p>The register counts agreements, not how much data moves. Much cross-government sharing runs over APIs it does not show:</p>
+        <ul>${reg.context.map((c) => `<li>${esc(c.claim)} (<a href="${esc(c.source.url)}">${esc(c.source.title)}</a>; ${esc(c.provenance)}: ${esc(provName[c.provenance])}).</li>`).join("")}</ul>
+        <p>So the finding is about the register, not about government as a whole: its single method field cannot say which agreements also use APIs, which is itself a gap worth fixing.</p>
       </div>
       <div class="tabs">
         <div role="tablist" aria-label="Exchanges views">
@@ -95,7 +105,7 @@ ${exchanges.exchanges.map(xCard).join("\n")}
           </div>
           <p class="empty" hidden>No exchange matches. Clear the search or the filters.</p>
         </div>
-        <div role="tabpanel" id="p-xch-method" aria-labelledby="t-xch-method" hidden><div class="card">${methodChart}</div><p class="meta">Source: <a href="${esc(reg.url)}">${esc(reg.title)}</a>, read ${esc(ctx.longDate(reg.read))}, Open Government Licence v3.0.</p></div>
+        <div role="tabpanel" id="p-xch-method" aria-labelledby="t-xch-method" hidden><div class="card">${methodChart}</div><div class="card">${activeChart}</div><p class="meta">Source: <a href="${esc(reg.url)}">${esc(reg.title)}</a>, read ${esc(ctx.longDate(reg.read))}, Open Government Licence v3.0.</p></div>
         <div role="tabpanel" id="p-xch-power" aria-labelledby="t-xch-power" hidden><div class="card">${powerChart}</div><p class="meta">An agreement can use more than one power, so the bars do not add up to the total.</p></div>
         <div role="tabpanel" id="p-xch-pairs" aria-labelledby="t-xch-pairs" hidden><div class="table-wrap" role="region" aria-labelledby="xch-pairs-cap" tabindex="0"><table><caption id="xch-pairs-cap">Pairs of organisations that appear together in the most agreements</caption><thead><tr><th scope="col">Organisations</th><th scope="col" class="num">Agreements</th></tr></thead><tbody>${reg.topPairs.map(([p, n]) => `<tr><td>${esc(p)}</td><td class="num">${n}</td></tr>`).join("")}</tbody></table></div></div>
       </div>

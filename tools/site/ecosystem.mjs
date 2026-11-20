@@ -8,8 +8,13 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-export function loadEcosystem() {
-  const eco = JSON.parse(readFileSync(join(here, "ecosystem.json"), "utf8"));
+// Counts in labels come from the data as {placeholders}, never typed in (defect D-044, check C-37).
+export function loadEcosystem(values = {}) {
+  const raw = readFileSync(join(here, "ecosystem.json"), "utf8").replace(/\{(\w+)\}/g, (m, k) => {
+    if (!(k in values)) throw new Error(`ecosystem.json: no value for {${k}}`);
+    return String(values[k]);
+  });
+  const eco = JSON.parse(raw);
   const ids = new Set(eco.nodes.map((n) => n.id));
   for (const n of eco.nodes) {
     if (!/^https:\/\//.test(n.url)) throw new Error(`ecosystem.json: ${n.id} needs an https url`);

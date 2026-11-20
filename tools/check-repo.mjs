@@ -97,6 +97,21 @@ export function checkRepo(root) {
     const t = existsSync(join(root, "test", "ask-rank.test.ts")) ? readFileSync(join(root, "test", "ask-rank.test.ts"), "utf8") : "";
     for (const id of ["#xch-tell-us-once", "#xch-ukef-hmrc"]) if (!t.includes(id)) problems.push(`C-36 test/ask-rank.test.ts: no longer checks that a plain-English question finds ${id}`);
   }
+  // C-37 (defect D-044): the API catalogue reads every catalogue file, and the published count matches the data
+  {
+    const cat = JSON.parse(readFileSync(join(root, "src", "generated", "api-catalogue.json"), "utf8"));
+    const files = cat.source.files ?? [cat.source.file];
+    for (const f of ["data/catalogue.csv", "data/catalogue-from-json-source.csv"]) if (!files.includes(f)) problems.push(`C-37 src/generated/api-catalogue.json: compiled without ${f}`);
+    const eco = existsSync(join(root, "docs", "ecosystem.html")) ? readFileSync(join(root, "docs", "ecosystem.html"), "utf8") : "";
+    const shown = (eco.match(/co-cddo, (\d+) APIs/) ?? [])[1];
+    if (shown && Number(shown) !== cat.count) problems.push(`C-37 docs/ecosystem.html: shows ${shown} APIs but the compiled catalogue holds ${cat.count}`);
+    if (/co-cddo, \d+ APIs/.test(readFileSync(join(root, "tools", "site", "ecosystem.json"), "utf8"))) problems.push("C-37 tools/site/ecosystem.json: an API count is typed in; use {apiCount}");
+  }
+  // C-38 (defect D-045): deliberate-break copies skip everything git ignores, read from .gitignore
+  {
+    const t = existsSync(join(root, "test", "repo-checks.test.ts")) ? readFileSync(join(root, "test", "repo-checks.test.ts"), "utf8") : "";
+    if (!/readFileSync\(join\(ROOT, "\.gitignore"\)/.test(t) || !/function brokenCopy[\s\S]*?cpSync\([^;]*filter: \(s\) => !IGNORED\.test/.test(t)) problems.push("C-38 test/repo-checks.test.ts: brokenCopy does not skip what .gitignore lists, so local output slows every deliberate-break test");
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -353,5 +368,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-36)");
+  console.log("repository checks passed (C-01 to C-38)");
 }

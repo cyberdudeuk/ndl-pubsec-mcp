@@ -7,7 +7,7 @@
   "read": "2026-11-20",
   "agreements": 667,
   "licence": "Open Government Licence v3.0",
-  "limits": "Covers only agreements under the Digital Economy Act 2017, Part 5. The largest flows, such as payroll data for Universal Credit and Tell Us Once, run under other legal gateways and are not in it. Organisation names were grouped by this server (for example, every energy supplier as 'Energy suppliers'). Contact details on the register were not copied.",
+  "limits": "Covers only agreements under the Digital Economy Act 2017, Part 5; 473 of the 667 have ended, many of them 2019 to 2020 pilots, and 204 are near-identical agreements between DWP and individual energy suppliers for one scheme. It counts agreements, not how much data moves or how often. The largest flows, such as payroll data for Universal Credit and Tell Us Once, run under other legal gateways and are not in it, and much cross-government sharing runs over APIs that the register's single method field does not show. Organisation names were grouped by this server (for example, every energy supplier as 'Energy suppliers'). Contact details on the register were not copied.",
   "byPower": [
    [
     "Public service delivery: fuel poverty",
@@ -109,6 +109,77 @@
     "Local authorities and Scottish Government",
     29
    ]
+  ],
+  "byStatus": [
+   [
+    "Active",
+    194
+   ],
+   [
+    "Complete (ended)",
+    473
+   ]
+  ],
+  "activeByMethod": [
+   [
+    "Secure file transfer",
+    80
+   ],
+   [
+    "Within a secure platform",
+    45
+   ],
+   [
+    "Encrypted email transfer",
+    37
+   ],
+   [
+    "Electronic verification",
+    13
+   ],
+   [
+    "Government secure email",
+    11
+   ],
+   [
+    "API",
+    6
+   ],
+   [
+    "Trusted partner transfer",
+    1
+   ],
+   [
+    "Government secure folders",
+    1
+   ]
+  ],
+  "methodField": "Each agreement records exactly one 'information sharing method'. It is the main method declared for the agreement, not every route used: agreements 205, 284 and 663 (the Warm Home Discount helpline, 2022 to 2027) record trusted partner transfer, encrypted hardware or secure file transfer, yet their disclosed-information text says electronic access to DWP's Citizen Application Programming Interface (CAPI) will also be enabled. So API counts from this field are a floor.",
+  "context": [
+   {
+    "claim": "DWP reported demand for its data from other government departments rising from 4.5 million to over 7.5 million API requests a day at peak, all routed through its API gateway",
+    "source": {
+     "title": "How APIs kept our country running when everything stopped (DWP Digital blog, 8 December 2021)",
+     "url": "https://dwpdigital.blog.gov.uk/2021/12/08/guest-post-how-apis-kept-our-country-running-when-everything-stopped/"
+    },
+    "provenance": "S"
+   },
+   {
+    "claim": "DWP's Citizen API gives other government departments and approved external agencies access to DWP citizen information",
+    "source": {
+     "title": "Citizen API on the UK government API catalogue",
+     "url": "https://api.gov.uk/dwp/citizen-api/"
+    },
+    "provenance": "S"
+   },
+   {
+    "claim": "The government API catalogue lists 48 DWP APIs, including Get Citizen Income Information, View Earnings, Citizen Address and the FINDr Matching Service, added on 23 April 2024",
+    "source": {
+     "title": "co-cddo/api-catalogue, data/catalogue-from-json-source.csv at b239f15",
+     "url": "https://github.com/co-cddo/api-catalogue/blob/b239f159ff4806c3fa3619cfc09cfb93067f62c3/data/catalogue-from-json-source.csv"
+    },
+    "provenance": "V"
+   }
   ]
  },
  "exchanges": [
@@ -260,6 +331,50 @@
    "checked": "2026-11-20"
   },
   {
+   "id": "prescription-exemption",
+   "title": "Free prescriptions: exemption checked in real time",
+   "journey": "Get free prescriptions",
+   "audience": "Citizen",
+   "parties": [
+    "DWP",
+    "NHS"
+   ],
+   "flows": "Whether a person is eligible for free prescriptions, checked against DWP records",
+   "purpose": "Check exemption from prescription charges when the medicine is dispensed, instead of relying on paper evidence",
+   "mechanism": "Real-time API from DWP to the NHS prescription charge exemption service",
+   "sharedIdentifiers": [
+    "NHS number",
+    "National Insurance number"
+   ],
+   "standards": [
+    "api-standards",
+    "nhs-number"
+   ],
+   "apiQueries": [
+    {
+     "query": "charge exemption"
+    },
+    {
+     "query": "prescription"
+    }
+   ],
+   "scale": null,
+   "legalBasis": null,
+   "notes": "An example of the API-based sharing the Digital Economy Act register's method field does not show.",
+   "sources": [
+    {
+     "title": "Breaking down the silos in data (DWP careers)",
+     "url": "https://careers.dwp.gov.uk/data-with-power/"
+    },
+    {
+     "title": "co-cddo/api-catalogue: NHS Charge Exemption (DWP)",
+     "url": "https://github.com/co-cddo/api-catalogue/blob/b239f159ff4806c3fa3619cfc09cfb93067f62c3/data/catalogue-from-json-source.csv"
+    }
+   ],
+   "provenance": "S",
+   "checked": "2026-11-20"
+  },
+  {
    "id": "register-to-vote",
    "title": "Register to vote: identity checked against DWP records",
    "journey": "Register to vote",
@@ -375,11 +490,15 @@
    "apiQueries": [
     {
      "query": "energy"
+    },
+    {
+     "query": "citizen",
+     "provider": "department-for-work-and-pensions"
     }
    ],
    "scale": "326 agreements under the fuel poverty power: the largest group on the register (204 DWP with energy suppliers, 70 DESNZ with energy suppliers)",
    "legalBasis": "Digital Economy Act 2017, Part 5, public service delivery: fuel poverty",
-   "notes": null,
+   "notes": "The helpline agreements (205, 284, 663) also enable electronic access to DWP's Citizen API, although their recorded method is file-based.",
    "sources": [
     {
      "title": "Digital Economy Act register, agreement 667: benefit eligibility checks for energy suppliers",
@@ -388,6 +507,10 @@
     {
      "title": "Digital Economy Act register, agreement 648: Warm Home Discount helpline and energy suppliers",
      "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/648"
+    },
+    {
+     "title": "Digital Economy Act register, agreement 663: Warm Home Discount Helpline 2026/27",
+     "url": "https://www.digital-economy-act-register.data.gov.uk/agreements/663"
     }
    ],
    "provenance": "V",

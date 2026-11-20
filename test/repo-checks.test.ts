@@ -1,7 +1,7 @@
 // Vaccination: every repository check must fail on a deliberately broken copy of the repository.
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 // @ts-expect-error plain ESM module without types
 import { checkRepo, findEmails, isDeckOrFilm } from "../tools/check-repo.mjs";
@@ -10,10 +10,15 @@ import standards from "../src/data/standards.json" with { type: "json" };
 const ROOT = join(import.meta.dirname, "..");
 const temps: string[] = [];
 
+const ignoredDirs = readFileSync(join(ROOT, ".gitignore"), "utf8").split("\n").map((l) => l.trim()).filter((l) => l.endsWith("/")).map((l) => l.slice(0, -1).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+const IGNORED = new RegExp(`(^|[\\\\/])(\\.git|${ignoredDirs.join("|")})([\\\\/]|$)`);
+
 function brokenCopy(breakIt: (dir: string) => void): string[] {
   const dir = mkdtempSync(join(tmpdir(), "ndl-check-"));
   temps.push(dir);
-  cpSync(ROOT, dir, { recursive: true, filter: (s) => !/node_modules|\.git$|[\\/]dist[\\/]?/.test(s) });
+  // Skip everything git ignores (read from .gitignore), so local output such as screenshots never slows the
+  // deliberate-break copies (defect D-045, check C-38).
+  cpSync(ROOT, dir, { recursive: true, filter: (s) => !IGNORED.test(relative(ROOT, s)) });
   breakIt(dir);
   return checkRepo(dir) as string[];
 }
@@ -324,6 +329,15 @@ describe("page structure (D-025)", () => {
 
   it("C-36 catches the search ranking losing its question tests (D-043)", () => {
     expect(breakFile("test/ask-rank.test.ts", "#xch-tell-us-once", "#xch-something-else").join()).toMatch(/C-36/);
+  });
+
+  it("C-37 catches a catalogue compiled from one file, or a typed-in API count (D-044)", () => {
+    expect(breakFile("src/generated/api-catalogue.json", '"data/catalogue-from-json-source.csv"', '"data/other.csv"').join()).toMatch(/C-37 .*compiled without/);
+    expect(breakFile("tools/site/ecosystem.json", "co-cddo, {apiCount} APIs", "co-cddo, 231 APIs").join()).toMatch(/C-37 .*typed in/);
+  });
+
+  it("C-38 catches deliberate-break copies that ignore .gitignore (D-045)", () => {
+    expect(breakFile("test/repo-checks.test.ts", "filter: (s) => !IGNORED.test", "filter: (s) => !/node_modules/.test").join()).toMatch(/C-38/);
   });
 
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {

@@ -1,6 +1,6 @@
 # NDL PubSec MCP
 
-> An independent, open-source, read-only MCP server and portal for the UK National Data Library (NDL) and the wider public sector: find public sector data on data.gov.uk, check metadata against xGov MEM, find APIs and MCP servers, explain 41 open standards and map 17 data exchanges between organisations by citizen or business journey. An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.
+> An independent, open-source, read-only MCP server and portal for the UK National Data Library (NDL) and the wider public sector: find public sector data on data.gov.uk, check metadata against xGov MEM, find APIs and MCP servers, explain 41 open standards and map 18 data exchanges between organisations by citizen or business journey. An independent prototype. It is not a government service, is not endorsed by any government department, and does not set or represent government policy.
 
 ## Tools (MCP)
 - catalogue_search: Search data.gov.uk
@@ -20,7 +20,7 @@
 
 ## Data
 - [Standards register](https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/standards.json): 41 standards with obligation, scope and provenance
-- [Exchanges register](https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json): 17 exchanges with parties, identifiers, legal basis and sources
+- [Exchanges register](https://github.com/cyberdudeuk/ndl-pubsec-mcp/blob/main/src/data/exchanges.json): 18 exchanges with parties, identifiers, legal basis and sources
 - [Knowledge graph](https://cyberdudeuk.github.io/ndl-pubsec-mcp/knowledge-graph.jsonld): JSON-LD of tools, standards, exchanges and terms
 
 ## Docs

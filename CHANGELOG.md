@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+- `api_search` now reads both files of the government API catalogue and holds 269 APIs instead of 231, including DWP's 48 (D-044, check C-37). The ecosystem diagram's API count now comes from the data.
+- The Digital Economy Act register figures are reported with what they do and do not show: 194 of the 667 agreements are still active; each records one main method, so API use is a floor (three Warm Home Discount helpline agreements that record file-based methods also give access to DWP's Citizen API); and the register counts agreements, not volume. Added the prescription charge exemption exchange (DWP and NHS, real-time API).
+- Deliberate-break tests no longer copy git-ignored screenshots (D-045, check C-38).
+
 ### Added
 
 - **Standards register extended to the wider public sector**: 41 standards in 8 areas (data and metadata, APIs and integration, identifiers and reference data, cyber security, digital services and accessibility, identity, health and care, procurement and transparency), each saying how firmly it applies (Mandatory to Proposed), who it applies to and who publishes it. `standard_explain` can list one area. BODS is recorded as v0.3, as the DSA list shows.
