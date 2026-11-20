@@ -16,7 +16,7 @@ export const SPOTLIGHT = [
 ];
 
 export const KINDS = { use: "Use case", case: "Case study", example: "Practical example", insight: "Insight" };
-// Plurals written out, not made by adding "s": "case studys" shipped once (D-051).
+// Plurals written out, not made by adding "s": "case studys" shipped once (D-052).
 export const PLURALS = { use: "Use cases", case: "Case studies", example: "Practical examples", insight: "Insights" };
 
 export function renderSpotlight(ctx) {

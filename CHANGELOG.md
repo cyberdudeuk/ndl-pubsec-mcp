@@ -14,8 +14,8 @@
 - The Digital Economy Act register figures are reported with what they do and do not show: 194 of the 667 agreements are still active; each records one main method, so API use is a floor (three Warm Home Discount helpline agreements that record file-based methods also give access to DWP's Citizen API); and the register counts agreements, not volume. Added the prescription charge exemption exchange (DWP and NHS, real-time API).
 - Deliberate-break tests no longer copy git-ignored screenshots (D-045, check C-38).
 - Exchange cards no longer show unrelated APIs as related (for example Bathing Water for water poverty): every suggested query is now scoped to a provider that is a party to the exchange, and queries with no relevant match were removed (D-046, check C-40).
-- The page no longer scrolls sideways: the spotlight's hidden labels widened it to 4,508 px (D-049, check C-42); at 320 px the masthead and a long host name widened it by 56 px (D-050, check C-43). The visual inspection now tests 320 px and the page's own scroll width.
-- "Case studys" corrected; plurals are written out (D-051, check C-44).
+- The page no longer scrolls sideways: the spotlight's hidden labels widened it to 4,508 px (D-050, check C-43); at 320 px the masthead and a long host name widened it by 56 px (D-051, check C-44). The visual inspection now tests 320 px and the page's own scroll width.
+- "Case studys" corrected; plurals are written out (D-052, check C-45).
 - `publiccode.yml` added, so the Public Good Works launchpad can check its card against this project's licence; its card still said OGL v3.0 and official GDS work (D-047, check C-41).
 
 ### Added

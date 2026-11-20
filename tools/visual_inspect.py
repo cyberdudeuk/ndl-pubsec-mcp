@@ -28,7 +28,7 @@ AUDIT = r"""() => {
  const bgOf = el => { for (let e=el; e; e=e.parentElement) { const cs=getComputedStyle(e); if (cs.backgroundImage!=='none') return 'image'; const l=lum(cs.backgroundColor); if (l && l.a>0.9) return l.L; } return lum(getComputedStyle(document.body).backgroundColor).L; };
  const out = {contrast:[], overflow:[], clipped:[], overlap:[]};
  const W = document.documentElement.clientWidth;
- // D-049, D-050: the page itself must never scroll sideways. Element checks below skip visually hidden text, which
+ // D-050, D-051: the page itself must never scroll sideways. Element checks below skip visually hidden text, which
  // is how an absolutely positioned label escaped the spotlight strip and made the page 4,508 px wide.
  if (document.documentElement.scrollWidth > W + 1) out.overflow.push('page scrollWidth=' + document.documentElement.scrollWidth + ' > ' + W);
  const els = [...document.querySelectorAll('body *')].filter(e => { const r=e.getBoundingClientRect(); const cs=getComputedStyle(e); return r.width>0 && r.height>0 && cs.visibility!=='hidden' && !e.closest('[hidden],details:not([open]) > :not(summary),.visually-hidden,svg') });
@@ -70,7 +70,7 @@ def main() -> int:
             page.goto(URL)
             page.evaluate("() => document.querySelectorAll('main details').forEach(d => d.open = true)")
             results = [page.evaluate(AUDIT)]
-            # Spotlight (D-049): reduced motion hides Play; Next moves the current dot; nothing moves on its own.
+            # Spotlight (D-050): reduced motion hides Play; Next moves the current dot; nothing moves on its own.
             sp = page.evaluate("() => ({ play: document.getElementById('sp-play').hidden, cur: document.querySelector('.sp-dot[aria-current]').dataset.slide })")
             if not sp["play"]:
                 failures.append(f"{width}-{scheme} spotlight: Play is offered under reduced motion")

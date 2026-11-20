@@ -358,20 +358,20 @@ describe("page structure (D-025)", () => {
     expect(breakFile("publiccode.yml", "contact form only)", "contact form only) someone@example.org").join()).toMatch(/C-41 .*email/);
   });
 
-  it("C-42 catches a spotlight that could move without Play, or a label that escapes the strip (D-049)", () => {
-    expect(breakFile("tools/site/site.js", "    $(\".sp-ctl\", sp).hidden = false;", "    window.setInterval(function () { go(cur + 1); }, 7000);\n    $(\".sp-ctl\", sp).hidden = false;").join()).toMatch(/C-42 .*timer outside rotate/);
-    expect(breakFile("tools/site/site.js", "if (reduced) play.hidden = true; else ", "").join()).toMatch(/C-42 .*reduced motion/);
-    expect(breakFile("tools/site/site.css", ".sp-slide { position: relative; ", ".sp-slide { ").join()).toMatch(/C-42 .*position: relative/);
+  it("C-43 catches a spotlight that could move without Play, or a label that escapes the strip (D-050)", () => {
+    expect(breakFile("tools/site/site.js", "    $(\".sp-ctl\", sp).hidden = false;", "    window.setInterval(function () { go(cur + 1); }, 7000);\n    $(\".sp-ctl\", sp).hidden = false;").join()).toMatch(/C-43 .*timer outside rotate/);
+    expect(breakFile("tools/site/site.js", "if (reduced) play.hidden = true; else ", "").join()).toMatch(/C-43 .*reduced motion/);
+    expect(breakFile("tools/site/site.css", ".sp-slide { position: relative; ", ".sp-slide { ").join()).toMatch(/C-43 .*position: relative/);
   });
 
-  it("C-43 catches what widened the page at 320 px (D-050)", () => {
-    expect(breakFile("tools/site/site.css", ".card, .note, .lead, td { overflow-wrap: anywhere; }", "").join()).toMatch(/C-43 .*overflow-wrap/);
-    expect(breakFile("tools/visual_inspect.py", ", (320, \"light\")]", "]").join()).toMatch(/C-43 .*320 px/);
+  it("C-44 catches what widened the page at 320 px (D-051)", () => {
+    expect(breakFile("tools/site/site.css", ".card, .note, .lead, td { overflow-wrap: anywhere; }", "").join()).toMatch(/C-44 .*overflow-wrap/);
+    expect(breakFile("tools/visual_inspect.py", ", (320, \"light\")]", "]").join()).toMatch(/C-44 .*320 px/);
   });
 
-  it("C-44 catches a plural made by adding s (D-051)", () => {
-    expect(breakFile("tools/site/spotlight.mjs", "kinds.map((k) => [`k-${k}`, PLURALS[k]])", "kinds.map((k) => [`k-${k}`, `${KINDS[k]}s`])").join()).toMatch(/C-44 spotlight/);
-    expect(breakFile("docs/index.html", ">Case studies</button>", ">Case studys</button>").join()).toMatch(/C-44 docs/);
+  it("C-45 catches a plural made by adding s (D-052)", () => {
+    expect(breakFile("tools/site/spotlight.mjs", "kinds.map((k) => [`k-${k}`, PLURALS[k]])", "kinds.map((k) => [`k-${k}`, `${KINDS[k]}s`])").join()).toMatch(/C-45 spotlight/);
+    expect(breakFile("docs/index.html", ">Case studies</button>", ">Case studys</button>").join()).toMatch(/C-45 docs/);
   });
 
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {

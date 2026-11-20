@@ -153,38 +153,38 @@ export function checkRepo(root) {
       if (/@[a-z0-9-]+\.[a-z]/i.test(pc)) problems.push("C-41 publiccode.yml: contains an email address; contact is by the form only");
     }
   }
-  // C-42 (defect D-049): the spotlight never moves on its own, and its hidden labels cannot escape the strip
+  // C-43 (defect D-050): the spotlight never moves on its own, and its hidden labels cannot escape the strip
   {
     const js = readFileSync(join(root, "tools", "site", "site.js"), "utf8");
     const css = readFileSync(join(root, "tools", "site", "site.css"), "utf8");
     const sp = js.slice(js.indexOf("// --- spotlight carousel"), js.indexOf("// --- back to top ---"));
-    if (!sp.includes("var rotate = function")) problems.push("C-42 site.js: the spotlight has no rotate function to guard");
+    if (!sp.includes("var rotate = function")) problems.push("C-43 site.js: the spotlight has no rotate function to guard");
     const timers = (sp.match(/setInterval\(/g) || []).length;
     const inRotate = (sp.slice(sp.indexOf("var rotate = function"), sp.indexOf("};", sp.indexOf("var rotate = function"))).match(/setInterval\(/g) || []).length;
-    if (timers !== inRotate) problems.push("C-42 site.js: the spotlight starts a timer outside rotate(), so it could move without the reader pressing Play (WCAG 2.2.2)");
+    if (timers !== inRotate) problems.push("C-43 site.js: the spotlight starts a timer outside rotate(), so it could move without the reader pressing Play (WCAG 2.2.2)");
     const calls = [...sp.matchAll(/\brotate\(\)/g)].length;
-    if (calls !== 1 || !/play\.addEventListener\("click", function \(\) \{ if \(timer\) stop\(\); else rotate\(\); \}\)/.test(sp)) problems.push("C-42 site.js: rotate() must be called only from the Play button");
-    if (!/if \(reduced\) play\.hidden = true/.test(sp)) problems.push("C-42 site.js: Play must be hidden under reduced motion");
+    if (calls !== 1 || !/play\.addEventListener\("click", function \(\) \{ if \(timer\) stop\(\); else rotate\(\); \}\)/.test(sp)) problems.push("C-43 site.js: rotate() must be called only from the Play button");
+    if (!/if \(reduced\) play\.hidden = true/.test(sp)) problems.push("C-43 site.js: Play must be hidden under reduced motion");
     const rule = topLevelRules(css).find((r) => r.selectors.includes(".sp-slide"));
-    if (!rule || !/position:\s*relative/.test(rule.body)) problems.push("C-42 site.css: .sp-slide must be position: relative, or its visually hidden label escapes the strip and widens the page");
+    if (!rule || !/position:\s*relative/.test(rule.body)) problems.push("C-43 site.css: .sp-slide must be position: relative, or its visually hidden label escapes the strip and widens the page");
   }
-  // C-43 (defect D-050): nothing makes the page wider than a 320 px screen
+  // C-44 (defect D-051): nothing makes the page wider than a 320 px screen
   {
     const css = readFileSync(join(root, "tools", "site", "site.css"), "utf8");
     const wrap = topLevelRules(css).find((r) => r.selectors.includes(".card") && /overflow-wrap:\s*anywhere/.test(r.body));
-    if (!wrap) problems.push("C-43 site.css: .card must allow overflow-wrap: anywhere, or a long host name widens the page at 320 px");
-    if (!/@media \(max-width: 380px\)[\s\S]*?\.mast__label/.test(css)) problems.push("C-43 site.css: the masthead has no narrow-screen rule, so it is wider than 320 px");
+    if (!wrap) problems.push("C-44 site.css: .card must allow overflow-wrap: anywhere, or a long host name widens the page at 320 px");
+    if (!/@media \(max-width: 380px\)[\s\S]*?\.mast__label/.test(css)) problems.push("C-44 site.css: the masthead has no narrow-screen rule, so it is wider than 320 px");
     const vis = existsSync(join(root, "tools", "visual_inspect.py")) ? readFileSync(join(root, "tools", "visual_inspect.py"), "utf8") : "";
-    if (!vis.includes("(320, \"light\")") || !vis.includes("document.documentElement.scrollWidth > W + 1")) problems.push("C-43 visual_inspect.py: must test 320 px and the page's own scroll width");
+    if (!vis.includes("(320, \"light\")") || !vis.includes("document.documentElement.scrollWidth > W + 1")) problems.push("C-44 visual_inspect.py: must test 320 px and the page's own scroll width");
   }
-  // C-44 (defect D-051): plurals are written out, never made by adding "s"
+  // C-45 (defect D-052): plurals are written out, never made by adding "s"
   {
     const spot = readFileSync(join(root, "tools", "site", "spotlight.mjs"), "utf8");
-    if (/\$\{KINDS\[[^\]]+\]\}s\b|KINDS\[k\]\.toLowerCase\(\)\}s/.test(spot)) problems.push("C-44 spotlight.mjs: a plural is made by adding \"s\" to a label; use PLURALS");
+    if (/\$\{KINDS\[[^\]]+\]\}s\b|KINDS\[k\]\.toLowerCase\(\)\}s/.test(spot)) problems.push("C-45 spotlight.mjs: a plural is made by adding \"s\" to a label; use PLURALS");
     const page = existsSync(join(root, "docs", "index.html")) ? readFileSync(join(root, "docs", "index.html"), "utf8") : "";
     // The defect register on the page quotes the old wording, so it and the search index built from it are left out.
     const shown = page.replace(/<section[^>]*id="defects"[\s\S]*?<\/section>/, "").replace(/<script type="application\/json" id="search-index">[\s\S]*?<\/script>/, "");
-    if (/\b(studys|summarys|categorys|entitys|policys|bodys)\b/i.test(shown)) problems.push("C-44 docs/index.html: a misspelt plural (such as \"studys\") is on the page");
+    if (/\b(studys|summarys|categorys|entitys|policys|bodys)\b/i.test(shown)) problems.push("C-45 docs/index.html: a misspelt plural (such as \"studys\") is on the page");
   }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
@@ -442,5 +442,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-44)");
+  console.log("repository checks passed (C-01 to C-45)");
 }
