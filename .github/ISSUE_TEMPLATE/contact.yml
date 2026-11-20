@@ -1,4 +1,4 @@
-name: Contact the team
+name: Contact form
 description: Ask a question, give feedback or request help. This is the contact form for this project.
 title: "[Contact] "
 labels: ["contact"]
@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this form to contact the Data Management Team about this project. It is a public GitHub issue, so **do not include personal data, security details or anything marked OFFICIAL-SENSITIVE or above**.
+        Use this form to get in touch about this project. It is a public GitHub issue, so **do not include personal data, security details or anything marked OFFICIAL-SENSITIVE or above**.
 
         To report a security problem, use [private vulnerability reporting](https://github.com/cyberdudeuk/ndl-pubsec-mcp/security/advisories/new) instead.
 

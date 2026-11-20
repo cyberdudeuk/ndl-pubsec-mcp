@@ -1,6 +1,6 @@
 # ADR 0002: one official repository, one personal experiment
 
-- Status: accepted
+- Status: accepted; wording superseded by [ADR 0006](0006-independent-prototype.md)
 - Date: 8 November 2026
 - Decider: repository owner
 

@@ -6,9 +6,8 @@ authors:
   - given-names: Emanuel
     family-names: Silva
     orcid: "https://orcid.org/0009-0000-5880-7219"
-  - name: Government Digital Service
 license: MIT
-version: 0.3.0
+version: 0.4.0
 repository-code: https://github.com/cyberdudeuk/ndl-pubsec-mcp
 url: https://cyberdudeuk.github.io/ndl-pubsec-mcp/
 abstract: "An open-source Model Context Protocol server that lets any MCP-capable AI assistant find UK public sector data and check its metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM)."

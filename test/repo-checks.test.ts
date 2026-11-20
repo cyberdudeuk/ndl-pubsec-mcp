@@ -163,3 +163,67 @@ describe("estate and vocabulary checks", () => {
     expect(brokenCopy((d) => { const p = join(d, "src", "data", "federation.json"); writeFileSync(p, readFileSync(p, "utf8").replace(/"vendoredFrom": "[^"]+"/, '"vendoredFrom": "somewhere"')); }).join()).toMatch(/C-13 .*vendoredFrom/);
   });
 });
+
+describe("independent prototype (ADR 0006, D-024)", () => {
+  const team = ["Data", "Management", "Team"].join(" ");
+  it("C-16 catches the owner's team named in published material", () => {
+    const out = brokenCopy((d) => writeFileSync(join(d, "docs", "prd.md"), readFileSync(join(d, "docs", "prd.md"), "utf8") + `\nOwner: ${team}\n`));
+    expect(out.join()).toMatch(/C-16 docs\/prd\.md: names the owner's team/);
+  });
+  it("C-16 catches a claim of official status outside the historic records", () => {
+    const out = brokenCopy((d) => writeFileSync(join(d, "README.md"), readFileSync(join(d, "README.md"), "utf8") + "\nThis is official work.\n"));
+    expect(out.join()).toMatch(/C-16 README\.md: claims official status/);
+  });
+  it("C-16 catches GOV.UK Frontend or a government publisher on the page", () => {
+    const css = brokenCopy((d) => writeFileSync(join(d, "docs", "assets", "govuk-frontend.min.css"), "/* */"));
+    expect(css.join()).toMatch(/C-16 docs\/assets\/govuk-frontend\.min\.css/);
+    const pub = brokenCopy((d) => {
+      const p = join(d, "docs", "index.html");
+      writeFileSync(p, readFileSync(p, "utf8").replace('"creativeWorkStatus"', '"publisher":{"@type":"GovernmentOrganization"},"creativeWorkStatus"'));
+    });
+    expect(pub.join()).toMatch(/C-16 docs\/index\.html: uses GOV\.UK Frontend or names a government publisher/);
+  });
+  it("C-16 catches ADR 0002 no longer marked as superseded", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "docs", "adr", "0002-official-and-personal-repositories.md");
+      writeFileSync(p, readFileSync(p, "utf8").replace(/; wording superseded by \[ADR 0006\]\([^)]*\)/, ""));
+    });
+    expect(out.join()).toMatch(/C-16 docs\/adr\/0002/);
+  });
+  it("C-17 catches the page or README without the independent-prototype statement", () => {
+    const out = brokenCopy((d) => {
+      const p = join(d, "README.md");
+      writeFileSync(p, readFileSync(p, "utf8").replace(/not endorsed by any government department/gi, "reviewed"));
+    });
+    expect(out.join()).toMatch(/C-17 README\.md/);
+  });
+  it("C-01 allows reserved example domains in the generated checker examples, and nowhere else on the page", () => {
+    const reserved = ["data-team", "example.org"].join("@");
+    const real = ["someone", "gov.uk"].join("@");
+    const okHere = brokenCopy((d) => writeFileSync(join(d, "docs", "assets", "examples.js"), `window.X = "${reserved}";\n`));
+    expect(okHere.join()).not.toMatch(/C-01 docs\/assets\/examples\.js/);
+    const realHere = brokenCopy((d) => writeFileSync(join(d, "docs", "assets", "examples.js"), `window.X = "${real}";\n`));
+    expect(realHere.join()).toMatch(/C-01 docs\/assets\/examples\.js/);
+    const onPage = brokenCopy((d) => writeFileSync(join(d, "docs", "index.html"), readFileSync(join(d, "docs", "index.html"), "utf8") + reserved));
+    expect(onPage.join()).toMatch(/C-01 docs\/index\.html/);
+  });
+  it("C-07 still catches an unquoted department claim on the page", () => {
+    const out = brokenCopy((d) => writeFileSync(join(d, "docs", "index.html"), readFileSync(join(d, "docs", "index.html"), "utf8") + "<p>Written as a DSIT officer.</p>"));
+    expect(out.join()).toMatch(/C-07 docs\/index\.html/);
+  });
+});
+
+describe("page structure (D-025)", () => {
+  it("C-18 catches a duplicate id and a reference to a missing id", () => {
+    const dup = brokenCopy((d) => {
+      const p = join(d, "docs", "index.html");
+      writeFileSync(p, readFileSync(p, "utf8").replace('id="checker-form"', 'id="checker"'));
+    });
+    expect(dup.join()).toMatch(/C-18 docs\/index\.html: id "checker" is used more than once/);
+    const dangling = brokenCopy((d) => {
+      const p = join(d, "docs", "index.html");
+      writeFileSync(p, readFileSync(p, "utf8").replace('aria-controls="p-live"', 'aria-controls="p-nowhere"'));
+    });
+    expect(dangling.join()).toMatch(/C-18 .*#p-nowhere/);
+  });
+});

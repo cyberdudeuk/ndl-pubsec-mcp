@@ -16,7 +16,7 @@ Self-assessed by the build team on 8 November 2026. These screenings are not aud
 ## Accessibility
 
 - The server has no user interface; text output is plain English.
-- The documentation page uses GOV.UK Frontend styles, is checked automatically, and has an accessibility statement. Manual testing with assistive technology has not been done (O-10).
+- The documentation page has its own styles (not GOV.UK Frontend, ADR 0006), works without JavaScript, follows light and dark settings and reduced motion, is checked automatically, and has an accessibility statement. Manual testing with assistive technology has not been done (O-10).
 
 ## Security
 

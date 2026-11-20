@@ -18,6 +18,6 @@ Base rate: much departmental data is held in internal catalogues, not data.gov.u
 The validator is generated from the published model and tested against the model's own corpus, so it gives no special treatment. The one place the owner's view enters, the contact form question, is raised openly as O-08.
 
 **6. "Two repositories invite confusion."**
-They have different owners in law (Crown and personal), different audiences and different licences. ADR 0002 sets a one-way rule: personal to official, only after review.
+They have different owners in law (Crown and personal), different audiences and different licences. ADR 0002 sets a one-way rule: material moves from the private repository to this one only after review. ADR 0006 presents this one as an independent prototype that no department has endorsed.
 
 **Limits of the sources:** no user research yet, and the live API was not called from the build environment. Standards entries labelled S or U are leads, not facts.
