@@ -304,6 +304,11 @@ describe("page structure (D-025)", () => {
     expect(breakFile("tools/site/ecosystem.mjs", ".eco__node > rect {", ".eco__node rect {").join()).toMatch(/C-31/);
   });
 
+  it("C-32 catches an API catalogue pin too old to call current (O-19)", () => {
+    expect(breakFile("src/generated/api-catalogue.json", '"commitDate": "2026-11-02"', '"commitDate": "2020-01-01"').join()).toMatch(/C-32/);
+    expect(breakFile("src/generated/api-catalogue.json", '"commitDate": "2026-11-02"', '"commitDate": "not a date"').join()).toMatch(/C-32/);
+  });
+
   it("C-30 catches a footer with no room for the Top button (D-037)", () => {
     expect(breakFile("tools/site/site.css", "footer { padding-bottom: 76px; }", "").join()).toMatch(/C-30/);
   });
