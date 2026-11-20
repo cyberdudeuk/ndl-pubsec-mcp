@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0 (20 November 2026)
+
 ### Added (repository standards for the move to gds-dtx, 17 November 2026)
 
 - The Cabinet Office vulnerability disclosure route in `SECURITY.md`.
