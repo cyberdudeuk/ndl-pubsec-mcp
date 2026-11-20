@@ -26,7 +26,8 @@
     "site": "node tools/build-site.mjs",
     "verify": "npm run compile:mem && npm run typecheck && npm run lint && npm run test && npm run build && npm run check:repo && npm run site",
     "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "visual": "python3 tools/visual_inspect.py"
   },
   "keywords": [
     "mcp",

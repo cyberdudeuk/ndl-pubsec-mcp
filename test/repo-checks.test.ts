@@ -250,4 +250,45 @@ describe("page structure (D-025)", () => {
     });
     expect(out.join()).toMatch(/C-21 .*domain_list/);
   });
+  const breakFile = (rel: string, from: string | RegExp, to: string) => brokenCopy((d) => {
+    const p = join(d, ...rel.split("/"));
+    const before = readFileSync(p, "utf8");
+    const after = before.replace(from, to);
+    if (after === before) throw new Error(`test break did not apply to ${rel}`);
+    writeFileSync(p, after);
+  });
+
+  it("C-22 catches a pill colour below AA contrast (D-033)", () => {
+    expect(breakFile("tools/site/site.css", "--pill: #b4410a;", "--pill: #e8590c;").join()).toMatch(/C-22 .*light theme --on-pill on --pill is 3\.\d+:1/);
+    expect(breakFile("tools/site/site.css", "--on-pill: #0d1120;", "--on-pill: #ffffff;").join()).toMatch(/C-22 .*dark theme --on-pill on --pill/);
+  });
+
+  it("C-23 catches a Last updated date that is not the latest release (D-030)", () => {
+    expect(breakFile("docs/index.html", /Last updated<\/th><td>[^<(]+/, "Last updated</th><td>8 November 2026 ").join()).toMatch(/C-23/);
+  });
+
+  it("C-24 catches a map that shrinks on phones (D-031)", () => {
+    expect(breakFile("tools/site/site.css", ".map { width: 100%; min-width: 720px;", ".map { width: 100%;").join()).toMatch(/C-24 .*\.map has no min-width/);
+    expect(breakFile("docs/index.html", 'class="card scroll-x" role="region" aria-label="Estate map', 'class="card" role="region" aria-label="Estate map').join()).toMatch(/C-24 docs\/index\.html/);
+  });
+
+  it("C-25 catches a copy button with no room above the code (D-029)", () => {
+    expect(breakFile("tools/site/site.css", "padding: 44px 18px 16px;", "padding: 16px 18px;").join()).toMatch(/C-25/);
+  });
+
+  it("C-26 catches tab bars that do not wrap (D-032)", () => {
+    expect(breakFile("tools/site/site.css", "display: flex; flex-wrap: wrap; gap: 4px; border-bottom", "display: flex; gap: 4px; border-bottom").join()).toMatch(/C-26/);
+  });
+
+  it("C-27 catches a tie cut short in the worked example (D-034)", () => {
+    expect(breakFile("docs/index.html", /(id="ex-describe"[\s\S]*?)<code>version<\/code>/, "$1version").join()).toMatch(/C-27 .*version/);
+  });
+  it("C-28 catches a chart label cut off at the chart edge (D-035)", () => {
+    expect(breakFile("docs/index.html", /(<svg class="chart" viewBox="0 0 )\d+/, "$1560").join()).toMatch(/C-28 .*runs past the chart edge/);
+  });
+  it("C-22 catches a provenance tag that goes back to a translucent tint or a weak colour (D-036)", () => {
+    expect(breakFile("tools/site/site.css", ".tag--V { background: var(--ok-soft); color: var(--ok-ink);", ".tag--V { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok);").join()).toMatch(/C-22 .*translucent tint/);
+    expect(breakFile("tools/site/site.css", "--ok-ink: #145c37;", "--ok-ink: #1b7f4b;").join()).toMatch(/C-22 .*light theme --ok-ink on --ok-soft/);
+  });
 });
+

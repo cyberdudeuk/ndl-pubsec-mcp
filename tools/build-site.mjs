@@ -146,16 +146,23 @@ const term = (t, shown = t) => {
 
 // --- charts, drawn here as SVG so they show without the script ---
 const totals = Object.values(conf.byClass).reduce((x, k) => ({ v: x.v + k.valid, i: x.i + k.invalid }), { v: 0, i: 0 });
+// Column widths come from the longest label at about 7.6 px a character (13 px system sans), so no label is
+// cut off at the edge of the chart (defect D-035, check C-28).
+const CHAR_W = 7.6;
 function barChart(rows, { id, title, max, unit }) {
-  const rowH = 34, left = 170, width = 560, h = rows.length * rowH + 28;
+  const value = (r) => `${r.value} of ${r.of ?? max}${unit ? ` ${unit}` : ""}`;
+  const rowH = 34, barW = 380;
+  const left = Math.ceil(Math.max(...rows.map((r) => r.label.length)) * CHAR_W) + 20;
+  const valW = Math.ceil(Math.max(...rows.map((r) => value(r).length)) * CHAR_W) + 20;
+  const width = left + barW + valW, h = rows.length * rowH + 28;
   const bars = rows.map((r, i) => {
     const y = 10 + i * rowH;
     return `<g><text x="${left - 10}" y="${y + 17}" text-anchor="end">${esc(r.label)}</text>` +
-      `<rect class="bar-bg" x="${left}" y="${y + 4}" width="${width - left - 70}" height="18" rx="5"/>` +
-      `<rect class="${r.cls} grow" x="${left}" y="${y + 4}" width="${Math.max(2, ((width - left - 70) * r.value) / (r.of ?? max)).toFixed(1)}" height="18" rx="5"/>` +
-      `<text x="${width - 62}" y="${y + 17}">${r.value} of ${r.of ?? max}${unit ? ` ${unit}` : ""}</text></g>`;
+      `<rect class="bar-bg" x="${left}" y="${y + 4}" width="${barW}" height="18" rx="5"/>` +
+      `<rect class="${r.cls} grow" x="${left}" y="${y + 4}" width="${Math.max(2, (barW * r.value) / (r.of ?? max)).toFixed(1)}" height="18" rx="5"/>` +
+      `<text x="${left + barW + 10}" y="${y + 17}">${esc(value(r))}</text></g>`;
   }).join("");
-  return `<svg class="chart" viewBox="0 0 ${width} ${h}" role="img" aria-labelledby="${id}-t ${id}-d"><title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(rows.map((r) => `${r.label}: ${r.value} of ${r.of ?? max}`).join("; "))}</desc>${bars}</svg>`;
+  return `<div class="scroll-x" role="region" aria-label="${esc(title)}, scrolls sideways on small screens" tabindex="0"><svg class="chart" viewBox="0 0 ${width} ${h}" role="img" aria-labelledby="${id}-t ${id}-d"><title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(rows.map((r) => `${r.label}: ${value(r)}`).join("; "))}</desc>${bars}</svg></div>`;
 }
 const corpusRows = Object.entries(conf.byClass).flatMap(([k, v]) => [
   ...(v.valid ? [{ label: `${k}, valid`, value: v.validAgree, cls: "bar-v", of: v.valid }] : []),
@@ -399,7 +406,7 @@ ${standards.standards.map((s) => `        <article class="card" data-text="${low
       ${head2("map")}
       <p class="lead">How the standards, the tools, this server and the other servers it lists connect. Hover or tab to a point to see its links. The same graph is published as <a href="knowledge-graph.jsonld">JSON-LD</a>.</p>
       <ul class="legend"><li><i class="k-std"></i>Standard</li><li><i class="k-tool"></i>Tool</li><li><i class="k-server"></i>This server</li><li><i class="k-dom"></i>Other server in the estate</li></ul>
-      <div class="card">${estateMap}</div>
+      <div class="card scroll-x" role="region" aria-label="Estate map, scrolls sideways on small screens" tabindex="0">${estateMap}</div>
     </section>
 
     <section class="section reveal" id="tour" aria-labelledby="tour-h">
@@ -524,7 +531,8 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
         <tr><th scope="row">What this is</th><td>${esc(STATEMENT)}</td></tr>
         <tr><th scope="row">Status</th><td>Prototype, version ${esc(pkg.version)}. Not a live service, and it has not had a service assessment.</td></tr>
         <tr><th scope="row">First published</th><td>8 November 2026</td></tr>
-        <tr><th scope="row">Last updated</th><td>${esc(longDate(AS_OF))}</td></tr>
+        <tr><th scope="row">Last updated</th><td>${esc(releases[0].date)} (version ${esc(releases[0].version)})</td></tr>
+        <tr><th scope="row">Standards last checked</th><td>${esc(longDate(AS_OF))}</td></tr>
         <tr><th scope="row">Review by</th><td>${esc(longDate(REVIEW))}</td></tr>
         <tr><th scope="row">How it is built</th><td>Generated from the repository's own data by <a href="${gh("tools/build-site.mjs")}">tools/build-site.mjs</a>. Build <code>${esc(buildId)}</code>.</td></tr>
       </tbody></table></div>
@@ -539,7 +547,7 @@ ${glossary.map((g, i) => `        <div data-text="${lower(g.term, g.meaning)}"${
       <p>${esc(STATEMENT)} It gives no legal or policy advice. Catalogue results come from data.gov.uk, and validation from the published xGov MEM model. This software was built with AI coding assistance (Claude Code), and changes are reviewed before they are merged.</p>
       <p><a href="${CONTACT}">Contact form</a> · <a href="${REPO}">Source code</a> · <a href="${REPO}/blob/main/SECURITY.md">Report a security problem</a></p>
       <p>Code: <a href="${REPO}/blob/main/LICENCE">MIT Licence</a>. Content: <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. © Crown copyright 2026.</p>
-      <p>Version ${esc(pkg.version)} · as of ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
+      <p>Version ${esc(pkg.version)} · updated ${esc(releases[0].date)} · standards checked ${esc(longDate(AS_OF))} · build <code>${esc(buildId)}</code></p>
     </div>
     <div class="foot__codes">
       ${qr}

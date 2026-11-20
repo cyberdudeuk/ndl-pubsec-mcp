@@ -75,8 +75,12 @@ ${guide.personas.map((p) => `        <article class="card persona" id="who-${p.i
       return `<div class="outcome"><p class="outcome__label">${icon("book")}What the tool draws on <span class="tag tag--${esc(s.provenance)}">${esc(s.provenance)}, checked ${esc(s.checked)}</span></p><p><a href="${esc(s.link)}">${esc(s.name)}</a>: ${esc(s.purpose)}</p><p class="meta">${esc(s.status)} · ${esc(s.licence)}</p></div>`;
     }
     if (e.live) {
-      const top = Object.entries(live.missingRequired).sort((a, b) => b[1] - a[1]).slice(0, 3);
-      return `<div class="outcome"><p class="outcome__label">${icon("chart")}For comparison <span class="tag tag--V">From the recorded real-record run</span></p><p>${live.validHere === 0 ? "None" : `${live.validHere}`} of the ${live.records} real catalogue records sampled ${live.validHere === 1 ? "was" : "were"} valid straight from the catalogue. The required attributes most often missing were ${top.map(([k, n]) => `<code>${esc(k)}</code> (${n} of ${live.records})`).join(", ")}.</p></div>`;
+      // Name every attribute tied at the top count, so a tie is never cut short (defect D-034, check C-27).
+      const counts = Object.entries(live.missingRequired);
+      const max = Math.max(...counts.map(([, n]) => n));
+      const top = counts.filter(([, n]) => n === max).map(([k]) => k).sort();
+      const list = top.length > 1 ? `${top.slice(0, -1).map((k) => `<code>${esc(k)}</code>`).join(", ")} and <code>${esc(top.at(-1))}</code>` : `<code>${esc(top[0])}</code>`;
+      return `<div class="outcome"><p class="outcome__label">${icon("chart")}For comparison <span class="tag tag--V">From the recorded real-record run</span></p><p>${live.validHere === 0 ? "None" : `${live.validHere}`} of the ${live.records} real catalogue records sampled ${live.validHere === 1 ? "was" : "were"} valid straight from the catalogue. ${max === live.records ? `Every one lacked ${list}` : `The required ${top.length > 1 ? "attributes" : "attribute"} most often missing (${max} of ${live.records}): ${list}`}. <a href="#p-live">See the full chart</a>.</p></div>`;
     }
     return `<div class="outcome outcome--soft"><p class="outcome__label">${icon("info")}Illustrative prompt</p><p class="meta">Results come from the live source at the time you ask, so none are shown here.</p></div>`;
   };
@@ -106,7 +110,7 @@ ${guide.involve.map((v) => `        <article class="card involve"><h3>${icon(v.i
 
   // --- journeys and service blueprints ---
   const curve = (j) => {
-    const w = 640, h = 150, pad = 40, n = j.stages.length;
+    const w = 640, h = 150, pad = 64, n = j.stages.length;
     const x = (i) => pad + ((w - 2 * pad) * i) / Math.max(1, n - 1);
     const y = (v) => 20 + ((h - 60) * (v - 1)) / 4;
     const pts = j.stages.map((s, i) => `${x(i).toFixed(1)},${y(s.effort).toFixed(1)}`).join(" ");
@@ -116,7 +120,7 @@ ${guide.involve.map((v) => `        <article class="card involve"><h3>${icon(v.i
       <p class="note note--warn">${icon("info")} ${esc(guide.status)} The effort curves are modelled from these assumptions, not measured.</p>
       <div class="tabs">
         <div role="tablist" aria-label="Journeys">${guide.journeys.map((j) => `<button role="tab" id="t-jr-${j.id}" aria-controls="p-jr-${j.id}" type="button">${esc(j.title)}</button>`).join("")}</div>
-${guide.journeys.map((j, ji) => `        <div role="tabpanel" id="p-jr-${j.id}" aria-labelledby="t-jr-${j.id}"${ji ? " hidden" : ""}><p class="meta">For: ${j.personas.map((p) => `<a href="#who-${p}">${esc(persona[p].role)}</a>`).join(", ")}</p><div class="card">${curve(j)}</div><div class="table-wrap" role="region" aria-labelledby="bp-${j.id}-c" tabindex="0"><table class="blueprint"><caption id="bp-${j.id}-c">Service blueprint: ${esc(j.title)}</caption><thead><tr><th scope="col">Lane</th>${j.stages.map((s, i) => `<th scope="col"><span class="flow__n">${i + 1}</span>${esc(s.name)}</th>`).join("")}</tr></thead><tbody>${guide.lanes.map(([k, label]) => `<tr class="lane lane--${k}"><th scope="row">${esc(label)}</th>${j.stages.map((s) => `<td>${esc(s[k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`).join("\n")}
+${guide.journeys.map((j, ji) => `        <div role="tabpanel" id="p-jr-${j.id}" aria-labelledby="t-jr-${j.id}"${ji ? " hidden" : ""}><p class="meta">For: ${j.personas.map((p) => `<a href="#who-${p}">${esc(persona[p].role)}</a>`).join(", ")}</p><div class="card scroll-x" role="region" aria-label="Effort curve, scrolls sideways on small screens" tabindex="0">${curve(j)}</div><div class="table-wrap" role="region" aria-labelledby="bp-${j.id}-c" tabindex="0"><table class="blueprint"><caption id="bp-${j.id}-c">Service blueprint: ${esc(j.title)}</caption><thead><tr><th scope="col">Lane</th>${j.stages.map((s, i) => `<th scope="col"><span class="flow__n">${i + 1}</span>${esc(s.name)}</th>`).join("")}</tr></thead><tbody>${guide.lanes.map(([k, label]) => `<tr class="lane lane--${k}"><th scope="row">${esc(label)}</th>${j.stages.map((s) => `<td>${esc(s[k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`).join("\n")}
       </div>`;
 
   // --- generated documents ---

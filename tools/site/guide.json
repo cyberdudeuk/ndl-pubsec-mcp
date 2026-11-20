@@ -389,7 +389,7 @@
     { "id": "idea", "title": "Suggest a feature or a standard", "icon": "rocket", "who": ["standards-lead", "contributor", "analyst"], "how": "Use the feature request form. Ideas go on the open register with who must act.", "link": "feature" },
     { "id": "co-design", "title": "Join a co-design session", "icon": "map", "who": ["champion", "contributor", "publisher", "policy"], "how": "Use the contact form, choose 'Something else' and say you would like to join. Bring a real record or question.", "link": "contact" },
     { "id": "code", "title": "Contribute a change", "icon": "code", "who": ["builder", "contributor"], "how": "Follow the contributing guide. Every defect fixed comes with a check that would catch it again.", "link": "contributing" },
-    { "id": "champion", "title": "Champion it in your organisation", "icon": "rocket", "who": ["champion", "standards-lead"], "how": "Use the champion pack and session plan, then tell us what you heard.", "link": "toolkit" }
+    { "id": "champion", "title": "Champion it in your organisation", "icon": "people", "who": ["champion", "standards-lead"], "how": "Use the champion pack and session plan, then tell us what you heard.", "link": "toolkit" }
   ],
   "tour": [
     { "target": "what", "title": "What it does", "text": "Six read-only tools, each with one job. Filter them by what you want to do." },

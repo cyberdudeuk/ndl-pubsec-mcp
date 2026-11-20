@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+38bcbef0cd02",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+31d3ce53e4f4",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -1585,6 +1585,70 @@
       "schema:name": "D-028",
       "schema:description": "The bug report form did not offer `term_lookup` or `domain_list`",
       "ndl:check": "C-21: the form must offer every registered tool; deliberate-break test",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-029",
+      "@type": "schema:Thing",
+      "schema:name": "D-029",
+      "schema:description": "On phones the copy button covered the end of long lines in every code block",
+      "ndl:check": "C-25: `.code pre` reserves at least 36 px above the code; deliberate-break test",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-030",
+      "@type": "schema:Thing",
+      "schema:name": "D-030",
+      "schema:description": "\"Last updated\" in About this page and \"as of\" in the footer showed 8 November 2026 on a page rebuilt on 20 November",
+      "ndl:check": "C-23: \"Last updated\" must be the latest release date in the changelog; the standards check date now has its own label",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-031",
+      "@type": "schema:Thing",
+      "schema:name": "D-031",
+      "schema:description": "On phones the estate map and the journey effort curves shrank their labels to about 5 px, unreadable",
+      "ndl:check": "C-24: `.map` and `.curve` keep a minimum width and sit in a sideways-scrolling region",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-032",
+      "@type": "schema:Thing",
+      "schema:name": "D-032",
+      "schema:description": "Tabs beyond the screen edge (Hints and tips; Champion and contribute) were hidden with nothing to show more existed",
+      "ndl:check": "C-26: tab bars must wrap",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-033",
+      "@type": "schema:Thing",
+      "schema:name": "D-033",
+      "schema:description": "Pill text was below WCAG AA: Independent prototype 3.58:1 and New 4.12:1 in light, 2.31:1 and 1.87:1 in dark; inactive glossary letters 1.26:1 to 1.5:1",
+      "ndl:check": "C-22: every text and background token pair is computed in both themes against AA (3:1 for inactive text); deliberate-break tests",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-034",
+      "@type": "schema:Thing",
+      "schema:name": "D-034",
+      "schema:description": "A worked example named three attributes as most often missing when four were tied at 50 of 50, so version was silently left out",
+      "ndl:check": "C-27: the example must name every attribute tied at the top count",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-035",
+      "@type": "schema:Thing",
+      "schema:name": "D-035",
+      "schema:description": "The real-records bar chart cut off its value labels (\"50 of 50 r…\") at every width, and on phones both bar charts shrank their labels below reading size",
+      "ndl:check": "C-28: every chart label must fit inside its chart (it also caught the journey effort curves' end labels, now given wider margins); C-24 now also covers bar charts, which sit in a sideways-scrolling region",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-036",
+      "@type": "schema:Thing",
+      "schema:name": "D-036",
+      "schema:description": "The green \"verified\" tags (V provenance labels and \"Produced by the validator\" badges) were 4.44:1 in the light theme, below AA; the amber and red tags used the same translucent pattern",
+      "ndl:check": "C-22 now covers the solid -soft and -ink tag tokens in both themes and rejects translucent tag tints; `tools/visual_inspect.py` fails on any contrast finding and prints them all",
       "ndl:status": "Fixed"
     }
   ]
