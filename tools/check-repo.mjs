@@ -186,6 +186,11 @@ export function checkRepo(root) {
     const shown = page.replace(/<section[^>]*id="defects"[\s\S]*?<\/section>/, "").replace(/<script type="application\/json" id="search-index">[\s\S]*?<\/script>/, "");
     if (/\b(studys|summarys|categorys|entitys|policys|bodys)\b/i.test(shown)) problems.push("C-45 docs/index.html: a misspelt plural (such as \"studys\") is on the page");
   }
+  // C-46 (defect D-053): the published page never reads the clock, so building it on another day gives the same page
+  for (const f of ["tools/build-site.mjs", ...readdirSync(join(root, "tools", "site")).filter((x) => /\.mjs$/.test(x)).map((x) => `tools/site/${x}`)]) {
+    const t = readFileSync(join(root, f), "utf8");
+    if (/new Date\(\s*\)|Date\.now\(|catalogueStaleness\([^,()]*\)/.test(t)) problems.push(`C-46 ${f}: the page reads today's date, so docs/index.html changes every day and "docs up to date" fails; use a date from the data`);
+  }
   // C-06 (defect D-006): every defect in the register names an existing check
   const reg = existsSync(join(root, "docs", "defect-register.md")) ? readFileSync(join(root, "docs", "defect-register.md"), "utf8") : "";
   for (const row of reg.split("\n").filter((l) => /^\| D-\d{3}/.test(l))) {
@@ -455,5 +460,5 @@ if (isMain) {
     console.error(`\n${problems.length} repository check(s) failed`);
     process.exit(1);
   }
-  console.log("repository checks passed (C-01 to C-45)");
+  console.log("repository checks passed (C-01 to C-46)");
 }

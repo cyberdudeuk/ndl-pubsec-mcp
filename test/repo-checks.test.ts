@@ -369,6 +369,10 @@ describe("page structure (D-025)", () => {
     expect(breakFile("tools/visual_inspect.py", ", (320, \"light\")]", "]").join()).toMatch(/C-44 .*320 px/);
   });
 
+  it("C-46 catches a page that reads today's date (D-053)", () => {
+    expect(breakFile("tools/site/guide-sections.mjs", "(pinned ${esc(apiSources.catalogue.commitDate)}; refreshed monthly)", "(${Math.floor((Date.now() - 0) / 86400000)} days; refreshed monthly)").join()).toMatch(/C-46 tools\/site\/guide-sections/);
+  });
+
   it("C-45 catches a plural made by adding s (D-052)", () => {
     expect(breakFile("tools/site/spotlight.mjs", "kinds.map((k) => [`k-${k}`, PLURALS[k]])", "kinds.map((k) => [`k-${k}`, `${KINDS[k]}s`])").join()).toMatch(/C-45 spotlight/);
     expect(breakFile("docs/index.html", ">Case studies</button>", ">Case studys</button>").join()).toMatch(/C-45 docs/);

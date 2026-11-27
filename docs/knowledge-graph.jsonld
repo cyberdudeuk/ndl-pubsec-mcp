@@ -12,7 +12,7 @@
       "@type": "schema:SoftwareSourceCode",
       "schema:name": "NDL PubSec MCP",
       "schema:version": "0.4.0",
-      "schema:identifier": "ndl-pubsec-mcp@0.4.0+6307f327eb03",
+      "schema:identifier": "ndl-pubsec-mcp@0.4.0+a4a2fec19890",
       "schema:codeRepository": "https://github.com/cyberdudeuk/ndl-pubsec-mcp",
       "dct:conformsTo": [
         {
@@ -3157,6 +3157,14 @@
       "schema:name": "D-051",
       "schema:description": "At 320 px the page could be scrolled 56 px sideways and the theme switch was off screen",
       "ndl:check": "Narrow-screen masthead rule (all controls kept at 44 px or more, the \"More\" label kept as an accessible name only); cards, notes and table cells may break long strings; visual inspection adds 320 px; C-44",
+      "ndl:status": "Fixed"
+    },
+    {
+      "@id": "ndl:defect/D-053",
+      "@type": "schema:Thing",
+      "schema:name": "D-053",
+      "schema:description": "Dependabot pull requests #42 and #43 failed \"docs up to date\": the committed page said the API catalogue was pinned \"18 days before this page was built\", and a rebuild six days later said 24",
+      "ndl:check": "The page states the pin date instead; C-46 fails if a site template reads today's date",
       "ndl:status": "Fixed"
     },
     {
