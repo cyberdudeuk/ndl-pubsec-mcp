@@ -3,8 +3,6 @@
 // from tools/site/guide.json. Called by tools/build-site.mjs. Every cross-reference in guide.json is
 // resolved here and an unresolved one stops the build, so the page cannot link to something that is not there.
 
-import { catalogueStaleness } from "../catalogue-staleness.mjs";
-
 export function renderGuide(ctx) {
   const { guide, tools, examples, rules, standards, live, esc, icon, term, filterBox, lower, links, sectionIds, searchApis, apiSources, servers } = ctx;
   const toolNames = new Set(tools.map((t) => t.name));
@@ -87,7 +85,7 @@ ${guide.personas.map((p) => `        <article class="card persona" id="who-${p.i
     if (e.apiQueries) {
       const groups = e.apiQueries.map((q) => ({ q, hits: searchApis(q.query, { provider: q.provider }).slice(0, 3) }));
       groups.forEach(({ q, hits }) => hits.length || fail(`example ${e.id}: api_search for "${q.query}" found nothing`));
-      return `<div class="outcome"><p class="outcome__label">${icon("check")}What api_search returns <span class="tag tag--V">Produced by the tool when this page was built</span></p><ul class="findings">${groups.map(({ q, hits }) => hits.map((a) => `<li><span class="sev sev--source">${a.inCatalogue ? "in catalogue" : "named source"}</span><a href="${esc(a.documentation || a.url)}">${esc(a.name)}</a> · ${esc(a.provider)} <span class="meta">(for "${esc(q.query)}")</span></li>`).join("")).join("")}</ul><p class="meta">Catalogue: ${esc(apiSources.catalogue.repository.replace("https://github.com/", ""))} at ${esc(apiSources.catalogue.commit.slice(0, 7))} (${esc(apiSources.catalogue.commitDate)}, ${catalogueStaleness(apiSources.catalogue.commitDate).ageDays} days before this page was built; refreshed monthly), ${apiSources.catalogue.count} APIs, plus ${apiSources.named.count} named sources checked at the publisher's page.</p></div>`;
+      return `<div class="outcome"><p class="outcome__label">${icon("check")}What api_search returns <span class="tag tag--V">Produced by the tool when this page was built</span></p><ul class="findings">${groups.map(({ q, hits }) => hits.map((a) => `<li><span class="sev sev--source">${a.inCatalogue ? "in catalogue" : "named source"}</span><a href="${esc(a.documentation || a.url)}">${esc(a.name)}</a> · ${esc(a.provider)} <span class="meta">(for "${esc(q.query)}")</span></li>`).join("")).join("")}</ul><p class="meta">Catalogue: ${esc(apiSources.catalogue.repository.replace("https://github.com/", ""))} at ${esc(apiSources.catalogue.commit.slice(0, 7))} (pinned ${esc(apiSources.catalogue.commitDate)}; refreshed monthly), ${apiSources.catalogue.count} APIs, plus ${apiSources.named.count} named sources checked at the publisher's page.</p></div>`;
     }
     if (e.serverQuery) {
       const q = e.serverQuery.toLowerCase();
