@@ -1,5 +1,7 @@
 # NDL PubSec MCP: a discoverability server for UK public sector data
 
+[![gds-dtx readiness: ready with exceptions, 10 of 10 GDS Way MUST checks met](docs/conformance/badge.svg)](docs/conformance/report.md)
+
 An open-source [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server. It lets any MCP-capable AI assistant find UK public sector data and check that data's metadata against the UK Cross-Government Metadata Exchange Model (xGov MEM).
 
 > **Status: independent prototype, version 0.4.0 (20 November 2026).** It is not a government service, is not endorsed by any government department, and does not set or represent government policy. It is a prototype to explore data discoverability across the public sector, and it has not been through a service assessment.
